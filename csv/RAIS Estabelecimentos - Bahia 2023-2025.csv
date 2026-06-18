@@ -1,0 +1,433 @@
+Cod.;CNAE 2.0 Grupo - BAHIA;2025;2024;2023;Total
+60;Extração de Petróleo e Gás Natural;19;20;23;62
+71;Extração de Minério de Ferro;10;10;10;30
+72;Extração de Minerais Metálicos Não-Ferrosos;35;32;35;102
+81;Extração de Pedra, Areia e Argila;406;384;358;1.148
+89;Extração de Outros Minerais Não-Metálicos;77;72;66;215
+91;Atividades de Apoio à Extração de Petróleo e Gás Natural;36;35;31;102
+99;Atividades de Apoio à Extração de Minerais, Exceto Petróleo e Gás Natural;19;20;20;59
+101;Abate e Fabricação de Produtos de Carne;140;139;133;412
+102;Preservação do Pescado e Fabricação de Produtos do Pescado;23;24;21;68
+103;Fabricação de Conservas de Frutas, Legumes e Outros Vegetais;220;202;196;618
+104;Fabricação de óleos e Gorduras Vegetais e Animais;37;38;37;112
+105;Laticínios;410;387;364;1.161
+106;Moagem, Fabricação de Produtos Amiláceos e de Alimentos para Animais;205;204;201;610
+107;Fabricação e Refino de Açúcar;6;5;6;17
+108;Torrefação e Moagem de Café;98;96;95;289
+109;Fabricação de Outros Produtos Alimentícios;2.107;1.965;1.847;5.919
+111;Fabricação de Bebidas Alcoólicas;65;65;58;188
+112;Fabricação de Bebidas Não-Alcoólicas;60;54;55;169
+121;Processamento Industrial do Fumo;2;3;3;8
+122;Fabricação de Produtos do Fumo;13;16;14;43
+131;Preparação e Fiação de Fibras Têxteis;52;53;54;159
+132;Tecelagem, Exceto Malha;19;20;18;57
+133;Fabricação de Tecidos de Malha;7;6;6;19
+134;Acabamentos em Fios, Tecidos e Artefatos Têxteis;69;57;54;180
+135;Fabricação de Artefatos Têxteis, Exceto Vestuário;202;192;176;570
+141;Confecção de Artigos do Vestuário e Acessórios;898;865;842;2.605
+142;Fabricação de Artigos de Malharia e Tricotagem;15;13;12;40
+151;Curtimento e Outras Preparações de Couro;12;13;15;40
+152;Fabricação de Artigos para Viagem e de Artefatos Diversos de Couro;117;113;121;351
+153;Fabricação de Calçados;101;94;90;285
+154;Fabricação de Partes para Calçados, de Qualquer Material;18;16;13;47
+161;Desdobramento de Madeira;70;65;67;202
+162;Fabricação de Produtos de Madeira, Cortiça e Material Trançado, Exceto Móveis;275;260;260;795
+171;Fabricação de Celulose e Outras Pastas para a Fabricação de Papel;4;4;4;12
+172;Fabricação de Papel, Cartolina e Papel-Cartão;7;9;6;22
+173;Fabricação de Embalagens de Papel, Cartolina, Papel-Cartão e Papelão Ondulado;87;83;78;248
+174;Fabricação de Produtos Diversos de Papel, Cartolina, Papel-Cartão e Papelão Ondulado;74;71;74;219
+181;Atividade de Impressão;552;532;506;1.590
+182;Serviços de Pré-Impressão e Acabamentos Gráficos;140;130;123;393
+183;Reprodução de Materiais Gravados em Qualquer Suporte;4;4;5;13
+192;Fabricação de Produtos Derivados do Petróleo;20;17;15;52
+193;Fabricação de Biocombustíveis;15;14;11;40
+201;Fabricação de Produtos Químicos Inorgânicos;75;73;71;219
+202;Fabricação de Produtos Químicos Orgânicos;30;29;27;86
+203;Fabricação de Resinas e Elastômeros;27;26;25;78
+204;Fabricação de Fibras Artificiais e Sintéticas;6;6;7;19
+205;Fabricação de Defensivos Agrícolas e Desinfestantes Domissanitários;6;6;7;19
+206;Fabricação de Sabões, Detergentes, Produtos de Limpeza, Cosméticos, Produtos de Perfumaria e de Higiene Pessoal;191;187;180;558
+207;Fabricação de Tintas, Vernizes, Esmaltes, Lacas e Produtos Afins;44;46;43;133
+209;Fabricação de Produtos e Preparados Químicos Diversos;45;44;41;130
+211;Fabricação de Produtos Farmoquímicos;1;1;1;3
+212;Fabricação de Produtos Farmacêuticos;6;5;6;17
+221;Fabricação de Produtos de Borracha;115;112;105;332
+222;Fabricação de Produtos de Material Plástico;382;372;355;1.109
+231;Fabricação de Vidro e de Produtos do Vidro;97;88;88;273
+232;Fabricação de Cimento;5;6;6;17
+233;Fabricação de Artefatos de Concreto, Cimento, Fibrocimento, Gesso e Materiais Semelhantes;703;692;656;2.051
+234;Fabricação de Produtos Cerâmicos;329;314;307;950
+239;Aparelhamento de Pedras e Fabricação de Outros Produtos de Minerais Não-Metálicos;469;451;427;1.347
+241;Produção de Ferro-Gusa e de Ferroligas;4;3;3;10
+242;Siderurgia;9;9;9;27
+243;Produção de Tubos de Aço, Exceto Tubos sem Costura;2;2;2;6
+244;Metalurgia dos Metais Não-Ferrosos;13;12;12;37
+245;Fundição;14;14;12;40
+251;Fabricação de Estruturas Metálicas e Obras de Caldeiraria Pesada;548;515;490;1.553
+252;Fabricação de Tanques, Reservatórios Metálicos e Caldeiras;8;6;7;21
+253;Forjaria, Estamparia, Metalurgia do Pó e Serviços de Tratamento de Metais;346;330;313;989
+254;Fabricação de Artigos de Cutelaria, de Serralheria e Ferramentas;235;214;207;656
+259;Fabricação de Produtos de Metal não Especificados Anteriormente;237;228;210;675
+261;Fabricação de Componentes Eletrônicos;10;10;11;31
+262;Fabricação de Equipamentos de Informática e Periféricos;22;24;23;69
+263;Fabricação de Equipamentos de Comunicação;5;4;4;13
+264;Fabricação de Aparelhos de Recepção, Reprodução, Gravação e Amplificação de áudio e Vídeo;14;14;13;41
+265;"Fabricação de Aparelhos e Instrumentos de Medida, Teste e Controle; cronômetros e relógios";7;7;7;21
+266;Fabricação de Aparelhos Eletromédicos e Eletroterapêuticos e Equipamentos de Irradiação;2;2;1;5
+267;Fabricação de Equipamentos e Instrumentos ópticos, Fotográficos e Cinematográficos;2;2;1;5
+268;Fabricação de Mídias Virgens, Magnéticas e ópticas;1;1;1;3
+271;Fabricação de Geradores, Transformadores e Motores Elétricos;31;28;24;83
+272;Fabricação de Pilhas, Baterias e Acumuladores Elétricos;1;0;0;1
+273;Fabricação de Equipamentos para Distribuição e Controle de Energia Elétrica;43;45;41;129
+274;Fabricação de Lâmpadas e Outros Equipamentos de Iluminação;10;10;11;31
+275;Fabricação de Eletrodomésticos;10;7;7;24
+279;Fabricação de Equipamentos e Aparelhos Elétricos não Especificados Anteriormente;17;18;20;55
+281;Fabricação de Motores, Bombas, Compressores e Equipamentos de Transmissão;32;30;27;89
+282;Fabricação de Máquinas e Equipamentos de Uso Geral;35;32;34;101
+283;Fabricação de Tratores e de Máquinas e Equipamentos para a Agricultura e Pecuária;35;30;26;91
+284;Fabricação de Máquinas-Ferramenta;11;8;8;27
+285;Fabricação de Máquinas e Equipamentos de Uso na Extração Mineral e na Construção;8;9;8;25
+286;Fabricação de Máquinas e Equipamentos de Uso Industrial Específico;37;32;31;100
+291;Fabricação de Automóveis, Camionetas e Utilitários;1;1;0;2
+293;Fabricação de Cabines, Carrocerias e Reboques para Veículos Automotores;77;79;78;234
+294;Fabricação de Peças e Acessórios para Veículos Automotores;35;30;31;96
+295;Recondicionamento e Recuperação de Motores para Veículos Automotores;106;94;89;289
+301;Construção de Embarcações;14;13;13;40
+304;Fabricação de Aeronaves;0;0;1;1
+309;Fabricação de Equipamentos de Transporte não Especificados Anteriormente;22;21;20;63
+310;Fabricação de Móveis;767;742;698;2.207
+321;Fabricação de Artigos de Joalheria, Bijuteria e Semelhantes;34;37;28;99
+322;Fabricação de Instrumentos Musicais;2;3;1;6
+323;Fabricação de Artefatos para Pesca e Esporte;7;6;4;17
+324;Fabricação de Brinquedos e Jogos Recreativos;13;11;12;36
+325;Fabricação de Instrumentos e Materiais para Uso Médico e Odontológico e de Artigos ópticos;189;180;167;536
+329;Fabricação de Produtos Diversos;393;390;371;1.154
+331;Manutenção e Reparação de Máquinas e Equipamentos;1.152;1.120;1.066;3.338
+332;Instalação de Máquinas e Equipamentos;275;261;224;760
+351;Geração, Transmissão e Distribuição de Energia Elétrica;130;125;118;373
+352;Produção e Distribuição de Combustíveis Gasosos por Redes Urbanas;11;10;10;31
+353;Produção e Distribuição de Vapor, água Quente e Ar Condicionado;1;2;1;4
+360;Captação, Tratamento e Distribuição de água;118;99;92;309
+370;Esgoto e Atividades Relacionadas;32;30;32;94
+381;Coleta de Resíduos;204;195;192;591
+382;Tratamento e Disposição de Resíduos;44;40;42;126
+383;Recuperação de Materiais;163;145;138;446
+390;Descontaminação e Outros Serviços de Gestão de Resíduos;5;5;4;14
+411;Incorporação de Empreendimentos Imobiliários;737;680;661;2.078
+412;Construção de Edifícios;4.316;4.130;3.936;12.382
+421;Construção de Rodovias, Ferrovias, Obras Urbanas e Obras de Arte Especiais;703;713;708;2.124
+422;Obras de Infra-Estrutura para Energia Elétrica, Telecomunicações, água, Esgoto e Transporte por Dutos;414;379;337;1.130
+429;Construção de Outras Obras de Infra-Estrutura;742;764;759;2.265
+431;Demolição e Preparação do Terreno;396;380;369;1.145
+432;Instalações Elétricas, Hidráulicas e Outras Instalações em Construções;1.324;1.248;1.111;3.683
+433;Obras de Acabamento;692;658;611;1.961
+439;Outros Serviços Especializados para Construção;1.039;974;909;2.922
+;Total;25.184;24.071;22.871;72.126
+;;;;;
+;Seleções vigentes;;;;
+;Variável;Critério;Valor;;
+;Ano;igual a;2025;;
+;;;2024;;
+;;;2023;;
+;Ind Rais Negativa;igual a;Não;;
+;Tamanho Estabelecimento;igual a;1000 ou Mais;;
+;;;De 1 a 4;;
+;;;De 10 a 19;;
+;;;De 100 a 249;;
+;;;De 20 a 49;;
+;;;De 250 a 499;;
+;;;De 5 a 9;;
+;;;De 50 a 99;;
+;;;De 500 a 999;;
+;UF;igual a;29 - Bahia;;
+;CNAE 2.0 Seção;igual a;Água, Esgoto, Atividades de Gestão de Resíduos e Descontaminação;;
+;;;Eletricidade e Gás;;
+;;;Construção;;
+;;;Indústrias de Transformação;;
+;;;Indústrias Extrativas;;
+;CNAE 2.0 Grupo;igual a;Abate e Fabricação de Produtos de Carne;;
+;;;Acabamentos em Fios, Tecidos e Artefatos Têxteis;;
+;;;Administração do Estado e da Política Econômica e Social;;
+;;;Agências de Viagens e Operadores Turísticos;;
+;;;Aluguel de Máquinas e Equipamentos sem Operador;;
+;;;Aluguel de Objetos Pessoais e Domésticos;;
+;;;Aparelhamento de Pedras e Fabricação de Outros Produtos de Minerais Não-Metálicos;;
+;;;AqüIcultura;;
+;;;Armazenamento, Carga e Descarga;;
+;;;Arrendamento Mercantil;;
+;;;Atividade de Impressão;;
+;;;Atividades Artísticas, Criativas e de Espetáculos;;
+;;;Atividades Auxiliares dos Seguros, da Previdência Complementar e dos Planos de Saúde;;
+;;;Atividades Auxiliares dos Serviços Financeiros;;
+;;;Atividades Auxiliares dos Transportes Aéreos;;
+;;;Atividades Auxiliares dos Transportes Aquaviários;;
+;;;Atividades Auxiliares dos Transportes Terrestres;;
+;;;Atividades Cinematográficas, Produção de Vídeos e de Programas de Televisão;;
+;;;Atividades de Administração de Fundos por Contrato ou Comissão;;
+;;;Atividades de Apoio à Agricultura e à Pecuária;;
+;;;Atividades de Apoio à Educação;;
+;;;Atividades de Apoio à Extração de Minerais, Exceto Petróleo e Gás Natural;;
+;;;Atividades de Apoio à Extração de Petróleo e Gás Natural;;
+;;;Atividades de Apoio à Gestão de Saúde;;
+;;;Atividades de Apoio à Produção Florestal;;
+;;;Atividades de Assistência a Idosos, Deficientes Físicos, Imunodeprimidos e Convalescentes, e de Infra-Est e Apoio a Pac Prest em Res Col e Part;;
+;;;Atividades de Assistência Psicossocial e à Saúde a Portadores de Distúrbios Psíquicos, Deficiência Mental e Dependência Química;;
+;;;Atividades de Assistência Social Prestadas em Residências Coletivas e Particulares;;
+;;;Atividades de Associações de Defesa de Direitos Sociais;;
+;;;Atividades de Atenção à Saúde Humana não Especificadas Anteriormente;;
+;;;Atividades de Atenção Ambulatorial Executadas por Médicos e Odontólogos;;
+;;;Atividades de Atendimento Hospitalar;;
+;;;Atividades de Consultoria em Gestão Empresarial;;
+;;;Atividades de Contabilidade, Consultoria e Auditoria Contábil e Tributária;;
+;;;Atividades de Correio;;
+;;;Atividades de Exploração de Jogos de Azar e Apostas;;
+;;;Atividades de Gravação de Som e de Edição de Música;;
+;;;Atividades de Investigação Particular;;
+;;;Atividades de Limpeza;;
+;;;Atividades de Malote e de Entrega;;
+;;;Atividades de Monitoramento de Sistemas de Segurança;;
+;;;Atividades de Organização de Eventos, Exceto Culturais e Esportivos;;
+;;;Atividades de Organizações Associativas não Especificadas Anteriormente;;
+;;;Atividades de Organizações Associativas Patronais, Empresariais e Profissionais;;
+;;;Atividades de Organizações Sindicais;;
+;;;Atividades de Profissionais da área de Saúde, Exceto Médicos e Odontólogos;;
+;;;Atividades de Rádio;;
+;;;Atividades de Recreação e Lazer;;
+;;;Atividades de Serviços de Complementação Diagnóstica e Terapêutica;;
+;;;Atividades de Serviços Financeiros não Especificadas Anteriormente;;
+;;;Atividades de Sociedades de Participação;;
+;;;Atividades de Teleatendimento;;
+;;;Atividades de Televisão;;
+;;;Atividades de Vigilância, Segurança Privada e Transporte de Valores;;
+;;;Atividades dos Serviços de Tecnologia da Informação;;
+;;;Atividades Esportivas;;
+;;;Atividades Fotográficas e Similares;;
+;;;Atividades Imobiliárias de Imóveis Próprios;;
+;;;Atividades Imobiliárias por Contrato ou Comissão;;
+;;;Atividades Jurídicas;;
+;;;Atividades Ligadas ao Patrimônio Cultural e Ambiental;;
+;;;Atividades Paisagísticas;;
+;;;Atividades Profissionais, Científicas e Técnicas não Especificadas Anteriormente;;
+;;;Atividades Relacionadas à Organização do Transporte de Carga;;
+;;;Atividades Veterinárias;;
+;;;Banco Central;;
+;;;Caça e Serviços Relacionados;;
+;;;Captação, Tratamento e Distribuição de água;;
+;;;Coleta de Resíduos;;
+;;;Comércio Ambulante e Outros Tipos de Comércio Varejista;;
+;;;Comércio Atacadista de Equipamentos e Produtos de Tecnologias de Informação e Comunicação;;
+;;;Comércio Atacadista de Madeira, Ferragens, Ferramentas, Material Elétrico e Material de Construção;;
+;;;Comércio Atacadista de Máquinas, Aparelhos e Equipamentos, Exceto de Tecnologias de Informação e Comunicação;;
+;;;Comércio Atacadista de Matérias-Primas Agrícolas e Animais Vivos;;
+;;;Comércio Atacadista de Produtos de Consumo Não-Alimentar;;
+;;;Comércio Atacadista Especializado em Outros Produtos;;
+;;;Comércio Atacadista Especializado em Produtos Alimentícios, Bebidas e Fumo;;
+;;;Comércio Atacadista Não-Especializado;;
+;;;Comércio de Peças e Acessórios para Veículos Automotores;;
+;;;Comércio de Veículos Automotores;;
+;;;Comércio Varejista de Artigos Culturais, Recreativos e Esportivos;;
+;;;Comércio Varejista de Combustíveis para Veículos Automotores;;
+;;;Comércio Varejista de Equipamentos de Informática e Comunicação;;
+;;;Comércio Varejista de Material de Construção;;
+;;;Comércio Varejista de Produtos Alimentícios, Bebidas e Fumo;;
+;;;Comércio Varejista de Produtos Farmacêuticos, Perfumaria e Cosméticos e Artigos Médicos, ópticos e Ortopédicos;;
+;;;Comércio Varejista de Produtos Novos não Especificados Anteriormente e de Produtos Usados;;
+;;;Comércio Varejista Não-Especializado;;
+;;;Comércio, Manutenção e Reparação de Motocicletas, Peças e Acessórios;;
+;;;Confecção de Artigos do Vestuário e Acessórios;;
+;;;Construção de Edifícios;;
+;;;Construção de Embarcações;;
+;;;Construção de Outras Obras de Infra-Estrutura;;
+;;;Construção de Rodovias, Ferrovias, Obras Urbanas e Obras de Arte Especiais;;
+;;;Coquerias;;
+;;;Curtimento e Outras Preparações de Couro;;
+;;;Demolição e Preparação do Terreno;;
+;;;Descontaminação e Outros Serviços de Gestão de Resíduos;;
+;;;Desdobramento de Madeira;;
+;;;Design e Decoração de Interiores;;
+;;;Edição de Livros, Jornais, Revistas e Outras Atividades de Edição;;
+;;;Edição Integrada à Impressão de Livros, Jornais, Revistas e Outras Publicações;;
+;;;Educação Infantil e Ensino Fundamental;;
+;;;Educação Profissional de Nível Técnico e Tecnológico;;
+;;;Educação Superior;;
+;;;Ensino Médio;;
+;;;Esgoto e Atividades Relacionadas;;
+;;;Extração de Carvão Mineral;;
+;;;Extração de Minerais Metálicos Não-Ferrosos;;
+;;;Extração de Minério de Ferro;;
+;;;Extração de Outros Minerais Não-Metálicos;;
+;;;Extração de Pedra, Areia e Argila;;
+;;;Extração de Petróleo e Gás Natural;;
+;;;Fabricação de Aeronaves;;
+;;;Fabricação de Aparelhos de Recepção, Reprodução, Gravação e Amplificação de áudio e Vídeo;;
+;;;Fabricação de Aparelhos e Instrumentos de Medida, Teste e Controle;;
+;;;Fabricação de Aparelhos Eletromédicos e Eletroterapêuticos e Equipamentos de Irradiação;;
+;;;Fabricação de Artefatos de Concreto, Cimento, Fibrocimento, Gesso e Materiais Semelhantes;;
+;;;Fabricação de Artefatos para Pesca e Esporte;;
+;;;Fabricação de Artefatos Têxteis, Exceto Vestuário;;
+;;;Fabricação de Artigos de Cutelaria, de Serralheria e Ferramentas;;
+;;;Fabricação de Artigos de Joalheria, Bijuteria e Semelhantes;;
+;;;Fabricação de Artigos de Malharia e Tricotagem;;
+;;;Fabricação de Artigos para Viagem e de Artefatos Diversos de Couro;;
+;;;Fabricação de Automóveis, Camionetas e Utilitários;;
+;;;Fabricação de Bebidas Alcoólicas;;
+;;;Fabricação de Bebidas Não-Alcoólicas;;
+;;;Fabricação de Biocombustíveis;;
+;;;Fabricação de Brinquedos e Jogos Recreativos;;
+;;;Fabricação de Cabines, Carrocerias e Reboques para Veículos Automotores;;
+;;;Fabricação de Calçados;;
+;;;Fabricação de Caminhões e ônibus;;
+;;;Fabricação de Celulose e Outras Pastas para a Fabricação de Papel;;
+;;;Fabricação de Cimento;;
+;;;Fabricação de Componentes Eletrônicos;;
+;;;Fabricação de Conservas de Frutas, Legumes e Outros Vegetais;;
+;;;Fabricação de Defensivos Agrícolas e Desinfestantes Domissanitários;;
+;;;Fabricação de Eletrodomésticos;;
+;;;Fabricação de Embalagens de Papel, Cartolina, Papel-Cartão e Papelão Ondulado;;
+;;;Fabricação de Equipamento Bélico Pesado, Armas de Fogo e Munições;;
+;;;Fabricação de Equipamentos de Comunicação;;
+;;;Fabricação de Equipamentos de Informática e Periféricos;;
+;;;Fabricação de Equipamentos de Transporte não Especificados Anteriormente;;
+;;;Fabricação de Equipamentos e Aparelhos Elétricos não Especificados Anteriormente;;
+;;;Fabricação de Equipamentos e Instrumentos ópticos, Fotográficos e Cinematográficos;;
+;;;Fabricação de Equipamentos para Distribuição e Controle de Energia Elétrica;;
+;;;Fabricação de Estruturas Metálicas e Obras de Caldeiraria Pesada;;
+;;;Fabricação de Fibras Artificiais e Sintéticas;;
+;;;Fabricação de Geradores, Transformadores e Motores Elétricos;;
+;;;Fabricação de Instrumentos e Materiais para Uso Médico e Odontológico e de Artigos ópticos;;
+;;;Fabricação de Instrumentos Musicais;;
+;;;Fabricação de Lâmpadas e Outros Equipamentos de Iluminação;;
+;;;Fabricação de Máquinas e Equipamentos de Uso Geral;;
+;;;Fabricação de Máquinas e Equipamentos de Uso Industrial Específico;;
+;;;Fabricação de Máquinas e Equipamentos de Uso na Extração Mineral e na Construção;;
+;;;Fabricação de Máquinas-Ferramenta;;
+;;;Fabricação de Mídias Virgens, Magnéticas e ópticas;;
+;;;Fabricação de Motores, Bombas, Compressores e Equipamentos de Transmissão;;
+;;;Fabricação de Móveis;;
+;;;Fabricação de óleos e Gorduras Vegetais e Animais;;
+;;;Fabricação de Outros Produtos Alimentícios;;
+;;;Fabricação de Papel, Cartolina e Papel-Cartão;;
+;;;Fabricação de Partes para Calçados, de Qualquer Material;;
+;;;Fabricação de Peças e Acessórios para Veículos Automotores;;
+;;;Fabricação de Pilhas, Baterias e Acumuladores Elétricos;;
+;;;Fabricação de Produtos Cerâmicos;;
+;;;Fabricação de Produtos de Borracha;;
+;;;Fabricação de Produtos de Madeira, Cortiça e Material Trançado, Exceto Móveis;;
+;;;Fabricação de Produtos de Material Plástico;;
+;;;Fabricação de Produtos de Metal não Especificados Anteriormente;;
+;;;Fabricação de Produtos Derivados do Petróleo;;
+;;;Fabricação de Produtos Diversos de Papel, Cartolina, Papel-Cartão e Papelão Ondulado;;
+;;;Fabricação de Produtos Diversos;;
+;;;Fabricação de Produtos do Fumo;;
+;;;Fabricação de Produtos e Preparados Químicos Diversos;;
+;;;Fabricação de Produtos Farmacêuticos;;
+;;;Fabricação de Produtos Farmoquímicos;;
+;;;Fabricação de Produtos Químicos Inorgânicos;;
+;;;Fabricação de Produtos Químicos Orgânicos;;
+;;;Fabricação de Resinas e Elastômeros;;
+;;;Fabricação de Sabões, Detergentes, Produtos de Limpeza, Cosméticos, Produtos de Perfumaria e de Higiene Pessoal;;
+;;;Fabricação de Tanques, Reservatórios Metálicos e Caldeiras;;
+;;;Fabricação de Tecidos de Malha;;
+;;;Fabricação de Tintas, Vernizes, Esmaltes, Lacas e Produtos Afins;;
+;;;Fabricação de Tratores e de Máquinas e Equipamentos para a Agricultura e Pecuária;;
+;;;Fabricação de Veículos Ferroviários;;
+;;;Fabricação de Veículos Militares de Combate;;
+;;;Fabricação de Vidro e de Produtos do Vidro;;
+;;;Fabricação e Refino de Açúcar;;
+;;;Forjaria, Estamparia, Metalurgia do Pó e Serviços de Tratamento de Metais;;
+;;;Fornecimento e Gestão de Recursos Humanos para Terceiros;;
+;;;Fundição;;
+;;;Fundos de Investimento;;
+;;;Geração, Transmissão e Distribuição de Energia Elétrica;;
+;;;Gestão de Ativos Intangíveis Não-Financeiros;;
+;;;Horticultura e Floricultura;;
+;;;Hotéis e Similares;;
+;;;Ignorado;;
+;;;Incorporação de Empreendimentos Imobiliários;;
+;;;Instalação de Máquinas e Equipamentos;;
+;;;Instalações Elétricas, Hidráulicas e Outras Instalações em Construções;;
+;;;Intermediação Monetária - Depósitos à Vista;;
+;;;Intermediação Não-Monetária - Outros Instrumentos de Captação;;
+;;;Laticínios;;
+;;;Locação de Mão-De-Obra Temporária;;
+;;;Locação de Meios de Transporte sem Condutor;;
+;;;Manutenção e Reparação de Máquinas e Equipamentos;;
+;;;Manutenção e Reparação de Veículos Automotores;;
+;;;Metalurgia dos Metais Não-Ferrosos;;
+;;;Moagem, Fabricação de Produtos Amiláceos e de Alimentos para Animais;;
+;;;Navegação de Apoio;;
+;;;Obras de Acabamento;;
+;;;Obras de Infra-Estrutura para Energia Elétrica, Telecomunicações, água, Esgoto e Transporte por Dutos;;
+;;;Operadoras de Televisão por Assinatura;;
+;;;Organismos Internacionais e Outras Instituições Extraterritoriais;;
+;;;Outras Atividades de Ensino;;
+;;;Outras Atividades de Prestação de Serviços de Informação;;
+;;;Outras Atividades de Serviços Pessoais;;
+;;;Outras Atividades de Serviços Prestados Principalmente às Empresas;;
+;;;Outras Atividades de Telecomunicações;;
+;;;Outros Serviços Especializados para Construção;;
+;;;Outros Tipos de Alojamento não Especificados Anteriormente;;
+;;;Outros Transportes Aquaviários;;
+;;;Pecuária;;
+;;;Pesca;;
+;;;Pesquisa e Desenvolvimento Experimental em Ciências Físicas e Naturais;;
+;;;Pesquisa e Desenvolvimento Experimental em Ciências Sociais e Humanas;;
+;;;Pesquisas de Mercado e de Opinião Pública;;
+;;;Planos de Saúde;;
+;;;Preparação e Fiação de Fibras Têxteis;;
+;;;Preservação do Pescado e Fabricação de Produtos do Pescado;;
+;;;Previdência Complementar;;
+;;;Processamento Industrial do Fumo;;
+;;;Produção de Ferro-Gusa e de Ferroligas;;
+;;;Produção de Lavouras Permanentes;;
+;;;Produção de Lavouras Temporárias;;
+;;;Produção de Sementes e Mudas Certificadas;;
+;;;Produção de Tubos de Aço, Exceto Tubos sem Costura;;
+;;;Produção e Distribuição de Combustíveis Gasosos por Redes Urbanas;;
+;;;Produção e Distribuição de Vapor, água Quente e Ar Condicionado;;
+;;;Produção Florestal - Florestas Nativas;;
+;;;Produção Florestal - Florestas Plantadas;;
+;;;Publicidade;;
+;;;Recondicionamento e Recuperação de Motores para Veículos Automotores;;
+;;;Recuperação de Materiais;;
+;;;Reparação e Manutenção de Equipamentos de Informática e Comunicação;;
+;;;Reparação e Manutenção de Objetos e Equipamentos Pessoais e Domésticos;;
+;;;Representantes Comerciais e Agentes do Comércio, Exceto de Veículos Automotores e Motocicletas;;
+;;;Reprodução de Materiais Gravados em Qualquer Suporte;;
+;;;Resseguros;;
+;;;Restaurantes e Outros Serviços de Alimentação e Bebidas;;
+;;;Sedes de Empresas e Unidades Administrativas Locais;;
+;;;Seguridade Social Obrigatória;;
+;;;Seguros de Vida e Não-Vida;;
+;;;Seguros-Saúde;;
+;;;Seleção e Agenciamento de Mão-De-Obra;;
+;;;Serviços Coletivos Prestados Pela Administração Pública;;
+;;;Serviços Combinados para Apoio a Edifícios;;
+;;;Serviços de Arquitetura e Engenharia e Atividades Técnicas Relacionadas;;
+;;;Serviços de Assistência Social sem Alojamento;;
+;;;Serviços de Catering, Bufê e Outros Serviços de Comida Preparada;;
+;;;Serviços de Escritório e Apoio Administrativo;;
+;;;Serviços de Pré-Impressão e Acabamentos Gráficos;;
+;;;Serviços de Reservas e Outros Serviços de Turismo não Especificados Anteriormente;;
+;;;Serviços Domésticos;;
+;;;Serviços Móveis de Atendimento a Urgências e de Remoção de Pacientes;;
+;;;Siderurgia;;
+;;;Sociedades de Capitalização;;
+;;;Tecelagem, Exceto Malha;;
+;;;Telecomunicações por Fio;;
+;;;Telecomunicações por Satélite;;
+;;;Telecomunicações sem Fio;;
+;;;Testes e Análises Técnicas;;
+;;;Torrefação e Moagem de Café;;
+;;;Transporte Aéreo de Carga;;
+;;;Transporte Aéreo de Passageiros;;
+;;;Transporte Dutoviário;;
+;;;Transporte Espacial;;
+;;;Transporte Ferroviário e Metroferroviário;;
+;;;Transporte Marítimo de Cabotagem e Longo Curso;;
+;;;Transporte por Navegação Interior;;
+;;;Transporte Rodoviário de Carga;;
+;;;Transporte Rodoviário de Passageiros;;
+;;;Tratamento de Dados, Hospedagem na Internet e Outras Atividades Relacionadas;;
+;;;Tratamento e Disposição de Resíduos;;
+;;;Trens Turísticos, Teleféricos e Similares;;
