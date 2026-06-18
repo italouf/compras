@@ -646,16 +646,95 @@
         .viz-container-map {
             height: 320px;
         }
-        #tab-perfil .filter-group {
+        /* Perfil das Compras Públicas - Filtros Layout */
+        .perfil-filtro-container {
             display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 20px;
             justify-content: flex-end;
+            width: 100%;
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
-        #tab-perfil .filter-control select {
-            min-width: 160px;
+
+        .perfil-filtro-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .perfil-filtro-header {
+            width: 100%;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 6px;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+
+        .perfil-filtro-header span {
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .perfil-filtro-controls {
+            display: flex;
+            gap: 16px;
+            width: 100%;
+        }
+
+        .perfil-filtro-control {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .perfil-filtro-control:nth-child(1) {
+            width: 120px;
+        }
+
+        .perfil-filtro-control:nth-child(2) {
+            flex: 1;
+        }
+
+        .perfil-filtro-control label {
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary);
+            text-align: left;
+        }
+
+        .perfil-select {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(10, 78, 163, 0.4);
+            background: #ffffff;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: var(--primary);
+            font-weight: 500;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%230a4ea3' d='M0 0l5 5 5-5z'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 30px;
+        }
+
+        .perfil-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(10, 78, 163, 0.15);
+        }
+
+        .perfil-select:hover {
+            border-color: var(--primary);
+            background-color: rgba(10, 78, 163, 0.02);
         }
 
         @media (max-width: 1024px) {
@@ -679,8 +758,11 @@
             .kpi-grid {
                 grid-template-columns: 1fr 1fr;
             }
-            #tab-perfil .filter-group {
+            .perfil-filtro-container {
                 justify-content: flex-start;
+            }
+            .perfil-filtro-wrapper {
+                max-width: 100%;
             }
         }
         @media (max-width: 600px) {
@@ -709,7 +791,7 @@
         <nav class="tab-navigation">
             <button class="tab-btn active" onclick="switchTab('panorama', this)">Panorama da indústria</button>
             <button class="tab-btn" onclick="switchTab('perfil', this)">Perfil das compras públicas</button>
-            <button class="tab-btn" onclick="switchTab('priorizacao', this)">Priorização setorial</button>
+            <button class="tab-btn" onclick="switchTab('priorizacao', this)">Matriz de priorização das compras públicas</button>
         </nav>
 
         <!-- Content Area -->
@@ -862,21 +944,27 @@
         <div id="tab-perfil" class="tab-content">
 
             <!-- Filtros -->
-            <div class="filter-group">
-                <span class="filter-label">Filtros</span>
-                <div class="filter-control">
-                    <label>Ano</label>
-                    <select id="filtroAnoPerfil">
-                        <option value="2025">2025</option>
-                        <option value="2023">2023</option>
-                        <option value="todos">Todos os anos</option>
-                    </select>
-                </div>
-                <div class="filter-control">
-                    <label>Setor CNAE</label>
-                    <select id="filtroSetorPerfil">
-                        <option value="todos">Todos</option>
-                    </select>
+            <div class="perfil-filtro-container">
+                <div class="perfil-filtro-wrapper">
+                    <div class="perfil-filtro-header">
+                        <span>Filtros</span>
+                    </div>
+                    <div class="perfil-filtro-controls">
+                        <div class="perfil-filtro-control">
+                            <label for="filtroAnoPerfil">Ano</label>
+                            <select id="filtroAnoPerfil" class="perfil-select">
+                                <option value="2025">2025</option>
+                                <option value="2023">2023</option>
+                                <option value="todos">Todos os anos</option>
+                            </select>
+                        </div>
+                        <div class="perfil-filtro-control">
+                            <label for="filtroSetorPerfil">Setor CNAE</label>
+                            <select id="filtroSetorPerfil" class="perfil-select">
+                                <option value="todos">Todos</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
 
