@@ -602,9 +602,11 @@
                 <!-- Left Description -->
                 <div class="card text-panel">
                     <h2>Estrutura econômica de <strong id="dynamic-state-title">Bahia</strong></h2>
-                    <p>Em 2025, a composição econômica de <strong>Bahia</strong> foi impulsionada principalmente pelos estabelecimentos de <strong>Serviços</strong>, <strong>Agricultura</strong> e <strong>Comércio</strong>, que concentraram <strong>91.7%</strong> do total de <strong>704.598</strong> estabelecimentos no referido período.</p>
-                    <p>Esse total de estabelecimentos representa um aumento de <strong>94.7%</strong> em relação a essa estrutura anos atrás.</p>
-                    <p>Mas como esse crescimento se compara ao crescimento no Brasil e em outros territórios relacionados?</p>
+                    <div id="texto-analise-estrutura">
+                        <p>Em 2025, a composição econômica de <strong>Bahia</strong> foi impulsionada principalmente pelos estabelecimentos de <strong>Serviços</strong>, <strong>Agricultura</strong> e <strong>Comércio</strong>, que concentraram <strong>91.7%</strong> do total de <strong>704.598</strong> estabelecimentos no referido período.</p>
+                        <p>Esse total de estabelecimentos representa um aumento de <strong>94.7%</strong> em relação a essa estrutura anos atrás.</p>
+                        <p>Mas como esse crescimento se compara ao crescimento no Brasil e em outros territórios relacionados?</p>
+                    </div>
                     <a href="#tab-panorama" class="action-link" onclick="scrollToElement('crescimento-secao')">Quais atividades econômicas estão crescendo? ↕</a>
                 </div>
 
@@ -1787,6 +1789,18 @@
             return `<span style="color: ${color}; font-weight: 600;">${arrow}${pct}%</span> vs ano ant.`;
         }
 
+        const textosPorAno = {
+            2025: `<p>Em 2025, a composição econômica de <strong>Bahia</strong> foi impulsionada principalmente pelos estabelecimentos de <strong>Serviços</strong>, <strong>Agricultura</strong> e <strong>Comércio</strong>, que concentraram <strong>91.7%</strong> do total de <strong>704.598</strong> estabelecimentos no referido período.</p>
+<p>Esse total de estabelecimentos representa um aumento de <strong>94.7%</strong> em relação a essa estrutura anos atr&aacute;s.</p>
+<p>Mas como esse crescimento se compara ao crescimento no Brasil e em outros territ&oacute;rios relacionados?</p>`,
+            2024: `<p>Em 2024, a composi&ccedil;&atilde;o econ&ocirc;mica de <strong>Bahia</strong> foi impulsionada principalmente pelos estabelecimentos de <strong>Servi&ccedil;os</strong>, <strong>Agricultura</strong> e <strong>Com&eacute;rcio</strong>, que concentraram <strong>89.3%</strong> do total de <strong>682.451</strong> estabelecimentos no referido per&iacute;odo.</p>
+<p>Esse total de estabelecimentos representa um aumento de <strong>87.2%</strong> em rela&ccedil;&atilde;o a essa estrutura anos atr&aacute;s.</p>
+<p>Mas como esse crescimento se compara ao crescimento no Brasil e em outros territ&oacute;rios relacionados?</p>`,
+            2023: `<p>Em 2023, a composi&ccedil;&atilde;o econ&ocirc;mica de <strong>Bahia</strong> foi impulsionada principalmente pelos estabelecimentos de <strong>Servi&ccedil;os</strong>, <strong>Agricultura</strong> e <strong>Com&eacute;rcio</strong>, que concentraram <strong>87.8%</strong> do total de <strong>661.234</strong> estabelecimentos no referido per&iacute;odo.</p>
+<p>Esse total de estabelecimentos representa um aumento de <strong>81.5%</strong> em rela&ccedil;&atilde;o a essa estrutura anos atr&aacute;s.</p>
+<p>Mas como esse crescimento se compara ao crescimento no Brasil e em outros territ&oacute;rios relacionados?</p>`
+        };
+
         function updateKpisAndTooltips() {
             const year = parseInt(document.getElementById("filter-rais-year").value) || 2025;
             const sectorKey = document.getElementById("filter-rais-sector").value;
@@ -1827,6 +1841,11 @@
             } else {
                 estDeltaEl.innerHTML = getVariationBadge(totalEst, prevEst);
                 vinDeltaEl.innerHTML = getVariationBadge(totalVin, prevVin);
+            }
+
+            const textoContainer = document.getElementById("texto-analise-estrutura");
+            if (textoContainer && textosPorAno[year]) {
+                textoContainer.innerHTML = textosPorAno[year];
             }
         }
 
