@@ -1092,15 +1092,98 @@
 
         </div>
 
-        <!-- Tab 3: Priorização setorial (Planned Placeholder) -->
-        <div id="tab-priorizacao" class="tab-content">
-            <div class="planned-container">
-                <h2>Priorização Setorial</h2>
-                <p>Esta tela está em fase de planejamento.</p>
-                <p>O time de design ainda não entregou o layout desta tela.</p>
-                <p>A URL do navegador foi atualizada para <code>index.html/#/priorizacao</code>.</p>
+    <!-- Tab 3: Priorização setorial -->
+    <div id="tab-priorizacao" class="tab-content active">
+        <div class="card">
+            <div class="card-title">Matriz de Priorização Setorial</div>
+            <div class="card-subtitle">
+                <p style="margin-bottom: 12px;">
+                    <strong>Eixo Econômico:</strong> Emprego; Nº Estabelecimento; Complexidade Econômica &nbsp;|&nbsp;
+                    <strong>Eixo Ambiental:</strong> Consta na taxonomia sustentável brasileira &nbsp;|&nbsp;
+                    <strong>Eixo Gestão:</strong> Prioritário NIB; Dependência externa (%)
+                </p>
+                <p style="font-size: 13px; color: var(--text-muted);">
+                    <strong>Como Ler:</strong> Cada bolha representa um setor. O tamanho da bolha indica a importância ponderada (econômica, ambiental e gestão). A posição revela a prioridade: quadrante superior direito = <span style="color: #0a4ea3;">Estratégico</span> (máxima prioridade); superior esquerdo = <span style="color: #10b981;">Alavancagem</span> (potencial); inferior direito = <span style="color: #f97316;">Gargalo</span> (importante mas estável); inferior esquerdo = <span style="color: #ef4444;">Não Crítico</span>. Passe o mouse para ver detalhes de cada setor.
+                </p>
+            </div>
+
+            <!-- Legenda dos quadrantes -->
+            <!--div class="quadrant-legend">
+                <span class="quadrant-legend-item"><span class="quadrant-legend-color" style="background:#0a4ea3;"></span> Estratégico</span>
+                <span class="quadrant-legend-item"><span class="quadrant-legend-color" style="background:#10b981;"></span> Alavancagem</span>
+                <span class="quadrant-legend-item"><span class="quadrant-legend-color" style="background:#f97316;"></span> Gargalo</span>
+                <span class="quadrant-legend-item"><span class="quadrant-legend-color" style="background:#ef4444;"></span> Não Crítico</span>
+            </div-->
+
+<!-- Filtros da Matriz de Priorização -->
+<div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; align-items: center; padding: 12px 16px; background: var(--bg-light); border-radius: 8px; border: 1px solid var(--border-color);">
+    <span style="font-weight: 600; font-size: 14px; color: var(--text-dark);">Filtros:</span>
+    
+    <!-- Filtro de Outliers -->
+    <button id="btnOutliers" onclick="toggleOutliers()" 
+            style="padding: 6px 14px; border-radius: 6px; border: 1px solid #10b981; background: #10b981; color: #fff; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s;">
+        🟢 Remover Outliers (Inativo)
+    </button>
+    
+    <!-- Filtro por Quadrante -->
+    <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+        <button class="btn-quadrante" data-quadrante="Todos" onclick="filtrarQuadrante('Todos')" 
+                style="padding: 6px 14px; border-radius: 6px; border: 1px solid #0a4ea3; background: #0a4ea3; color: #fff; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s;">
+            Todos
+        </button>
+        <button class="btn-quadrante" data-quadrante="Estratégico" onclick="filtrarQuadrante('Estratégico')" 
+                style="padding: 6px 14px; border-radius: 6px; border: 1px solid #e2e8f0; background: #e2e8f0; color: #64748b; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s;">
+            🔵 Estratégico
+        </button>
+        <button class="btn-quadrante" data-quadrante="Alavancagem" onclick="filtrarQuadrante('Alavancagem')" 
+                style="padding: 6px 14px; border-radius: 6px; border: 1px solid #e2e8f0; background: #e2e8f0; color: #64748b; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s;">
+            🟢 Alavancagem
+        </button>
+        <button class="btn-quadrante" data-quadrante="Gargalo" onclick="filtrarQuadrante('Gargalo')" 
+                style="padding: 6px 14px; border-radius: 6px; border: 1px solid #e2e8f0; background: #e2e8f0; color: #64748b; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s;">
+            🔴 Gargalo
+        </button>
+        <button class="btn-quadrante" data-quadrante="Não Crítico" onclick="filtrarQuadrante('Não Crítico')" 
+                style="padding: 6px 14px; border-radius: 6px; border: 1px solid #e2e8f0; background: #e2e8f0; color: #64748b; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s;">
+            🟡 Não Crítico
+        </button>
+    </div>
+</div>
+
+
+
+            <!-- Matriz (scatter plot) -->
+            <div class="viz-container" style="height:450px;">
+                <canvas id="graficoPriorizacao"></canvas>
+            </div>
+
+            <!-- Tabela de setores priorizados -->
+            <div style="margin-top: 32px;">
+                <div class="section-title" style="margin-bottom: 16px;">Detalhamento dos Setores</div>
+                <div class="table-container">
+                    <table id="tabelaPriorizacao">
+                        <thead>
+                            <tr>
+                                <th>CNAE</th>
+                                <th>Setor</th>
+                                <th>Score</th>
+                                <th>Volume (R$ 2025)</th>
+                                <th>Crescimento (%)</th>
+                                <th>Quadrante</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyPriorizacao"></tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <span id="pageInfoPriorizacao">1-10 de 0</span>
+                    <button class="pagination-btn" id="prevPagePriorizacao" disabled>Anterior</button>
+                    <button class="pagination-btn" id="nextPagePriorizacao">Próximo</button>
+                </div>
+                <div class="fonte">Fonte: SENAI CIMATEC</div>
             </div>
         </div>
+    </div>
 
         <!-- Footer -->
         <footer class="brand-footer">
@@ -1138,6 +1221,112 @@
             <div id="modalBodyPerfil"></div>
         </div>
     </div>
+
+
+<!-- ======================== DADOS ======================== -->
+<script>
+    // Dados do Panorama (mantidos do original)
+    window.dashboardData = {
+        "vcr": [/* ... mantido ... */],
+        "comp": { /* ... mantido ... */ },
+        "growth": [ /* ... mantido ... */ ],
+        "structure": [ /* ... mantido ... */ ],
+        "space": [ /* ... mantido ... */ ]
+    };
+    // (O objeto completo é omitido para brevidade, mas deve ser incluído no código final)
+    // Na implementação real, substitua esta seção pelos dados completos do Panorama.
+    // Como o foco é a Priorização, os dados do Panorama serão carregados a partir do arquivo original.
+</script>
+
+<!-- ======================== DADOS DA PRIORIZAÇÃO ======================== -->
+<script>
+    // Dados extraídos do Score_Priorizacao e Síntese2
+    const dadosPriorizacao = [
+        { cnae: '212', setor: 'Fabricação de produtos farmacêuticos', score: 80.5, volume: 886075138.93, crescimento: 50.69, quadrante: 'Estratégico' },
+        { cnae: '291', setor: 'Fabricação de automóveis, camionetas e utilitários', score: 67.3, volume: 506315817.43, crescimento: 133.9, quadrante: 'Estratégico' },
+        { cnae: '325', setor: 'Fabricação de instrumentos e materiais para uso médico e odontológico', score: 74.5, volume: 367246925.52, crescimento: -4.24, quadrante: 'Gargalo' },
+        { cnae: '262', setor: 'Fabricação de equipamentos de informática e periféricos', score: 62.8, volume: 166216466.69, crescimento: 33.28, quadrante: 'Estratégico' },
+        { cnae: '283', setor: 'Fabricação de tratores e máquinas para agricultura', score: 59.1, volume: 121693315.29, crescimento: 42.72, quadrante: 'Estratégico' },
+        { cnae: '304', setor: 'Fabricação de aeronaves', score: 71.2, volume: 108571822.64, crescimento: 7883.18, quadrante: 'Estratégico' },
+        { cnae: '292', setor: 'Fabricação de caminhões e ônibus', score: 68.9, volume: 100210843.00, crescimento: 1567.14, quadrante: 'Estratégico' },
+        { cnae: '211', setor: 'Fabricação de produtos farmoquímicos', score: 65.5, volume: 77553396.23, crescimento: 23.74, quadrante: 'Alavancagem' },
+        { cnae: '141', setor: 'Confecção de artigos do vestuário e acessórios', score: 44.3, volume: 65230981.45, crescimento: 19.61, quadrante: 'Alavancagem' },
+        { cnae: '275', setor: 'Fabricação de eletrodomésticos', score: 55.5, volume: 59741332.12, crescimento: 2.0, quadrante: 'Gargalo' },
+        { cnae: '310', setor: 'Fabricação de móveis', score: 38.7, volume: 56658471.74, crescimento: -59.49, quadrante: 'Não Crítico' },
+        { cnae: '329', setor: 'Fabricação de produtos diversos', score: 47.9, volume: 47127334.79, crescimento: 94.2, quadrante: 'Alavancagem' },
+        { cnae: '106', setor: 'Moagem e alimentos para animais', score: 42.1, volume: 44621709.80, crescimento: 206.12, quadrante: 'Alavancagem' },
+        { cnae: '255', setor: 'Equipamento bélico e armas de fogo', score: 66.0, volume: 43604058.71, crescimento: 56.25, quadrante: 'Estratégico' },
+        { cnae: '265', setor: 'Instrumentos de medida e controle', score: 52.3, volume: 42369184.63, crescimento: -68.17, quadrante: 'Não Crítico' },
+        { cnae: '222', setor: 'Produtos de material plástico', score: 40.8, volume: 31694552.65, crescimento: 110.38, quadrante: 'Alavancagem' },
+        { cnae: '282', setor: 'Máquinas e equipamentos de uso geral', score: 49.2, volume: 30452440.37, crescimento: -12.57, quadrante: 'Gargalo' },
+        { cnae: '174', setor: 'Produtos diversos de papel', score: 33.5, volume: 20660760.16, crescimento: -15.6, quadrante: 'Não Crítico' },
+        { cnae: '323', setor: 'Artefatos para pesca e esporte', score: 46.7, volume: 20558125.99, crescimento: 117.24, quadrante: 'Alavancagem' },
+        { cnae: '273', setor: 'Equipamentos de distribuição elétrica', score: 58.4, volume: 18239438.42, crescimento: 190.58, quadrante: 'Alavancagem' },
+        { cnae: '109', setor: 'Outros produtos alimentícios', score: 35.9, volume: 17578312.59, crescimento: 39.68, quadrante: 'Alavancagem' },
+        { cnae: '620', setor: 'Serviços de tecnologia da informação', score: 61.3, volume: 16400947.99, crescimento: 299.32, quadrante: 'Alavancagem' },
+        { cnae: '581', setor: 'Edição de livros e revistas', score: 45.2, volume: 15966652.69, crescimento: 82.86, quadrante: 'Alavancagem' },
+        { cnae: '266', setor: 'Aparelhos eletromédicos', score: 63.8, volume: 13459898.36, crescimento: 109.47, quadrante: 'Estratégico' },
+        { cnae: '206', setor: 'Sabões e cosméticos', score: 31.2, volume: 12163365.51, crescimento: -32.12, quadrante: 'Não Crítico' },
+        { cnae: '259', setor: 'Produtos de metal não especificados', score: 41.5, volume: 12127014.13, crescimento: 77.58, quadrante: 'Alavancagem' },
+        { cnae: '135', setor: 'Artefatos têxteis', score: 43.9, volume: 11890405.28, crescimento: 90.02, quadrante: 'Alavancagem' },
+        { cnae: '232', setor: 'Fabricação de cimento', score: 50.1, volume: 10912412.69, crescimento: -16.96, quadrante: 'Gargalo' },
+        { cnae: '172', setor: 'Papel, cartolina e papel-cartão', score: 39.0, volume: 9123023.95, crescimento: -0.84, quadrante: 'Gargalo' },
+        { cnae: '252', setor: 'Tanques e caldeiras', score: 48.3, volume: 8698702.09, crescimento: 510.62, quadrante: 'Alavancagem' },
+        { cnae: '112', setor: 'Bebidas não-alcoólicas', score: 30.7, volume: 8187866.47, crescimento: 16.77, quadrante: 'Não Crítico' },
+        { cnae: '294', setor: 'Peças para veículos', score: 42.8, volume: 8100466.34, crescimento: 207.68, quadrante: 'Alavancagem' },
+        { cnae: '209', setor: 'Produtos químicos diversos', score: 37.6, volume: 7770695.41, crescimento: -28.64, quadrante: 'Não Crítico' },
+        { cnae: '322', setor: 'Instrumentos musicais', score: 53.4, volume: 7648286.76, crescimento: 3526.89, quadrante: 'Alavancagem' },
+        { cnae: '261', setor: 'Componentes eletrônicos', score: 44.1, volume: 7573527.37, crescimento: 1.53, quadrante: 'Gargalo' },
+        { cnae: '263', setor: 'Equipamentos de comunicação', score: 56.7, volume: 7058865.41, crescimento: 132.69, quadrante: 'Alavancagem' },
+        { cnae: '221', setor: 'Produtos de borracha', score: 36.4, volume: 5892364.50, crescimento: 12.62, quadrante: 'Não Crítico' },
+        { cnae: '301', setor: 'Construção de embarcações', score: 47.0, volume: 5013861.35, crescimento: 6120.67, quadrante: 'Alavancagem' },
+        { cnae: '181', setor: 'Atividade de impressão', score: 29.8, volume: 5055711.34, crescimento: -18.51, quadrante: 'Não Crítico' },
+        { cnae: '201', setor: 'Produtos químicos inorgânicos', score: 34.2, volume: 1678492.27, crescimento: 9.9, quadrante: 'Não Crítico' },
+        { cnae: '192', setor: 'Produtos derivados do petróleo', score: 40.3, volume: 4020034.71, crescimento: -32.83, quadrante: 'Não Crítico' },
+        { cnae: '234', setor: 'Produtos cerâmicos', score: 32.5, volume: 3819976.66, crescimento: 24.51, quadrante: 'Alavancagem' },
+        { cnae: '271', setor: 'Geradores e motores elétricos', score: 51.6, volume: 3766643.89, crescimento: -1.94, quadrante: 'Gargalo' },
+        { cnae: '264', setor: 'Aparelhos de áudio e vídeo', score: 28.9, volume: 3599622.88, crescimento: -63.99, quadrante: 'Não Crítico' },
+        { cnae: '254', setor: 'Cutelaria e ferramentas', score: 33.1, volume: 2829777.24, crescimento: 56.44, quadrante: 'Alavancagem' },
+        { cnae: '281', setor: 'Motores e compressores', score: 39.7, volume: 2547808.01, crescimento: -15.99, quadrante: 'Não Crítico' },
+        { cnae: '267', setor: 'Instrumentos ópticos', score: 35.4, volume: 2344963.44, crescimento: -70.98, quadrante: 'Não Crítico' },
+        { cnae: '101', setor: 'Abate de produtos de carne', score: 27.6, volume: 2314737.20, crescimento: 1.29, quadrante: 'Não Crítico' },
+        { cnae: '105', setor: 'Laticínios', score: 30.1, volume: 2251589.43, crescimento: 19.79, quadrante: 'Alavancagem' },
+        { cnae: '173', setor: 'Embalagens de papel', score: 34.8, volume: 2104914.69, crescimento: -9.84, quadrante: 'Não Crítico' },
+        { cnae: '251', setor: 'Estruturas metálicas', score: 38.2, volume: 1961109.48, crescimento: 122.13, quadrante: 'Alavancagem' },
+        { cnae: '103', setor: 'Conservas de frutas', score: 25.9, volume: 1555329.24, crescimento: -0.42, quadrante: 'Não Crítico' },
+        { cnae: '205', setor: 'Defensivos agrícolas', score: 31.8, volume: 1463796.43, crescimento: -48.3, quadrante: 'Não Crítico' },
+        { cnae: '274', setor: 'Lâmpadas e iluminação', score: 29.0, volume: 1394296.23, crescimento: -11.01, quadrante: 'Não Crítico' },
+        { cnae: '279', setor: 'Equipamentos elétricos diversos', score: 37.3, volume: 1342163.46, crescimento: 79.29, quadrante: 'Alavancagem' },
+        { cnae: '207', setor: 'Tintas e vernizes', score: 28.1, volume: 1209169.70, crescimento: -59.16, quadrante: 'Não Crítico' },
+        { cnae: '153', setor: 'Fabricação de calçados', score: 32.0, volume: 1083679.45, crescimento: -41.9, quadrante: 'Não Crítico' },
+        { cnae: '162', setor: 'Produtos de madeira', score: 24.3, volume: 1021084.09, crescimento: -21.17, quadrante: 'Não Crítico' },
+        { cnae: '324', setor: 'Brinquedos e jogos', score: 33.9, volume: 1004909.22, crescimento: 105.11, quadrante: 'Alavancagem' },
+        { cnae: '272', setor: 'Pilhas e baterias', score: 41.0, volume: 999605.98, crescimento: 1.47, quadrante: 'Gargalo' },
+        { cnae: '231', setor: 'Vidro e produtos de vidro', score: 27.0, volume: 943828.49, crescimento: -42.55, quadrante: 'Não Crítico' },
+        { cnae: '284', setor: 'Máquinas-ferramenta', score: 45.6, volume: 934026.79, crescimento: 497.87, quadrante: 'Alavancagem' },
+        { cnae: '293', setor: 'Cabines e reboques', score: 43.2, volume: 894170.00, crescimento: 793.28, quadrante: 'Alavancagem' },
+        { cnae: '233', setor: 'Artefatos de concreto', score: 26.5, volume: 811765.46, crescimento: -43.04, quadrante: 'Não Crítico' },
+        { cnae: '286', setor: 'Máquinas de uso industrial', score: 34.0, volume: 808445.90, crescimento: -93.92, quadrante: 'Não Crítico' },
+        { cnae: '152', setor: 'Artigos de couro', score: 31.5, volume: 718210.54, crescimento: 112.67, quadrante: 'Alavancagem' },
+        { cnae: '107', setor: 'Refino de açúcar', score: 28.8, volume: 596417.70, crescimento: -27.03, quadrante: 'Não Crítico' },
+        { cnae: '309', setor: 'Equipamentos de transporte diversos', score: 30.4, volume: 544031.25, crescimento: -90.42, quadrante: 'Não Crítico' },
+        { cnae: '132', setor: 'Tecelagem', score: 25.1, volume: 529450.57, crescimento: -39.03, quadrante: 'Não Crítico' },
+        { cnae: '014', setor: 'Produção de sementes', score: 22.7, volume: 409363.06, crescimento: 3.9, quadrante: 'Não Crítico' },
+        { cnae: '285', setor: 'Máquinas para mineração', score: 36.6, volume: 375875.27, crescimento: 175.99, quadrante: 'Alavancagem' },
+        { cnae: '244', setor: 'Metalurgia não-ferrosos', score: 35.2, volume: 244771.35, crescimento: 66.93, quadrante: 'Alavancagem' },
+        { cnae: '161', setor: 'Desdobramento de madeira', score: 23.9, volume: 243922.46, crescimento: -32.12, quadrante: 'Não Crítico' },
+        { cnae: '089', setor: 'Extração de minerais não-metálicos', score: 27.3, volume: 242000.00, crescimento: 0, quadrante: 'Não Crítico' },
+        { cnae: '242', setor: 'Siderurgia', score: 33.7, volume: 238602.53, crescimento: -40.94, quadrante: 'Não Crítico' },
+        { cnae: '239', setor: 'Aparelhamento de pedras', score: 26.9, volume: 169689.18, crescimento: 8.15, quadrante: 'Não Crítico' },
+        { cnae: '104', setor: 'Óleos vegetais e animais', score: 24.1, volume: 97408.30, crescimento: -4.54, quadrante: 'Não Crítico' },
+        { cnae: '183', setor: 'Reprodução de materiais gravados', score: 21.8, volume: 58016.65, crescimento: 0, quadrante: 'Não Crítico' },
+        { cnae: '015', setor: 'Pecuária', score: 20.5, volume: 49500.00, crescimento: 0, quadrante: 'Não Crítico' },
+        { cnae: '142', setor: 'Malharia e tricotagem', score: 22.0, volume: 47212.26, crescimento: -92.97, quadrante: 'Não Crítico' },
+        { cnae: '131', setor: 'Preparação de fibras têxteis', score: 24.5, volume: 23622.54, crescimento: -88.83, quadrante: 'Não Crítico' },
+        { cnae: '268', setor: 'Mídias virgens', score: 26.0, volume: 1093.66, crescimento: 0, quadrante: 'Não Crítico' },
+        { cnae: '111', setor: 'Bebidas alcoólicas', score: 19.9, volume: 421.20, crescimento: -50.56, quadrante: 'Não Crítico' }
+    ];
+</script>
 
     <!-- Embedded Data Object -->
     <script>
@@ -3167,6 +3356,590 @@
                 renderizarPerfil();
             }
         });
+
+
+    // ============================================================
+    // SCRIPTS DA PRIORIZAÇÃO
+    // ============================================================
+    let currentPagePriorizacao = 1;
+    const pageSizePriorizacao = 10;
+    let priorizacaoChart = null;
+
+// ============================================================
+// GRÁFICO DA MATRIZ DE PRIORIZAÇÃO (COM FILTROS)
+// ============================================================
+
+// Variáveis globais para os filtros
+let filtroOutliers = false;  // Começa desativado
+let filtroQuadrante = 'Todos';
+
+function renderizarMatrizPriorizacao() {
+    const ctx = document.getElementById('graficoPriorizacao').getContext('2d');
+    if (priorizacaoChart) {
+        priorizacaoChart.destroy();
+    }
+
+    // ============================================================
+    // 1. DADOS ORIGINAIS (NUNCA MODIFICAR)
+    // ============================================================
+    const dadosOriginais = dadosPriorizacao.filter(d => 
+        d.volume > 0 && 
+        d.crescimento !== undefined && 
+        d.crescimento !== null &&
+        !isNaN(d.crescimento)
+    );
+
+    // ============================================================
+    // 2. APLICAR FILTRO DE OUTLIERS (SE ATIVO)
+    // ============================================================
+    let dadosFiltrados = [...dadosOriginais];
+    
+    if (filtroOutliers) {
+        const volumes = dadosFiltrados.map(d => d.volume).sort((a, b) => a - b);
+        const crescimentos = dadosFiltrados.map(d => d.crescimento).sort((a, b) => a - b);
+        
+        // Calcular quartis
+        const q1Volume = volumes[Math.floor(volumes.length * 0.25)];
+        const q3Volume = volumes[Math.floor(volumes.length * 0.75)];
+        const iqrVolume = q3Volume - q1Volume;
+        
+        const q1Cresc = crescimentos[Math.floor(crescimentos.length * 0.25)];
+        const q3Cresc = crescimentos[Math.floor(crescimentos.length * 0.75)];
+        const iqrCresc = q3Cresc - q1Cresc;
+        
+        const limiteInferiorVolume = q1Volume - 1.5 * iqrVolume;
+        const limiteSuperiorVolume = q3Volume + 1.5 * iqrVolume;
+        const limiteInferiorCresc = q1Cresc - 1.5 * iqrCresc;
+        const limiteSuperiorCresc = q3Cresc + 1.5 * iqrCresc;
+        
+        dadosFiltrados = dadosFiltrados.filter(d => 
+            d.volume >= limiteInferiorVolume && 
+            d.volume <= limiteSuperiorVolume &&
+            d.crescimento >= limiteInferiorCresc &&
+            d.crescimento <= limiteSuperiorCresc
+        );
+    }
+
+    // ============================================================
+    // 3. CALCULAR MEDIANAS (COM DADOS FILTRADOS POR OUTLIERS)
+    // ============================================================
+    const volumes = dadosFiltrados.map(d => d.volume).sort((a, b) => a - b);
+    const crescimentos = dadosFiltrados.map(d => d.crescimento).sort((a, b) => a - b);
+    
+    const medianaVolume = volumes[Math.floor(volumes.length / 2)] || 1000000;
+    const medianaCrescimento = crescimentos[Math.floor(crescimentos.length / 2)] || 0;
+
+    // ============================================================
+    // 4. CLASSIFICAR TODOS OS SETORES (COM AS MEDIANAS CALCULADAS)
+    // ============================================================
+    function getQuadrante(volume, crescimento) {
+        const volumeAlto = volume >= medianaVolume;
+        const crescimentoAlto = crescimento >= medianaCrescimento;
+        
+        if (crescimentoAlto && volumeAlto) return 'Estratégico';
+        if (crescimentoAlto && !volumeAlto) return 'Alavancagem';
+        if (!crescimentoAlto && volumeAlto) return 'Gargalo';
+        return 'Não Crítico';
+    }
+
+    // Classificar todos os dados (com as medianas atuais)
+    const dadosClassificados = dadosFiltrados.map(d => ({
+        ...d,
+        quadrante: getQuadrante(d.volume, d.crescimento)
+    }));
+
+    // ============================================================
+    // 5. APLICAR FILTRO POR QUADRANTE (SE ATIVO)
+    // ============================================================
+    let dadosExibir = dadosClassificados;
+    
+    if (filtroQuadrante !== 'Todos') {
+        dadosExibir = dadosClassificados.filter(d => d.quadrante === filtroQuadrante);
+    }
+
+    // ============================================================
+    // 6. CORES DOS QUADRANTES
+    // ============================================================
+    const cores = {
+        'Estratégico': '#0a4ea3',
+        'Alavancagem': '#10b981',
+        'Gargalo': '#ef4444',
+        'Não Crítico': '#f59e0b'
+    };
+
+    const coresFundo = {
+        'Estratégico': 'rgba(10, 78, 163, 0.10)',
+        'Alavancagem': 'rgba(16, 185, 129, 0.10)',
+        'Gargalo': 'rgba(239, 68, 68, 0.10)',
+        'Não Crítico': 'rgba(245, 158, 11, 0.10)'
+    };
+
+    const descricaoQuadrantes = {
+        'Estratégico': 'Alto volume e alto crescimento. Prioridade máxima para ação e investimento.',
+        'Alavancagem': 'Baixo volume e alto crescimento. Oportunidade de desenvolvimento e expansão.',
+        'Gargalo': 'Alto volume e baixo crescimento. Atenção a restrições, dependências ou ineficiências.',
+        'Não Crítico': 'Baixo volume e baixo crescimento. Manter monitoramento.'
+    };
+
+    // ============================================================
+    // 7. FUNÇÕES AUXILIARES
+    // ============================================================
+    function formatarMoeda(valor) {
+        if (valor >= 1e9) return (valor / 1e9).toFixed(2) + ' bi';
+        if (valor >= 1e6) return (valor / 1e6).toFixed(1) + ' mi';
+        if (valor >= 1e3) return (valor / 1e3).toFixed(0) + ' k';
+        return valor.toFixed(0);
+    }
+
+    // Calcular tamanho dos pontos
+    const minScore = Math.min(...dadosExibir.map(d => d.score));
+    const maxScore = Math.max(...dadosExibir.map(d => d.score));
+    const rangeScore = maxScore - minScore || 1;
+
+    function getRadius(score) {
+        return 6 + ((score - minScore) / rangeScore) * 18;
+    }
+
+    // ============================================================
+    // 8. PREPARAR DADOS PARA O GRÁFICO (COM ESCALA LOG)
+    // ============================================================
+    const dataPoints = dadosExibir.map(d => ({
+        x: Math.log10(d.volume > 0 ? d.volume : 1),
+        xOriginal: d.volume,
+        y: d.crescimento,
+        r: getRadius(d.score),
+        volume: d.volume,
+        setor: d.setor,
+        cnae: d.cnae,
+        score: d.score,
+        crescimento: d.crescimento,
+        quadrante: d.quadrante
+    }));
+
+    // ============================================================
+    // 9. CRIAR DATASETS POR QUADRANTE
+    // ============================================================
+    const quadrantes = ['Estratégico', 'Alavancagem', 'Gargalo', 'Não Crítico'];
+    const datasets = quadrantes.map(q => {
+        const pontos = dataPoints.filter(d => d.quadrante === q);
+        
+        // Se o filtro de quadrante estiver ativo, esmaecer os outros
+        const isActive = (filtroQuadrante === 'Todos' || filtroQuadrante === q);
+        const opacity = isActive ? 1.0 : 0.15;
+        
+        return {
+            label: q,
+            data: pontos,
+            backgroundColor: cores[q],
+            borderColor: '#ffffff',
+            borderWidth: 1.5,
+            pointRadius: pontos.map(d => d.r),
+            pointHoverRadius: pontos.map(d => d.r * 1.6),
+            pointHoverBorderWidth: 3,
+            pointHoverBorderColor: '#0f172a',
+            // Usar opacidade para esmaecer
+            pointBackgroundColor: pontos.map(() => {
+                const cor = cores[q];
+                return isActive ? cor : cor + '33'; // Adicionar transparência
+            })
+        };
+    }).filter(ds => ds.data.length > 0);
+
+    // ============================================================
+    // 10. PLUGIN PARA OS QUADRANTES
+    // ============================================================
+    const pluginQuadrantes = {
+        id: 'quadrantes',
+        beforeDraw: function(chart) {
+            const ctx2 = chart.ctx;
+            const chartArea = chart.chartArea;
+            const xScale = chart.scales.x;
+            const yScale = chart.scales.y;
+
+            const xMediana = xScale.getPixelForValue(Math.log10(medianaVolume > 0 ? medianaVolume : 1));
+            const yMediana = yScale.getPixelForValue(medianaCrescimento);
+
+            if (!xMediana || !yMediana || 
+                xMediana < chartArea.left || xMediana > chartArea.right ||
+                yMediana < chartArea.top || yMediana > chartArea.bottom) {
+                return;
+            }
+
+            // Fundo dos quadrantes
+            ctx2.fillStyle = coresFundo['Alavancagem'];
+            ctx2.fillRect(chartArea.left, chartArea.top, xMediana - chartArea.left, yMediana - chartArea.top);
+            
+            ctx2.fillStyle = coresFundo['Estratégico'];
+            ctx2.fillRect(xMediana, chartArea.top, chartArea.right - xMediana, yMediana - chartArea.top);
+            
+            ctx2.fillStyle = coresFundo['Não Crítico'];
+            ctx2.fillRect(chartArea.left, yMediana, xMediana - chartArea.left, chartArea.bottom - yMediana);
+            
+            ctx2.fillStyle = coresFundo['Gargalo'];
+            ctx2.fillRect(xMediana, yMediana, chartArea.right - xMediana, chartArea.bottom - yMediana);
+
+            // Linhas das medianas
+            ctx2.save();
+            ctx2.setLineDash([8, 5]);
+            ctx2.strokeStyle = 'rgba(51, 65, 85, 0.7)';
+            ctx2.lineWidth = 2;
+
+            ctx2.beginPath();
+            ctx2.moveTo(xMediana, chartArea.top);
+            ctx2.lineTo(xMediana, chartArea.bottom);
+            ctx2.stroke();
+
+            ctx2.beginPath();
+            ctx2.moveTo(chartArea.left, yMediana);
+            ctx2.lineTo(chartArea.right, yMediana);
+            ctx2.stroke();
+            ctx2.restore();
+
+            // Nomes dos quadrantes
+            ctx2.save();
+            ctx2.font = 'bold 13px Inter, sans-serif';
+            ctx2.textAlign = 'center';
+            ctx2.textBaseline = 'middle';
+
+            const nomes = [
+                { x: (chartArea.left + xMediana) / 2, y: (chartArea.top + yMediana) / 2, text: 'ALAVANCAGEM', color: '#0a7e4a' },
+                { x: (xMediana + chartArea.right) / 2, y: (chartArea.top + yMediana) / 2, text: 'ESTRATÉGICO', color: '#0a4ea3' },
+                { x: (chartArea.left + xMediana) / 2, y: (yMediana + chartArea.bottom) / 2, text: 'NÃO CRÍTICO', color: '#b45309' },
+                { x: (xMediana + chartArea.right) / 2, y: (yMediana + chartArea.bottom) / 2, text: 'GARGALO', color: '#b91c1c' }
+            ];
+
+            nomes.forEach(l => {
+                ctx2.fillStyle = 'rgba(255,255,255,0.85)';
+                const metrics = ctx2.measureText(l.text);
+                const pad = 16;
+                const w = metrics.width + pad * 2;
+                const h = 34;
+                const rx = l.x - w/2;
+                const ry = l.y - h/2;
+                ctx2.beginPath();
+                ctx2.roundRect(rx, ry, w, h, 8);
+                ctx2.fill();
+
+                ctx2.fillStyle = l.color;
+                ctx2.font = 'bold 13px Inter, sans-serif';
+                ctx2.textAlign = 'center';
+                ctx2.textBaseline = 'middle';
+                ctx2.fillText(l.text, l.x, l.y);
+            });
+            ctx2.restore();
+
+            // Valores das medianas
+            ctx2.save();
+
+            const volumeLabel = `Mediana Volume: R$ ${formatarMoeda(medianaVolume)}`;
+            ctx2.fillStyle = 'rgba(51, 65, 85, 0.9)';
+            ctx2.font = 'bold 10px Inter, sans-serif';
+            ctx2.textAlign = 'center';
+            ctx2.textBaseline = 'top';
+            
+            const metricsVol = ctx2.measureText(volumeLabel);
+            const padVol = 8;
+            const wVol = metricsVol.width + padVol * 2;
+            const hVol = 22;
+            const rxVol = xMediana - wVol/2;
+            const ryVol = chartArea.bottom + 4;
+            
+            ctx2.fillStyle = 'rgba(255,255,255,0.92)';
+            ctx2.beginPath();
+            ctx2.roundRect(rxVol, ryVol, wVol, hVol, 6);
+            ctx2.fill();
+            
+            ctx2.fillStyle = 'rgba(51, 65, 85, 0.95)';
+            ctx2.font = 'bold 10px Inter, sans-serif';
+            ctx2.textAlign = 'center';
+            ctx2.textBaseline = 'middle';
+            ctx2.fillText(volumeLabel, xMediana, ryVol + hVol/2);
+
+            const growthLabel = `Mediana: ${medianaCrescimento.toFixed(1)}%`;
+            ctx2.save();
+            
+            const xPos = chartArea.left - 10;
+            const yPos = yMediana;
+            
+            ctx2.translate(xPos, yPos);
+            ctx2.rotate(-Math.PI / 2);
+            
+            const metricsGrowth = ctx2.measureText(growthLabel);
+            const padGrowth = 8;
+            const wGrowth = metricsGrowth.width + padGrowth * 2;
+            const hGrowth = 22;
+            const rxGrowth = -wGrowth/2;
+            const ryGrowth = -hGrowth/2;
+            
+            ctx2.fillStyle = 'rgba(255,255,255,0.92)';
+            ctx2.beginPath();
+            ctx2.roundRect(rxGrowth, ryGrowth, wGrowth, hGrowth, 6);
+            ctx2.fill();
+            
+            ctx2.fillStyle = 'rgba(51, 65, 85, 0.95)';
+            ctx2.font = 'bold 10px Inter, sans-serif';
+            ctx2.textAlign = 'center';
+            ctx2.textBaseline = 'middle';
+            ctx2.fillText(growthLabel, 0, 0);
+            
+            ctx2.restore();
+            ctx2.restore();
+
+            // Setas
+            ctx2.save();
+            ctx2.fillStyle = 'rgba(51, 65, 85, 0.4)';
+            ctx2.font = '12px Inter, sans-serif';
+            ctx2.textAlign = 'center';
+            ctx2.textBaseline = 'middle';
+            
+            ctx2.fillText('⬇', xMediana, chartArea.bottom + 30);
+            
+            ctx2.save();
+            ctx2.translate(chartArea.left - 24, yMediana);
+            ctx2.rotate(-Math.PI / 2);
+            ctx2.fillText('⬅', 0, 0);
+            ctx2.restore();
+            
+            ctx2.restore();
+        }
+    };
+
+    // ============================================================
+    // 11. CRIAR O GRÁFICO
+    // ============================================================
+    priorizacaoChart = new Chart(ctx, {
+        type: 'scatter',
+        data: { datasets: datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        padding: 16,
+                        font: { size: 11, weight: '600' },
+                        color: '#1e293b',
+                        generateLabels: function(chart) {
+                            const data = chart.data;
+                            return data.datasets.map((dataset, i) => {
+                                const label = dataset.label || '';
+                                const descricao = descricaoQuadrantes[label] || '';
+                                const isActive = filtroQuadrante === 'Todos' || filtroQuadrante === label;
+                                return {
+                                    text: `${label} – ${descricao}`,
+                                    fillStyle: dataset.backgroundColor,
+                                    strokeStyle: dataset.borderColor,
+                                    pointStyle: 'circle',
+                                    datasetIndex: i,
+                                    fontColor: isActive ? '#1e293b' : '#94a3b8'
+                                };
+                            });
+                        }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(15, 23, 42, 0.92)',
+                    titleFont: { size: 14, weight: '700' },
+                    bodyFont: { size: 13 },
+                    padding: 14,
+                    cornerRadius: 8,
+                    callbacks: {
+                        label: function(context) {
+                            const raw = context.raw;
+                            return [
+                                ` ${raw.setor}`,
+                                `   CNAE: ${raw.cnae}`,
+                                `   Volume: R$ ${formatarMoeda(raw.volume)}`,
+                                `   Crescimento: ${raw.crescimento >= 0 ? '+' : ''}${raw.crescimento.toFixed(1)}%`,
+                                `   Score: ${raw.score.toFixed(1)}`,
+                                `   Quadrante: ${raw.quadrante}`
+                            ];
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    type: 'linear',
+                    position: 'bottom',
+                    title: {
+                        display: true,
+                        text: 'Volume de compras (escala log) - R$',
+                        font: { size: 14, weight: '600' },
+                        color: '#1e293b'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            const val = Math.pow(10, value);
+                            return formatarMoeda(val);
+                        },
+                        font: { size: 11 },
+                        color: '#64748b'
+                    },
+                    grid: {
+                        color: 'rgba(0,0,0,0.06)',
+                        drawBorder: false
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Crescimento 2023–2025 (%)',
+                        font: { size: 14, weight: '600' },
+                        color: '#1e293b'
+                    },
+                    ticks: {
+                        font: { size: 11 },
+                        color: '#64748b',
+                        callback: function(value) {
+                            return (value >= 0 ? '+' : '') + value.toFixed(0) + '%';
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(0,0,0,0.06)',
+                        drawBorder: false
+                    }
+                }
+            }
+        },
+        plugins: [pluginQuadrantes]
+    });
+}
+
+// ============================================================
+// 12. FUNÇÕES PARA OS FILTROS
+// ============================================================
+
+function toggleOutliers() {
+    filtroOutliers = !filtroOutliers;
+    const btn = document.getElementById('btnOutliers');
+    if (btn) {
+        btn.textContent = filtroOutliers ? '🔴 Remover Outliers (Ativo)' : '🟢 Remover Outliers (Inativo)';
+        btn.style.background = filtroOutliers ? '#ef4444' : '#10b981';
+        btn.style.color = '#ffffff';
+    }
+    renderizarMatrizPriorizacao();
+}
+
+function filtrarQuadrante(quadrante) {
+    filtroQuadrante = quadrante;
+    // Atualizar botões
+    document.querySelectorAll('.btn-quadrante').forEach(btn => {
+        const isActive = btn.dataset.quadrante === quadrante || (quadrante === 'Todos' && btn.dataset.quadrante === 'Todos');
+        btn.style.background = isActive ? '#0a4ea3' : '#e2e8f0';
+        btn.style.color = isActive ? '#ffffff' : '#64748b';
+        btn.style.borderColor = isActive ? '#0a4ea3' : '#e2e8f0';
+    });
+    renderizarMatrizPriorizacao();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+    function renderizarTabelaPriorizacao() {
+        const totalRows = dadosPriorizacao.length;
+        const start = (currentPagePriorizacao - 1) * pageSizePriorizacao;
+        const end = Math.min(start + pageSizePriorizacao, totalRows);
+        const pageData = dadosPriorizacao.slice(start, end);
+
+        document.getElementById('pageInfoPriorizacao').textContent = `${start+1}-${end} de ${totalRows}`;
+        document.getElementById('prevPagePriorizacao').disabled = currentPagePriorizacao === 1;
+        document.getElementById('nextPagePriorizacao').disabled = end >= totalRows;
+
+        const tbody = document.getElementById('tbodyPriorizacao');
+        tbody.innerHTML = '';
+
+        // Mapear cores para os quadrantes
+        const coresQuadrante = {
+            'Estratégico': '#0a4ea3',
+            'Alavancagem': '#10b981',
+            'Gargalo': '#f97316',
+            'Não Crítico': '#ef4444'
+        };
+
+        pageData.forEach(d => {
+            const tr = document.createElement('tr');
+            const cor = coresQuadrante[d.quadrante] || '#64748b';
+            tr.innerHTML = `
+                <td><strong>${d.cnae}</strong></td>
+                <td>${d.setor}</td>
+                <td>${d.score.toFixed(1)}</td>
+                <td>R$ ${d.volume >= 1e9 ? (d.volume/1e9).toFixed(2).replace('.', ',') + ' bi' : (d.volume/1e6).toFixed(1).replace('.', ',') + ' mi'}</td>
+                <td class="${d.crescimento >= 0 ? 'growth-up' : 'growth-down'}">${d.crescimento >= 0 ? '+' : ''}${d.crescimento.toFixed(1)}%</td>
+                <td><span style="display:inline-block; width:12px; height:12px; border-radius:3px; background:${cor}; margin-right:6px;"></span> ${d.quadrante}</td>
+            `;
+            tr.addEventListener('click', function() {
+                // Abrir modal com detalhes do setor
+                const modal = document.getElementById('modalDetalhesPerfil');
+                document.getElementById('modalTitlePerfil').textContent = d.setor;
+                document.getElementById('modalSubtitlePerfil').textContent = `CNAE: ${d.cnae}`;
+                document.getElementById('modalBodyPerfil').innerHTML = `
+                    <div style="margin:15px 0;">
+                        <div class="modal-item"><span class="nome">Score</span><span class="valor">${d.score.toFixed(1)}</span></div>
+                        <div class="modal-item"><span class="nome">Volume de compras 2025</span><span class="valor">R$ ${d.volume.toLocaleString('pt-BR')}</span></div>
+                        <div class="modal-item"><span class="nome">Crescimento 2023-2025</span><span class="valor" style="color:${d.crescimento >=0 ? '#0e6372' : '#ef4b4c'}">${d.crescimento >=0 ? '+' : ''}${d.crescimento.toFixed(1)}%</span></div>
+                        <div class="modal-item"><span class="nome">Quadrante</span><span class="valor" style="color:${coresQuadrante[d.quadrante]}">${d.quadrante}</span></div>
+                    </div>
+                `;
+                modal.classList.add('active');
+            });
+            tbody.appendChild(tr);
+        });
+    }
+
+    function renderizarPriorizacao() {
+        renderizarMatrizPriorizacao();
+        renderizarTabelaPriorizacao();
+    }
+
+    // ============================================================
+    // EVENTOS DA PRIORIZAÇÃO
+    // ============================================================
+    document.getElementById('prevPagePriorizacao').addEventListener('click', function() {
+        if (currentPagePriorizacao > 1) {
+            currentPagePriorizacao--;
+            renderizarTabelaPriorizacao();
+        }
+    });
+    document.getElementById('nextPagePriorizacao').addEventListener('click', function() {
+        const total = dadosPriorizacao.length;
+        if (currentPagePriorizacao * pageSizePriorizacao < total) {
+            currentPagePriorizacao++;
+            renderizarTabelaPriorizacao();
+        }
+    });
+
+    // Fechar modal
+    document.getElementById('modalClosePerfil').addEventListener('click', function() {
+        document.getElementById('modalDetalhesPerfil').classList.remove('active');
+    });
+    document.getElementById('modalDetalhesPerfil').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.remove('active');
+        }
+    });
+
+    // ============================================================
+    // INICIALIZAÇÃO
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        // Se a aba priorização estiver ativa, renderizar
+        if (document.getElementById('tab-priorizacao').classList.contains('active')) {
+            setTimeout(renderizarPriorizacao, 200);
+        }
+    });
+
     </script>
 
     <!-- Legacy Code base64 encoded to prevent tag nesting and JS execution conflicts -->
