@@ -388,10 +388,11 @@
             accent-color: var(--primary);
             flex-shrink: 0;
         }
-        .multi-select-option .state-badge {
-            width: 6px;
-            height: 6px;
+        .multi-select-option .flag-icon {
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
+            object-fit: cover;
             flex-shrink: 0;
         }
         .selected-count {
@@ -1644,6 +1645,25 @@
             _paletteIndex++;
             return TERRITORY_PALETTE[idx];
         }
+
+        // COMENTÁRIO: Mapeamento UF → arquivo de bandeira no repositório pierrelapalu/icones-bandeiras-br-uf (formato rounded)
+        const FLAG_BASE_URL = "https://cdn.jsdelivr.net/gh/pierrelapalu/icones-bandeiras-br-uf/dist/rounded/png-200/";
+        const UF_TO_FLAG = {
+            "BA": "06-bahia-rounded.png",      "BR": "01-brasil-rounded.png",
+            "RO": "23-rondonia-rounded.png",   "AC": "02-acre-rounded.png",
+            "AM": "05-amazonas-rounded.png",   "RR": "24-roraima-rounded.png",
+            "PA": "15-para-rounded.png",       "AP": "04-amapa-rounded.png",
+            "TO": "28-tocantins-rounded.png",  "MA": "11-maranhao-rounded.png",
+            "PI": "19-piaui-rounded.png",      "CE": "07-ceara-rounded-v2.png",
+            "RN": "21-rio-grande-do-norte-rounded.png", "PB": "16-paraiba-rounded-v2.png",
+            "PE": "18-pernambuco-rounded.png", "AL": "03-alagoas-rounded.png",
+            "SE": "27-sergipe-rounded.png",    "MG": "14-minas-gerais-rounded.png",
+            "ES": "09-espirito-santo-rounded-v2.png",   "RJ": "20-rio-de-janeiro-rounded.png",
+            "SP": "26-sao-paulo-rounded.png",  "PR": "17-parana-rounded.png",
+            "SC": "25-santa-catarina-rounded.png",      "RS": "22-rio-grande-do-sul-rounded.png",
+            "MS": "13-mato-grosso-do-sul-rounded.png",  "MT": "12-mato-grosso-rounded.png",
+            "GO": "10-goias-rounded.png"
+        };
 
         // ----------------------------------------------------
         // RAIS DATA PARSING AND MANAGEMENT
@@ -3106,11 +3126,13 @@
                     cb.checked = true;
                 }
                 cb.addEventListener("change", onTerritoryCheckboxChange);
-                const badge = document.createElement("span");
-                badge.className = "state-badge";
-                badge.style.background = getTerritoryColor(code);
+                const flag = document.createElement("img");
+                flag.className = "flag-icon";
+                flag.src = FLAG_BASE_URL + (UF_TO_FLAG[code] || "");
+                flag.alt = STATE_NAMES[code] || code;
+                flag.loading = "lazy";
                 label.appendChild(cb);
-                label.appendChild(badge);
+                label.appendChild(flag);
                 label.appendChild(document.createTextNode(" " + (STATE_NAMES[code] || code)));
                 container.appendChild(label);
             });
