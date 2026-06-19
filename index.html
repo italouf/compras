@@ -1003,7 +1003,7 @@
 
             <!-- KPI Cards Row for RAIS Data -->
             <div class="kpi-row"
-                style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 24px;">
+                style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 24px;">
                 <div class="card" style="border-left: 4px solid var(--primary); padding: 16px 20px;">
                     <div class="card-subtitle"
                         style="margin-bottom: 4px; text-transform: uppercase; font-size: 11px; font-weight: 600; letter-spacing: 0.5px;">
@@ -1029,16 +1029,7 @@
                         Ano de Referência (RAIS)</div>
                     <div style="font-size: 24px; font-weight: 700; color: var(--text-dark);">2025</div>
                 </div>
-                <div class="card"
-                    style="border-left: 4px solid var(--accent-orange); padding: 16px 20px; display: flex; flex-direction: column; justify-content: center;">
-                    <div class="card-subtitle"
-                        style="margin-bottom: 4px; text-transform: uppercase; font-size: 11px; font-weight: 600; letter-spacing: 0.5px;">
-                        Setor (RAIS)</div>
-                    <select id="filter-rais-sector" onchange="updateKpisAndTooltips()"
-                        style="width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 13px; outline: none; background: #fff; cursor: pointer; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
-                        <option value="" selected>Todos os Setores (Bahia)</option>
-                    </select>
-                </div>
+
             </div>
 
             <!-- Row 1: Economic Structure, Map and Treemap -->
@@ -1050,7 +1041,8 @@
                         <p>Em 2025, a composição econômica de <strong>Bahia</strong> foi impulsionada principalmente
                             pelos estabelecimentos de <strong>Serviços</strong>, <strong>Agricultura</strong> e
                             <strong>Comércio</strong>, que concentraram <strong>91.7%</strong> do total de
-                            <strong>704.598</strong> estabelecimentos no referido período.</p>
+                            <strong>704.598</strong> estabelecimentos no referido período.
+                        </p>
                         <p>Esse total de estabelecimentos representa um aumento de <strong>94.7%</strong> em relação a
                             cinco anos atrás.</p>
                         <p>Mas como esse crescimento se compara ao crescimento no Brasil e em outros territórios
@@ -2804,22 +2796,6 @@
             return null;
         }
 
-        function populateRaisSectorSelect() {
-            const select = document.getElementById("filter-rais-sector");
-            while (select.options.length > 1) select.remove(1);
-
-            const sectors = Object.values(raisMap)
-                .map(d => d.sector)
-                .filter(s => s && s.trim() && !s.startsWith('"') && !s.startsWith(' '))
-                .sort((a, b) => a.localeCompare(b));
-
-            sectors.forEach(s => {
-                const opt = document.createElement("option");
-                opt.value = s.toLowerCase().trim();
-                opt.textContent = s;
-                select.appendChild(opt);
-            });
-        }
 
         function getVariationBadge(currentVal, previousVal) {
             if (!previousVal || previousVal === 0) return `<span style="color: var(--text-muted);">0%</span>`;
@@ -2832,7 +2808,7 @@
 
         const textosPorAno = {
             2025: `<p>Em 2025, a composição econômica de <strong>Bahia</strong> foi impulsionada principalmente pelos estabelecimentos de <strong>Serviços</strong>, <strong>Agricultura</strong> e <strong>Comércio</strong>, que concentraram <strong>91.7%</strong> do total de <strong>704.598</strong> estabelecimentos no referido período.</p>
-<p>Esse total de estabelecimentos representa um aumento de <strong>94.7%</strong> em relação a essa estrutura anos atr&aacute;s.</p>
+<p>Esse total de estabelecimentos representa um aumento de <strong>94.7%</strong> em relação a essa estrutura 5 anos atr&aacute;s.</p>
 <p>Mas como esse crescimento se compara ao crescimento no Brasil e em outros territ&oacute;rios relacionados?</p>`,
             2024: `<p>Em 2024, a composi&ccedil;&atilde;o econ&ocirc;mica de <strong>Bahia</strong> foi impulsionada principalmente pelos estabelecimentos de <strong>Servi&ccedil;os</strong>, <strong>Agricultura</strong> e <strong>Com&eacute;rcio</strong>, que concentraram <strong>89.3%</strong> do total de <strong>682.451</strong> estabelecimentos no referido per&iacute;odo.</p>
 <p>Esse total de estabelecimentos representa um aumento de <strong>87.2%</strong> em rela&ccedil;&atilde;o a essa estrutura anos atr&aacute;s.</p>
@@ -2844,31 +2820,19 @@
 
         function updateKpisAndTooltips() {
             const year = 2025;
-            const sectorKey = document.getElementById("filter-rais-sector").value;
+            const prevYear = year - 1;
 
             let totalEst = 0;
             let totalVin = 0;
             let prevEst = 0;
             let prevVin = 0;
 
-            const prevYear = year - 1;
-
-            if (sectorKey) {
-                const rais = raisMap[sectorKey];
-                if (rais) {
-                    totalEst = rais.est[year] || 0;
-                    totalVin = rais.vin[year] || 0;
-                    prevEst = rais.est[prevYear] || 0;
-                    prevVin = rais.vin[prevYear] || 0;
-                }
-            } else {
-                Object.values(raisMap).forEach(rais => {
-                    totalEst += rais.est[year] || 0;
-                    totalVin += rais.vin[year] || 0;
-                    prevEst += rais.est[prevYear] || 0;
-                    prevVin += rais.vin[prevYear] || 0;
-                });
-            }
+            Object.values(raisMap).forEach(rais => {
+                totalEst += rais.est[year] || 0;
+                totalVin += rais.vin[year] || 0;
+                prevEst += rais.est[prevYear] || 0;
+                prevVin += rais.vin[prevYear] || 0;
+            });
 
             document.getElementById("kpi-rais-est").textContent = formatNumber(totalEst);
             document.getElementById("kpi-rais-vin").textContent = formatNumber(totalVin);
@@ -3755,7 +3719,6 @@
             initMappings();
             handleRouting();
             window.addEventListener('hashchange', handleRouting);
-            populateRaisSectorSelect();
             // COMENTÁRIO: Popula dinamicamente o dropdown multi-select com checkboxes de territórios
             populateTerritoryCheckboxes();
             updateKpisAndTooltips();
