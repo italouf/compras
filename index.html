@@ -960,6 +960,37 @@
             }
         }
 
+        .treemap-filtro-setor {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 12px;
+            padding: 0 2px;
+        }
+
+        .treemap-btn {
+            padding: 3px 10px;
+            border-radius: 20px;
+            border: 1px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .treemap-btn:hover {
+            background: rgba(10, 78, 163, 0.08);
+        }
+
+        .treemap-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
         @media (max-width: 600px) {
             .kpi-grid {
                 grid-template-columns: 1fr;
@@ -1071,6 +1102,7 @@
                         Estrutura econômica de Bahia
                     </div>
                     <div class="card-subtitle" id="treemap-subtitle">704,598 estabelecimentos</div>
+                    <div class="treemap-filtro-setor" id="treemapFiltroSetor"></div>
                     <div class="viz-container" id="bahiaTreemap">
                         <!-- D3 Treemap Appends Here -->
                     </div>
@@ -1761,8 +1793,8 @@
         // Set state names color mapping
         const macroSectorColors = {
             "Agricultura": "#10b981",
-            "Indústria": "#0ea5e9",
-            "Serviços": "#f97316",
+            "Indústria": "#f97316",
+            "Serviços": "#0ea5e9",
             "Comércio": "#ec4899"
         };
 
@@ -3079,9 +3111,37 @@
         // ----------------------------------------------------
         // 2. ECONOMIC STRUCTURE (TREEMAP)
         // ----------------------------------------------------
+        let treemapGrandeSector = null;
+
+        function buildTreemapFilterButtons() {
+            const container = document.getElementById('treemapFiltroSetor');
+            container.innerHTML = '';
+            const sectors = new Set(window.dashboardData.structure.map(r => r[0]));
+            ['Todos', ...Array.from(sectors).sort()].forEach(s => {
+                const btn = document.createElement('button');
+                const isActive = s === 'Todos' ? treemapGrandeSector === null : s === treemapGrandeSector;
+                btn.className = 'treemap-btn' + (isActive ? ' active' : '');
+                btn.textContent = s;
+                btn.dataset.sector = s;
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#treemapFiltroSetor .treemap-btn').forEach(b =>
+                        b.classList.toggle('active', b.dataset.sector === s)
+                    );
+                    treemapGrandeSector = s === 'Todos' ? null : s;
+                    drawTreemap();
+                });
+                container.appendChild(btn);
+            });
+        }
+
         function drawTreemap() {
             const container = d3.select("#bahiaTreemap");
             container.selectAll("*").remove();
+
+            let data = window.dashboardData.structure;
+            if (treemapGrandeSector) {
+                data = data.filter(r => r[0] === treemapGrandeSector);
+            }
 
             const width = container.node().clientWidth || 400;
             const height = 350;
@@ -3095,7 +3155,7 @@
             const gSectorMap = new Map();
             let grandTotal = 0;
 
-            window.dashboardData.structure.forEach(row => {
+            data.forEach(row => {
                 const [gSector, secID, divID, className, est] = row;
                 grandTotal += est;
 
@@ -3204,6 +3264,8 @@
                     }
                     return "";
                 });
+
+            buildTreemapFilterButtons();
         }
 
         // ----------------------------------------------------
