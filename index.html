@@ -435,7 +435,7 @@
             width: 100%;
         }
 
-        #growth-table {
+        #tabela-crescimento-csv {
             min-width: max-content;
         }
 
@@ -991,6 +991,39 @@
             border-color: var(--primary);
         }
 
+        .toggle-pills {
+            display: flex;
+            gap: 4px;
+        }
+        .pill {
+            padding: 4px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        .pill:hover {
+            background: rgba(10, 78, 163, 0.08);
+        }
+        .pill.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+        .valor-positivo {
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+        .valor-negativo {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
         @media (max-width: 600px) {
             .kpi-grid {
                 grid-template-columns: 1fr;
@@ -1109,81 +1142,68 @@
                 </div>
             </div>
 
-            <!-- Row 2: Sector Growth Filters and Table -->
+            <!-- Row 2: Tabela de Crescimento via CSV (D3) -->
             <div class="grid-2-col" id="crescimento-secao">
                 <!-- Left Filters -->
                 <div class="card text-panel">
-                    <h2 style="font-size: 18px;">Quais atividades econômicas estão crescendo?</h2>
-                    <p style="font-size: 13px;">A identificação de atividades econômicas em crescimento permite planejar
-                        e alocar recursos estrategicamente, promovendo o desenvolvimento e capitalizando oportunidades
-                        emergentes.</p>
-
+                    <h2 style="font-size: 18px;">Crescimento por Atividade (2 anos)</h2>
+                    <p style="font-size: 13px;">Selecione a métrica, granularidade e os territórios para comparar o crescimento entre atividades econômicas.</p>
                     <div class="filter-group">
                         <div class="filter-control">
-                            <label>Crescimento por</label>
-                            <select id="filter-growth-by">
-                                <option value="workers">Empregados</option>
-                            </select>
+                            <label>Métrica</label>
+                            <div class="toggle-pills" id="toggle-metrica-csv">
+                                <button class="pill active" data-value="empregados">Empregados</button>
+                                <button class="pill" data-value="estabelecimentos">Estabelecimentos</button>
+                            </div>
                         </div>
                         <div class="filter-control">
-                            <label>Diferença de anos</label>
-                            <select id="filter-growth-period">
-                                <option value="1">1 ano</option>
-                            </select>
+                            <label>Granularidade</label>
+                            <div class="toggle-pills" id="toggle-granularidade-csv">
+                                <button class="pill active" data-value="secao">Seção</button>
+                                <button class="pill" data-value="grupo">Grupo</button>
+                            </div>
                         </div>
-                        <div class="filter-control">
-                            <label>Nível de atividade econômica</label>
-                            <select id="filter-growth-level" onchange="onGrowthFilterChange()">
-                                <option value="section">Seção</option>
-                                <option value="all">Todas as atividades</option>
-                            </select>
-                        </div>
-                        <!-- COMENTÁRIO: Dropdown multi-select com checkboxes populado por populateTerritoryCheckboxes() -->
                         <div class="filter-control">
                             <label>Territórios para comparar</label>
-                            <div class="multi-select-wrapper" id="territory-wrapper">
-                                <button type="button" class="multi-select-trigger" id="territory-trigger"
-                                    onclick="toggleTerritoryDropdown()">
-                                    <span class="selected-count" id="territory-selected-count">2 selecionados</span>
+                            <div class="multi-select-wrapper" id="territory-wrapper-csv">
+                                <button type="button" class="multi-select-trigger" id="territory-trigger-csv"
+                                    onclick="toggleTerritoryDropdownCsv()">
+                                    <span class="selected-count" id="territory-selected-count-csv">2 selecionados</span>
                                     <span class="arrow">▼</span>
                                 </button>
-                                <div class="multi-select-dropdown" id="territory-dropdown">
+                                <div class="multi-select-dropdown" id="territory-dropdown-csv">
                                     <div class="multi-select-actions">
-                                        <button type="button" onclick="selectAllTerritories(true)"
+                                        <button type="button" onclick="selectAllTerritoriesCsv(true)"
                                             class="multi-select-action">Selecionar todos</button>
-                                        <button type="button" onclick="selectAllTerritories(false)"
+                                        <button type="button" onclick="selectAllTerritoriesCsv(false)"
                                             class="multi-select-action">Limpar</button>
                                     </div>
-                                    <div class="multi-select-options" id="territory-options"></div>
+                                    <div class="multi-select-options" id="territory-options-csv"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <!-- Right Table -->
                 <div class="card">
                     <div class="card-title">Crescimento de Atividades Econômicas</div>
-                    <!-- COMENTÁRIO: Wrapper com overflow-x:auto para acomodar colunas de todos os estados -->
                     <div class="table-scroll-wrapper">
                         <div class="table-container">
-                            <table id="growth-table">
+                            <table id="tabela-crescimento-csv">
                                 <thead>
-                                    <tr id="growth-table-headers">
-                                        <!-- Dynamic headers -->
+                                    <tr id="csv-table-headers">
+                                        <!-- Dynamic headers by JS -->
                                     </tr>
                                 </thead>
-                                <tbody id="growth-table-body">
-                                    <!-- Dynamic rows -->
+                                <tbody id="tbody-crescimento-csv">
+                                    <!-- Populated by JS -->
                                 </tbody>
                             </table>
                         </div>
                         <div class="pagination">
-                            <span id="growth-page-info">1-10 de 21</span>
-                            <button class="pagination-btn" id="growth-prev-btn" onclick="changeGrowthPage(-1)"
-                                disabled>Anterior</button>
-                            <button class="pagination-btn" id="growth-next-btn"
-                                onclick="changeGrowthPage(1)">Próximo</button>
+                            <span id="csv-page-info">0 resultados</span>
+                            <button class="pagination-btn" id="csv-prev-btn" onclick="changeCsvPage(-1)" disabled>Anterior</button>
+                            <button class="pagination-btn" id="csv-next-btn" onclick="changeCsvPage(1)" disabled>Próximo</button>
                         </div>
                     </div>
                 </div>
@@ -1199,6 +1219,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="fonte-panorama">Fonte: Observatório Sebrae e RAIS — Relação Anual de Informações Sociais (2025)
             </div>
         </div>
@@ -1776,8 +1797,9 @@
     <script>
         // Global visual state
         let activeTab = 'panorama';
-        let growthPage = 1;
-        const growthPageSize = 10;
+        let csvPage = 1;
+        const csvPageSize = 10;
+        let csvData = [];
         let vcrChart = null;
         let setoresProcessados = [];
         let ufsProcessados = [];
@@ -1846,6 +1868,19 @@
             "SC": "25-santa-catarina-rounded.png", "RS": "22-rio-grande-do-sul-rounded.png",
             "MS": "13-mato-grosso-do-sul-rounded.png", "MT": "12-mato-grosso-rounded.png",
             "GO": "10-goias-rounded.png"
+        };
+
+        // Mapeamento sigla UF -> nome da coluna no CSV
+        const CSV_COLUMN_NAMES = {
+            "BR": "Brasil", "BA": "Bahia",
+            "RO": "Rondônia", "AC": "Acre", "AM": "Amazonas", "RR": "Roraima",
+            "PA": "Pará", "AP": "Amapá", "TO": "Tocantins", "MA": "Maranhão",
+            "PI": "Piauí", "CE": "Ceará", "RN": "Rio Grande Do Norte",
+            "PB": "Paraíba", "PE": "Pernambuco", "AL": "Alagoas", "SE": "Sergipe",
+            "MG": "Minas Gerais", "ES": "Espírito Santo", "RJ": "Rio De Janeiro",
+            "SP": "São Paulo", "PR": "Paraná", "SC": "Santa Catarina",
+            "RS": "Rio Grande Do Sul", "MS": "Mato Grosso Do Sul",
+            "MT": "Mato Grosso", "GO": "Goiás", "DF": "Distrito Federal"
         };
 
         // ----------------------------------------------------
@@ -3010,7 +3045,6 @@
         function drawAllVisualizations() {
             drawBrazilMap();
             drawTreemap();
-            renderGrowthTable();
             drawVcrChart();
         }
 
@@ -3268,162 +3302,17 @@
             buildTreemapFilterButtons();
         }
 
-        // ----------------------------------------------------
-        // 3. SECTOR GROWTH TABLE
-        // ----------------------------------------------------
-        function onGrowthFilterChange() {
-            growthPage = 1;
-            renderGrowthTable();
-        }
-
-        function getSelectedTerritories() {
-            const checked = [];
-            document.querySelectorAll("#territory-options input:checked").forEach(cb => {
-                checked.push(cb.value);
-            });
-            return checked;
-        }
-
-        // COMENTÁRIO: Popula o dropdown multi-select com checkboxes de territórios
-        function populateTerritoryCheckboxes() {
-            const container = document.getElementById("territory-options");
-            if (!container) return;
-            const growthData = window.dashboardData.growth;
-            if (!growthData || growthData.length === 0) return;
-            const firstRow = growthData[0];
-            const territoryKeys = Object.keys(firstRow).filter(k => k !== "activity");
-            // COMENTÁRIO: Ordena: BA primeiro, BR segundo, demais em ordem alfabética
-            territoryKeys.sort((a, b) => {
-                if (a === "BA") return -1;
-                if (b === "BA") return 1;
-                if (a === "BR") return -1;
-                if (b === "BR") return 1;
-                return a.localeCompare(b);
-            });
-            container.innerHTML = "";
-            territoryKeys.forEach(code => {
-                const label = document.createElement("label");
-                label.className = "multi-select-option";
-                const cb = document.createElement("input");
-                cb.type = "checkbox";
-                cb.value = code;
-                if (code === "BA" || code === "BR") {
-                    cb.checked = true;
-                }
-                cb.addEventListener("change", onTerritoryCheckboxChange);
-                const flag = document.createElement("img");
-                flag.className = "flag-icon";
-                flag.src = FLAG_BASE_URL + (UF_TO_FLAG[code] || "");
-                flag.alt = STATE_NAMES[code] || code;
-                flag.loading = "lazy";
-                label.appendChild(cb);
-                label.appendChild(flag);
-                label.appendChild(document.createTextNode(" " + (STATE_NAMES[code] || code)));
-                container.appendChild(label);
-            });
-            updateTerritoryCount();
-        }
-
-        // COMENTÁRIO: Atualiza o contador de territórios selecionados
-        function updateTerritoryCount() {
-            const count = getSelectedTerritories().length;
-            const el = document.getElementById("territory-selected-count");
-            if (el) {
-                el.textContent = count + (count === 1 ? " selecionado" : " selecionados");
-            }
-        }
-
-        // COMENTÁRIO: Disparado ao marcar/desmarcar um checkbox de território
-        function onTerritoryCheckboxChange() {
-            updateTerritoryCount();
-            onGrowthFilterChange();
-        }
-
-        // COMENTÁRIO: Abre/fecha o dropdown de territórios
-        function toggleTerritoryDropdown() {
-            const dd = document.getElementById("territory-dropdown");
-            const trigger = document.getElementById("territory-trigger");
-            const isOpen = dd.classList.contains("open");
-            dd.classList.toggle("open");
-            trigger.classList.toggle("open");
-        }
-
-        // COMENTÁRIO: Seleciona ou limpa todos os checkboxes de territórios
-        function selectAllTerritories(selectAll) {
-            document.querySelectorAll("#territory-options input[type='checkbox']").forEach(cb => {
-                cb.checked = selectAll;
-            });
-            updateTerritoryCount();
-            onGrowthFilterChange();
-        }
-
         // COMENTÁRIO: Fecha o dropdown ao clicar fora
         document.addEventListener("click", function (e) {
-            const wrapper = document.getElementById("territory-wrapper");
-            const dd = document.getElementById("territory-dropdown");
-            if (wrapper && dd && dd.classList.contains("open")) {
-                if (!wrapper.contains(e.target)) {
-                    dd.classList.remove("open");
-                    document.getElementById("territory-trigger").classList.remove("open");
+            const wrapperCsv = document.getElementById("territory-wrapper-csv");
+            const ddCsv = document.getElementById("territory-dropdown-csv");
+            if (wrapperCsv && ddCsv && ddCsv.classList.contains("open")) {
+                if (!wrapperCsv.contains(e.target)) {
+                    ddCsv.classList.remove("open");
+                    document.getElementById("territory-trigger-csv").classList.remove("open");
                 }
             }
         });
-
-        function renderGrowthTable() {
-            const level = document.getElementById("filter-growth-level").value;
-            const territories = getSelectedTerritories();
-
-            let data = window.dashboardData.growth;
-            if (level === "section") {
-                data = data.filter(d => {
-                    const cleanName = d.activity.replace(/^"+|"+$/g, "");
-                    const match = cleanName.match(/^[A-Z] /);
-                    return match !== null;
-                });
-            }
-
-            const headerRow = document.getElementById("growth-table-headers");
-            headerRow.innerHTML = "<th>Atividade econômica</th>";
-            territories.forEach(t => {
-                // COMENTÁRIO: Label dinâmica via STATE_NAMES em vez de if/else hardcoded
-                const label = STATE_NAMES[t] || t;
-                headerRow.innerHTML += `<th>${label} (Var %)</th>`;
-            });
-
-            const totalRows = data.length;
-            document.getElementById("growth-page-info").textContent = `${(growthPage - 1) * growthPageSize + 1}-${Math.min(growthPage * growthPageSize, totalRows)} de ${totalRows}`;
-
-            document.getElementById("growth-prev-btn").disabled = growthPage === 1;
-            document.getElementById("growth-next-btn").disabled = growthPage * growthPageSize >= totalRows;
-
-            const pageData = data.slice((growthPage - 1) * growthPageSize, growthPage * growthPageSize);
-
-            const tbody = document.getElementById("growth-table-body");
-            tbody.innerHTML = "";
-
-            pageData.forEach(row => {
-                const tr = document.createElement("tr");
-                let cleanActName = row.activity.replace(/^"+|"+$/g, "");
-                let html = `<td><strong>${cleanActName}</strong></td>`;
-
-                territories.forEach(t => {
-                    const val = row[t];
-                    const pct = (val * 100).toFixed(2);
-                    const isPositive = val >= 0;
-                    const arrow = isPositive ? "▲" : "▼";
-                    const cssClass = isPositive ? "growth-up" : "growth-down";
-
-                    html += `<td><span class="growth-indicator ${cssClass}">${arrow} ${pct}%</span></td>`;
-                });
-                tr.innerHTML = html;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function changeGrowthPage(dir) {
-            growthPage += dir;
-            renderGrowthTable();
-        }
 
         // ----------------------------------------------------
         // 4. SPACE OF ACTIVITIES (NETWORK GRAPH)
@@ -3519,6 +3408,178 @@
                     }
                 }
             });
+        }
+
+        // ----------------------------------------------------
+        // 6. CRESCIMENTO POR ATIVIDADE (TABELA DINÂMICA VIA CSV)
+        // ----------------------------------------------------
+        function getCaminhoCsv() {
+            const metrica = document.querySelector('#toggle-metrica-csv .pill.active').dataset.value;
+            const granularidade = document.querySelector('#toggle-granularidade-csv .pill.active').dataset.value;
+            const base = "csv/";
+            const arquivos = {
+                "empregados_secao": "Number workers 2 years growth - (Bahia, Brasil, Rondônia, Acre, Amazonas, Roraima, Pará, Amapá, Tocantins, Maranhão, Piauí, Ceará, Rio Grande Do Norte, Paraíba, Pernambuco, Alagoas, Sergipe, Bahia, Minas Gerais (1).csv",
+                "empregados_grupo": "Number workers 2 years growth - (Bahia, Brasil, Rondônia, Acre, Amazonas, Roraima, Pará, Amapá, Tocantins, Maranhão, Piauí, Ceará, Rio Grande Do Norte, Paraíba, Pernambuco, Alagoas, Sergipe, Bahia, Minas Gerais, Es.csv",
+                "estabelecimentos_secao": "Establishments 2 years growth - (Bahia, Brasil, Rondônia, Acre, Amazonas, Roraima, Pará, Amapá, Tocantins, Maranhão, Piauí, Ceará, Rio Grande Do Norte, Paraíba, Pernambuco, Alagoas, Sergipe, Bahia, Minas Gerais (1).csv",
+                "estabelecimentos_grupo": "Establishments 2 years growth - (Bahia, Brasil, Rondônia, Acre, Amazonas, Roraima, Pará, Amapá, Tocantins, Maranhão, Piauí, Ceará, Rio Grande Do Norte, Paraíba, Pernambuco, Alagoas, Sergipe, Bahia, Minas Gerais, Es.csv"
+            };
+            return base + arquivos[metrica + '_' + granularidade];
+        }
+
+        // ---- Multi-select de territórios (CSV) ----
+        function getSelectedTerritoriesCsv() {
+            const checked = [];
+            document.querySelectorAll("#territory-options-csv input:checked").forEach(cb => checked.push(cb.value));
+            return checked;
+        }
+
+        function updateTerritoryCountCsv() {
+            const count = getSelectedTerritoriesCsv().length;
+            const el = document.getElementById("territory-selected-count-csv");
+            if (el) el.textContent = count + (count === 1 ? " selecionado" : " selecionados");
+        }
+
+        function onTerritoryCheckboxChangeCsv() {
+            updateTerritoryCountCsv();
+            atualizarTabelaCrescimento();
+        }
+
+        function toggleTerritoryDropdownCsv() {
+            const dd = document.getElementById("territory-dropdown-csv");
+            const trigger = document.getElementById("territory-trigger-csv");
+            dd.classList.toggle("open");
+            trigger.classList.toggle("open");
+        }
+
+        function selectAllTerritoriesCsv(selectAll) {
+            document.querySelectorAll("#territory-options-csv input[type='checkbox']").forEach(cb => {
+                cb.checked = selectAll;
+            });
+            updateTerritoryCountCsv();
+            atualizarTabelaCrescimento();
+        }
+
+        function populateTerritoryCheckboxesCsv() {
+            const container = document.getElementById("territory-options-csv");
+            if (!container) return;
+            const keys = Object.keys(CSV_COLUMN_NAMES);
+            keys.sort((a, b) => {
+                if (a === "BA") return -1;
+                if (b === "BA") return 1;
+                if (a === "BR") return -1;
+                if (b === "BR") return 1;
+                return CSV_COLUMN_NAMES[a].localeCompare(CSV_COLUMN_NAMES[b]);
+            });
+            container.innerHTML = "";
+            keys.forEach(code => {
+                const label = document.createElement("label");
+                label.className = "multi-select-option";
+                const cb = document.createElement("input");
+                cb.type = "checkbox";
+                cb.value = code;
+                if (code === "BA" || code === "BR") cb.checked = true;
+                cb.addEventListener("change", onTerritoryCheckboxChangeCsv);
+                const flag = document.createElement("img");
+                flag.className = "flag-icon";
+                flag.src = FLAG_BASE_URL + (UF_TO_FLAG[code] || "");
+                flag.alt = STATE_NAMES[code] || code;
+                flag.loading = "lazy";
+                label.appendChild(cb);
+                label.appendChild(flag);
+                label.appendChild(document.createTextNode(" " + (STATE_NAMES[code] || code)));
+                container.appendChild(label);
+            });
+            updateTerritoryCountCsv();
+        }
+
+        // ---- Carga e renderização da tabela CSV ----
+        function atualizarTabelaCrescimento() {
+            const tbody = document.getElementById('tbody-crescimento-csv');
+            const territories = getSelectedTerritoriesCsv();
+            const colCount = 1 + territories.length;
+            tbody.innerHTML = '<tr><td colspan="' + colCount + '" style="text-align:center;color:var(--text-muted);padding:20px;">Carregando...</td></tr>';
+
+            const caminho = getCaminhoCsv();
+
+            d3.text(caminho).then(texto => {
+                const rows = d3.csvParseRows(texto);
+                if (rows.length < 2) {
+                    tbody.innerHTML = '<tr><td colspan="' + colCount + '" style="text-align:center;color:var(--text-muted);padding:20px;">Nenhum dado encontrado.</td></tr>';
+                    return;
+                }
+
+                const headers = rows[0];
+                const colIndex = {};
+                for (let i = 0; i < headers.length; i++) {
+                    const h = headers[i].trim();
+                    if (!(h in colIndex)) colIndex[h] = i;
+                }
+
+                const linhas = [];
+                for (let r = 1; r < rows.length; r++) {
+                    const atividade = (rows[r][0] || '').replace(/^"+|"+$/g, '');
+                    if (!atividade) continue;
+                    const valores = {};
+                    Object.keys(CSV_COLUMN_NAMES).forEach(sigla => {
+                        const nomeColuna = CSV_COLUMN_NAMES[sigla];
+                        const idx = colIndex[nomeColuna];
+                        valores[sigla] = (idx !== undefined) ? (parseFloat(rows[r][idx]) || 0) : 0;
+                    });
+                    linhas.push({ atividade, valores });
+                }
+
+                const primary = territories.length > 0 ? territories[0] : 'BA';
+                linhas.sort((a, b) => b.valores[primary] - a.valores[primary]);
+
+                csvData = linhas;
+                csvPage = 1;
+                renderCsvTable();
+            }).catch(err => {
+                tbody.innerHTML = '<tr><td colspan="' + colCount + '" style="text-align:center;color:#ef4444;padding:20px;">Erro ao carregar: ' + err.message + '</td></tr>';
+            });
+        }
+
+        function renderCsvTable() {
+            const territories = getSelectedTerritoriesCsv();
+            const tbody = document.getElementById('tbody-crescimento-csv');
+
+            const headerRow = document.getElementById('csv-table-headers');
+            headerRow.innerHTML = '<th>Atividade Econômica</th>';
+            territories.forEach(t => {
+                const label = STATE_NAMES[t] || t;
+                headerRow.innerHTML += '<th>' + label + ' (Var %)</th>';
+            });
+
+            const total = csvData.length;
+            document.getElementById('csv-page-info').textContent = total === 0
+                ? '0 resultados'
+                : ((csvPage - 1) * csvPageSize + 1) + '-' + Math.min(csvPage * csvPageSize, total) + ' de ' + total;
+
+            document.getElementById('csv-prev-btn').disabled = csvPage === 1;
+            document.getElementById('csv-next-btn').disabled = csvPage * csvPageSize >= total;
+
+            const pageData = csvData.slice((csvPage - 1) * csvPageSize, csvPage * csvPageSize);
+
+            tbody.innerHTML = '';
+            pageData.forEach(item => {
+                const tr = document.createElement('tr');
+                let html = '<td><strong>' + item.atividade + '</strong></td>';
+                territories.forEach(t => {
+                    const val = item.valores[t] || 0;
+                    const pct = (val * 100).toFixed(1);
+                    const isPos = val >= 0;
+                    const arrow = isPos ? '▲' : '▼';
+                    const cssClass = isPos ? 'growth-up' : 'growth-down';
+                    html += '<td><span class="growth-indicator ' + cssClass + '">' + arrow + ' ' + pct + '%</span></td>';
+                });
+                tr.innerHTML = html;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function changeCsvPage(dir) {
+            csvPage += dir;
+            renderCsvTable();
         }
 
         // ============================================================
@@ -3781,14 +3842,23 @@
             initMappings();
             handleRouting();
             window.addEventListener('hashchange', handleRouting);
-            // COMENTÁRIO: Popula dinamicamente o dropdown multi-select com checkboxes de territórios
-            populateTerritoryCheckboxes();
+            populateTerritoryCheckboxesCsv();
+            atualizarTabelaCrescimento();
             updateKpisAndTooltips();
             processarDadosPerfil();
             popularFiltroSetorPerfil();
             if (document.getElementById('tab-perfil').classList.contains('active')) {
                 renderizarPerfil();
             }
+        });
+
+        // Listeners para os controles da tabela CSV
+        document.querySelectorAll('#toggle-metrica-csv .pill, #toggle-granularidade-csv .pill').forEach(btn => {
+            btn.addEventListener('click', function () {
+                this.parentElement.querySelectorAll('.pill').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                atualizarTabelaCrescimento();
+            });
         });
 
 
