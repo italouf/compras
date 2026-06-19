@@ -481,6 +481,26 @@
             color: #ef4444;
         }
 
+        #tabela-crescimento-csv th {
+            cursor: pointer;
+            user-select: none;
+        }
+        #tabela-crescimento-csv th:hover {
+            background: var(--bg-light);
+        }
+        .sort-indicator {
+            margin-left: 4px;
+            font-size: 11px;
+        }
+        .sort-indicator.active {
+            color: var(--text-dark);
+            opacity: 1;
+        }
+        .sort-indicator.inactive {
+            color: var(--border-color);
+            opacity: 0.4;
+        }
+
         /* Visualizations */
         .viz-container {
             width: 100%;
@@ -995,6 +1015,7 @@
             display: flex;
             gap: 4px;
         }
+
         .pill {
             padding: 4px 14px;
             border-radius: 20px;
@@ -1007,18 +1028,22 @@
             transition: all 0.2s;
             font-family: 'Inter', sans-serif;
         }
+
         .pill:hover {
             background: rgba(10, 78, 163, 0.08);
         }
+
         .pill.active {
             background: var(--primary);
             color: #fff;
             border-color: var(--primary);
         }
+
         .valor-positivo {
             color: var(--accent-green);
             font-weight: 600;
         }
+
         .valor-negativo {
             color: #ef4444;
             font-weight: 600;
@@ -1147,7 +1172,8 @@
                 <!-- Left Filters -->
                 <div class="card text-panel">
                     <h2 style="font-size: 18px;">Crescimento por Atividade (2 anos)</h2>
-                    <p style="font-size: 13px;">Selecione a métrica, granularidade e os territórios para comparar o crescimento entre atividades econômicas.</p>
+                    <p style="font-size: 13px;">Selecione a métrica, granularidade e os territórios para comparar o
+                        crescimento entre atividades econômicas.</p>
                     <div class="filter-group">
                         <div class="filter-control">
                             <label>Métrica</label>
@@ -1202,8 +1228,10 @@
                         </div>
                         <div class="pagination">
                             <span id="csv-page-info">0 resultados</span>
-                            <button class="pagination-btn" id="csv-prev-btn" onclick="changeCsvPage(-1)" disabled>Anterior</button>
-                            <button class="pagination-btn" id="csv-next-btn" onclick="changeCsvPage(1)" disabled>Próximo</button>
+                            <button class="pagination-btn" id="csv-prev-btn" onclick="changeCsvPage(-1)"
+                                disabled>Anterior</button>
+                            <button class="pagination-btn" id="csv-next-btn" onclick="changeCsvPage(1)"
+                                disabled>Próximo</button>
                         </div>
                     </div>
                 </div>
@@ -1220,7 +1248,7 @@
                 </div>
             </div>
 
-            <div class="fonte-panorama">Fonte: Observatório Sebrae e RAIS — Relação Anual de Informações Sociais (2025)
+            <div class="fonte-panorama">Fonte: SEBRAE baseado na RAIS
             </div>
         </div>
 
@@ -1800,6 +1828,8 @@
         let csvPage = 1;
         const csvPageSize = 10;
         let csvData = [];
+        let colunaAtiva = -1;
+        let direcaoOrdenacao = 'desc';
         let vcrChart = null;
         let setoresProcessados = [];
         let ufsProcessados = [];
@@ -3532,6 +3562,8 @@
                 linhas.sort((a, b) => b.valores[primary] - a.valores[primary]);
 
                 csvData = linhas;
+                colunaAtiva = -1;
+                direcaoOrdenacao = 'desc';
                 csvPage = 1;
                 renderCsvTable();
             }).catch(err => {
@@ -3544,10 +3576,29 @@
             const tbody = document.getElementById('tbody-crescimento-csv');
 
             const headerRow = document.getElementById('csv-table-headers');
-            headerRow.innerHTML = '<th>Atividade Econômica</th>';
-            territories.forEach(t => {
-                const label = STATE_NAMES[t] || t;
-                headerRow.innerHTML += '<th>' + label + ' (Var %)</th>';
+            headerRow.innerHTML = '';
+            const labels = ['Atividade Econômica', ...territories.map(t => STATE_NAMES[t] || t)];
+            labels.forEach((label, idx) => {
+                const th = document.createElement('th');
+                th.style.cursor = 'pointer';
+
+                const textSpan = document.createElement('span');
+                textSpan.textContent = idx === 0 ? label : label + ' (Var %)';
+                th.appendChild(textSpan);
+
+                const indicator = document.createElement('span');
+                indicator.className = 'sort-indicator';
+                if (idx === colunaAtiva) {
+                    indicator.textContent = direcaoOrdenacao === 'asc' ? ' ▲' : ' ▼';
+                    indicator.classList.add('active');
+                } else {
+                    indicator.textContent = ' ⇅';
+                    indicator.classList.add('inactive');
+                }
+                th.appendChild(indicator);
+
+                th.addEventListener('click', () => ordenarTabela(idx));
+                headerRow.appendChild(th);
             });
 
             const total = csvData.length;
@@ -3579,6 +3630,35 @@
 
         function changeCsvPage(dir) {
             csvPage += dir;
+            renderCsvTable();
+        }
+
+        function ordenarTabela(indiceColuna) {
+            if (csvData.length === 0) return;
+
+            const territories = getSelectedTerritoriesCsv();
+
+            if (indiceColuna === colunaAtiva) {
+                direcaoOrdenacao = direcaoOrdenacao === 'asc' ? 'desc' : 'asc';
+            } else {
+                colunaAtiva = indiceColuna;
+                direcaoOrdenacao = 'desc';
+            }
+
+            csvData.sort((a, b) => {
+                let comparison;
+                if (indiceColuna === 0) {
+                    comparison = a.atividade.localeCompare(b.atividade, 'pt-BR');
+                } else {
+                    const tCode = territories[indiceColuna - 1];
+                    const valA = a.valores[tCode] ?? (direcaoOrdenacao === 'desc' ? -Infinity : Infinity);
+                    const valB = b.valores[tCode] ?? (direcaoOrdenacao === 'desc' ? -Infinity : Infinity);
+                    comparison = valA - valB;
+                }
+                return direcaoOrdenacao === 'asc' ? comparison : -comparison;
+            });
+
+            csvPage = 1;
             renderCsvTable();
         }
 
