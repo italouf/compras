@@ -1122,7 +1122,7 @@
                     <div class="destaque" id="kpi-rais-est-delta"
                         style="font-size: 12px; margin-top: 4px; color: var(--text-muted);"></div>
                 </div>
-                <div class="card" style="border-left: 4px solid var(--accent-green); padding: 16px 20px;">
+                <div class="card" style="border-left: 4px solid var(--primary); padding: 16px 20px;">
                     <div class="card-subtitle"
                         style="margin-bottom: 4px; text-transform: uppercase; font-size: 11px; font-weight: 600; letter-spacing: 0.5px;">
                         Vínculos Formais (RAIS)</div>
@@ -1132,7 +1132,7 @@
                         style="font-size: 12px; margin-top: 4px; color: var(--text-muted);"></div>
                 </div>
                 <div class="card"
-                    style="border-left: 4px solid var(--accent-blue); padding: 16px 20px; display: flex; flex-direction: column; justify-content: center;">
+                    style="border-left: 4px solid var(--primary); padding: 16px 20px; display: flex; flex-direction: column; justify-content: center;">
                     <div class="card-subtitle"
                         style="margin-bottom: 4px; text-transform: uppercase; font-size: 11px; font-weight: 600; letter-spacing: 0.5px;">
                         Ano de Referência (RAIS)</div>
@@ -1335,16 +1335,16 @@
                     <div class="kpi-label">Valor total das compras industriais (2025)</div>
                     <div class="kpi-value" id="kpiTotalPerfil">R$ 3,09 bi</div>
                 </div>
-                <div class="kpi-card" style="border-left-color: var(--accent-green);">
+                <div class="kpi-card">
                     <div class="kpi-label">Crescimento das compras (2023-2025)</div>
                     <div class="kpi-value" id="kpiCrescimentoPerfil">+37,0%</div>
                 </div>
-                <div class="kpi-card" style="border-left-color: var(--accent-orange);">
+                <div class="kpi-card">
                     <div class="kpi-label">Compras de fornecedores baianos (2025)</div>
                     <div class="kpi-value" id="kpiLocalPerfil">R$ 1,19 bi</div>
                     <div class="kpi-sub" id="kpiLocalPctPerfil">30,4% do total</div>
                 </div>
-                <div class="kpi-card" style="border-left-color: #ef4444;">
+                <div class="kpi-card">
                     <div class="kpi-label">Dependência externa (2025)</div>
                     <div class="kpi-value" id="kpiDependenciaPerfil">R$ 2,47 bi</div>
                     <div class="kpi-sub" id="kpiDependenciaPctPerfil">69,4% do total</div>
@@ -2951,7 +2951,7 @@
             const pct = ((diff / previousVal) * 100).toFixed(1);
             const arrow = diff >= 0 ? "▲ +" : "▼ ";
             const color = diff >= 0 ? "var(--accent-green)" : "#ef4444";
-            return `<span style="color: ${color}; font-weight: 600;">${arrow}${pct}%</span> vs ano ant.`;
+            return `<span style="color: ${color}; font-weight: 600;">${arrow}${pct}%</span> (2023-2025)`;
         }
 
         const textosPorAno = {
