@@ -501,6 +501,26 @@
             opacity: 0.4;
         }
 
+        .grid-3-col {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .bg-white {
+            background-color: #ffffff;
+        }
+        #painel-vcr {
+            margin-bottom: 32px;
+        }
+        .vcr-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
         /* Visualizations */
         .viz-container {
             width: 100%;
@@ -1237,13 +1257,42 @@
                 </div>
             </div>
 
-            <!-- Row 3: VCR Bar Chart (alinhado com a tabela de crescimento) -->
-            <div class="grid-2-col" id="espaco-atividades">
-                <div><!-- espaço vazio para alinhamento --></div>
-                <div class="card">
-                    <div class="card-title">Atividades econômicas mais especializadas (VCR)</div>
-                    <div class="viz-container" id="barChartContainer" style="height: 520px;">
-                        <canvas id="graficoVCR"></canvas>
+            <!-- Row 3: Painel de Especialização (VCR/RCA) -->
+            <div id="painel-vcr">
+                <div class="vcr-section-header">
+                    <div>
+                        <h2 style="font-size:18px;margin:0;">Especialização Produtiva da Bahia</h2>
+                    </div>
+                    <div class="filter-control" style="min-width:220px;">
+                        <label>Setores Produtivos</label>
+                        <select id="filtro-setor-vcr">
+                            <option value="Todos">Todos os Setores</option>
+                            <option value="Agricultura">Agricultura</option>
+                            <option value="Indústria">Indústria</option>
+                            <option value="Serviços">Serviços</option>
+                            <option value="Comércio">Comércio</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid-3-col">
+                    <div class="card bg-white">
+                        <div class="card-title">Atividades Econômicas Mais Especializadas</div>
+                        <div class="viz-container" style="height:400px;">
+                            <canvas id="chartMaisEspecializadas"></canvas>
+                        </div>
+                    </div>
+                    <div class="card bg-white">
+                        <div class="card-title">Novas Especializações</div>
+                        <div class="viz-container" style="height:400px;">
+                            <canvas id="chartNovasEspec"></canvas>
+                        </div>
+                    </div>
+                    <div class="card bg-white">
+                        <div class="card-title">Maior Variação de Especialização</div>
+                        <div class="viz-container" style="height:400px;">
+                            <canvas id="chartVariacao"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1830,7 +1879,9 @@
         let csvData = [];
         let colunaAtiva = -1;
         let direcaoOrdenacao = 'desc';
-        let vcrChart = null;
+        const chartInstances = {};
+        let dadosVCR = { maisEspecializadas: [], novasEspec: [], variacao: [] };
+        let setorVCRAtivo = 'Todos';
         let setoresProcessados = [];
         let ufsProcessados = [];
         let currentPagePerfil = 1;
@@ -3075,7 +3126,6 @@
         function drawAllVisualizations() {
             drawBrazilMap();
             drawTreemap();
-            drawVcrChart();
         }
 
         // ----------------------------------------------------
@@ -3350,93 +3400,103 @@
 
 
         // ----------------------------------------------------
-        // 5. RCA BAR CHART (VCR)
+        // 5. VCR/RCA CHARTS (CSV-based, 3-panel)
         // ----------------------------------------------------
-        function drawVcrChart() {
-            const ctx = document.getElementById('graficoVCR').getContext('2d');
-            if (vcrChart) {
-                vcrChart.destroy();
+        async function carregarDadosVCR() {
+            try {
+                const [mais, novas, variacao] = await Promise.all([
+                    d3.csv('csv/Atividades económicas mais especializadas pelo índice VCR em Bahia.csv'),
+                    d3.csv('csv/Novas especializações por índice VCR em Bahia.csv'),
+                    d3.csv('csv/Atividades económicas com maior variação de especialização pelo índice VCR em Bahia.csv')
+                ]);
+                dadosVCR.maisEspecializadas = mais;
+                dadosVCR.novasEspec = novas;
+                dadosVCR.variacao = variacao;
+                renderizarGraficosVCR('Todos');
+            } catch (err) {
+                console.error('Erro ao carregar dados VCR:', err);
             }
+        }
 
-            const sortedVcr = [...window.dashboardData.vcr]
-                .sort((a, b) => b.rca - a.rca)
-                .slice(0, 10);
+        function renderizarGraficosVCR(setor) {
+            setorVCRAtivo = setor;
 
-            vcrChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: sortedVcr.map(d => d.class),
-                    datasets: [{
-                        label: 'Índice VCR',
-                        data: sortedVcr.map(d => d.rca),
-                        backgroundColor: sortedVcr.map(d => macroSectorColors[d.gSector] || '#0ea5e9'),
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    onClick: (event, elements) => {
-                        if (elements.length > 0) {
-                            const index = elements[0].index;
-                            const sortedVcr = [...window.dashboardData.vcr]
-                                .sort((a, b) => b.rca - a.rca)
-                                .slice(0, 10);
-                            const selected = sortedVcr[index];
-                            openModal(selected.class);
-                        }
+            const configs = [
+                { id: 'chartMaisEspecializadas', data: dadosVCR.maisEspecializadas, key: 'RCA', ref: 'chartMaisEspecializadas', axisLabel: 'Índice VCR' },
+                { id: 'chartNovasEspec', data: dadosVCR.novasEspec, key: 'RCA', ref: 'chartNovasEspec', axisLabel: 'Índice VCR' },
+                { id: 'chartVariacao', data: dadosVCR.variacao, key: 'RCA Growth', ref: 'chartVariacao', axisLabel: 'Variação VCR' }
+            ];
+
+            configs.forEach(cfg => {
+                const filtered = setor === 'Todos'
+                    ? cfg.data
+                    : cfg.data.filter(d => d['Grande Sector'] === setor);
+
+                const sorted = [...filtered]
+                    .sort((a, b) => parseFloat(b[cfg.key]) - parseFloat(a[cfg.key]))
+                    .slice(0, 10);
+
+                const labels = sorted.map(d => d['Class']);
+                const values = sorted.map(d => parseFloat(d[cfg.key]) || 0);
+                const colors = sorted.map(d => macroSectorColors[d['Grande Sector']] || '#94a3b8');
+
+                const canvas = document.getElementById(cfg.id);
+                if (!canvas) {
+                    console.warn('Canvas não encontrado:', cfg.id);
+                    return;
+                }
+                const ctx = canvas.getContext('2d');
+
+                if (chartInstances[cfg.id]) chartInstances[cfg.id].destroy();
+
+                chartInstances[cfg.id] = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: colors,
+                            borderRadius: 4
+                        }]
                     },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function (context) {
-                                    const orig = sortedVcr[context.dataIndex];
-                                    const year = 2025;
-                                    const rais = getRaisDataForSector(orig.class);
-                                    let label = ` VCR: ${orig.rca.toFixed(2)}`;
-                                    if (rais) {
-                                        label += ` | Empresas RAIS: ${formatNumber(rais.est[year] || 0)} | Empregos RAIS: ${formatNumber(rais.vin[year] || 0)}`;
-                                    }
-                                    return label;
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: ctx => cfg.key === 'RCA'
+                                        ? `VCR: ${ctx.parsed.x.toFixed(2)}`
+                                        : `Variação: ${ctx.parsed.x.toFixed(2)}`
                                 }
                             }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: { display: false },
-                            title: {
-                                display: true,
-                                text: 'Índice VCR',
-                                font: { size: 11, weight: '600' }
-                            }
                         },
-                        y: {
-                            grid: { display: false },
-                            ticks: {
-                                font: { size: 9 },
-                                autoSkip: false,
-                                maxRotation: 0,
-                                callback: function (value, index, ticks) {
-                                    const label = this.getLabelForValue(value);
-                                    if (label.length <= 28) return label;
-                                    const words = label.split(' ');
-                                    const lines = [];
-                                    let line = '';
-                                    for (const word of words) {
-                                        const test = line ? line + ' ' + word : word;
-                                        if (test.length > 28) { lines.push(line); line = word; }
-                                        else { line = test; }
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                title: {
+                                    display: true,
+                                    text: cfg.axisLabel,
+                                    font: { size: 11, weight: '600' }
+                                }
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: {
+                                    font: { size: 9 },
+                                    autoSkip: false,
+                                    callback: function (val) {
+                                        const label = labels[val];
+                                        if (!label) return val;
+                                        return label.length > 30 ? label.substring(0, 27) + '...' : label;
                                     }
-                                    if (line) lines.push(line);
-                                    return lines;
                                 }
                             }
                         }
                     }
-                }
+                });
             });
         }
 
@@ -3930,6 +3990,10 @@
             if (document.getElementById('tab-perfil').classList.contains('active')) {
                 renderizarPerfil();
             }
+            carregarDadosVCR();
+            document.getElementById('filtro-setor-vcr').addEventListener('change', function () {
+                renderizarGraficosVCR(this.value);
+            });
         });
 
         // Listeners para os controles da tabela CSV
