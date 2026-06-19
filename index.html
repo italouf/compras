@@ -911,11 +911,7 @@
                 </div>
                 <div class="card" style="border-left: 4px solid var(--accent-blue); padding: 16px 20px; display: flex; flex-direction: column; justify-content: center;">
                     <div class="card-subtitle" style="margin-bottom: 4px; text-transform: uppercase; font-size: 11px; font-weight: 600; letter-spacing: 0.5px;">Ano de Referência (RAIS)</div>
-                    <select id="filter-rais-year" onchange="updateKpisAndTooltips()" style="width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 13px; outline: none; background: #fff; cursor: pointer; font-weight: 500;">
-                        <option value="2025" selected>2025</option>
-                        <option value="2024">2024</option>
-                        <option value="2023">2023</option>
-                    </select>
+                    <div style="font-size: 24px; font-weight: 700; color: var(--text-dark);">2025</div>
                 </div>
                 <div class="card" style="border-left: 4px solid var(--accent-orange); padding: 16px 20px; display: flex; flex-direction: column; justify-content: center;">
                     <div class="card-subtitle" style="margin-bottom: 4px; text-transform: uppercase; font-size: 11px; font-weight: 600; letter-spacing: 0.5px;">Setor (RAIS)</div>
@@ -2684,7 +2680,7 @@
         };
 
         function updateKpisAndTooltips() {
-            const year = parseInt(document.getElementById("filter-rais-year").value) || 2025;
+            const year = 2025;
             const sectorKey = document.getElementById("filter-rais-sector").value;
             
             let totalEst = 0;
@@ -2734,7 +2730,7 @@
         // Modal triggers
         function openModal(sectorName) {
             const rais = getRaisDataForSector(sectorName);
-            const year = document.getElementById("filter-rais-year").value;
+            const year = "2025";
             
             document.getElementById("modal-sector-title").textContent = sectorName;
             const body = document.getElementById("modal-content-body");
@@ -2916,7 +2912,7 @@
                                     Trabalhadores/Empresa: <strong>${stateData.ratio.toFixed(2)}</strong>
                                 `;
                                 if (sigla === "BA") {
-                                    const year = parseInt(document.getElementById("filter-rais-year").value) || 2025;
+                                    const year = 2025;
                                     let baEst = 0;
                                     let baVin = 0;
                                     Object.values(raisMap).forEach(r => {
@@ -3041,7 +3037,7 @@
                     const sector = d.parent.data.name;
                     const name = d.data.name;
                     const val = d.data.value;
-                    const year = parseInt(document.getElementById("filter-rais-year").value) || 2025;
+                    const year = 2025;
                     
                     let html = `
                         <strong>${name}</strong><br/>
@@ -3289,7 +3285,7 @@
                             callbacks: {
                                 label: function(context) {
                                     const orig = sortedVcr[context.dataIndex];
-                                    const year = parseInt(document.getElementById("filter-rais-year").value) || 2025;
+                                    const year = 2025;
                                     const rais = getRaisDataForSector(orig.class);
                                     let label = ` VCR: ${orig.rca.toFixed(2)}`;
                                     if (rais) {
