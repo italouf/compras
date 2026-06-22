@@ -1284,21 +1284,27 @@
 
                 <div class="grid-3-col">
                     <div class="card bg-white">
-                        <div class="card-title">Atividades Econômicas Mais Especializadas (2023-2025)</div>
-                        <div class="viz-container" style="height:400px;">
-                            <canvas id="chartMaisEspecializadas"></canvas>
+                        <div class="card-title">Atividades econômicas com maior variação de especialização pelo índice VCR na Bahia (2023-2025)</div>
+                        <div class="viz-container" style="flex: 1;">
+                            <div style="position: relative; height: 450px; width: 100%;">
+                                <canvas id="chartMaisEspecializadas"></canvas>
+                            </div>
                         </div>
                     </div>
                     <div class="card bg-white">
-                        <div class="card-title">Novas Especializações (2023-2025)</div>
-                        <div class="viz-container" style="height:400px;">
-                            <canvas id="chartNovasEspec"></canvas>
+                        <div class="card-title">Novas especializações por índice VCR na Bahia (2023-2025)</div>
+                        <div class="viz-container" style="flex: 1;">
+                            <div style="position: relative; height: 450px; width: 100%;">
+                                <canvas id="chartNovasEspec"></canvas>
+                            </div>
                         </div>
                     </div>
                     <div class="card bg-white">
-                        <div class="card-title">Maior Variação de Especialização</div>
-                        <div class="viz-container" style="height:400px;">
-                            <canvas id="chartVariacao"></canvas>
+                        <div class="card-title">Atividades econômicas mais especializadas pelo índice VCR na Bahia (2025)</div>
+                        <div class="viz-container" style="flex: 1;">
+                            <div style="position: relative; height: 450px; width: 100%;">
+                                <canvas id="chartVariacao"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -3450,7 +3456,8 @@
                         datasets: [{
                             data: values,
                             backgroundColor: colors,
-                            borderRadius: 4
+                            borderRadius: 4,
+                            maxBarThickness: 30
                         }]
                     },
                     options: {
