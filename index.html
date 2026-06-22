@@ -1199,8 +1199,8 @@
                 <!-- Left Filters -->
                 <div class="card text-panel">
                     <h2 style="font-size: 18px;">Crescimento por Atividade (2 anos)</h2>
-                    <p style="font-size: 13px;">Selecione a métrica, granularidade e os territórios para comparar o
-                        crescimento entre atividades econômicas.</p>
+                    <p style="font-size: 13px;">Selecione a métrica e a granularidade para visualizar
+                        o crescimento entre atividades econômicas.</p>
                     <div class="filter-group">
                         <div class="filter-control">
                             <label>Métrica</label>
@@ -1214,25 +1214,6 @@
                             <div class="toggle-pills" id="toggle-granularidade-csv">
                                 <button class="pill active" data-value="secao">Seção</button>
                                 <button class="pill" data-value="grupo">Grupo</button>
-                            </div>
-                        </div>
-                        <div class="filter-control">
-                            <label>Territórios para comparar</label>
-                            <div class="multi-select-wrapper" id="territory-wrapper-csv">
-                                <button type="button" class="multi-select-trigger" id="territory-trigger-csv"
-                                    onclick="toggleTerritoryDropdownCsv()">
-                                    <span class="selected-count" id="territory-selected-count-csv">2 selecionados</span>
-                                    <span class="arrow">▼</span>
-                                </button>
-                                <div class="multi-select-dropdown" id="territory-dropdown-csv">
-                                    <div class="multi-select-actions">
-                                        <button type="button" onclick="selectAllTerritoriesCsv(true)"
-                                            class="multi-select-action">Selecionar todos</button>
-                                        <button type="button" onclick="selectAllTerritoriesCsv(false)"
-                                            class="multi-select-action">Limpar</button>
-                                    </div>
-                                    <div class="multi-select-options" id="territory-options-csv"></div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -3428,17 +3409,7 @@
             buildTreemapFilterButtons();
         }
 
-        // COMENTÁRIO: Fecha o dropdown ao clicar fora
-        document.addEventListener("click", function (e) {
-            const wrapperCsv = document.getElementById("territory-wrapper-csv");
-            const ddCsv = document.getElementById("territory-dropdown-csv");
-            if (wrapperCsv && ddCsv && ddCsv.classList.contains("open")) {
-                if (!wrapperCsv.contains(e.target)) {
-                    ddCsv.classList.remove("open");
-                    document.getElementById("territory-trigger-csv").classList.remove("open");
-                }
-            }
-        });
+        // (Dropdown de territórios removido — comparação fixa Bahia vs Brasil)
 
         // ----------------------------------------------------
         // 4. SPACE OF ACTIVITIES (NETWORK GRAPH)
@@ -3563,70 +3534,9 @@
             return base + arquivos[metrica + '_' + granularidade];
         }
 
-        // ---- Multi-select de territórios (CSV) ----
+        // ---- Territórios fixos: Bahia vs Brasil ----
         function getSelectedTerritoriesCsv() {
-            const checked = [];
-            document.querySelectorAll("#territory-options-csv input:checked").forEach(cb => checked.push(cb.value));
-            return checked;
-        }
-
-        function updateTerritoryCountCsv() {
-            const count = getSelectedTerritoriesCsv().length;
-            const el = document.getElementById("territory-selected-count-csv");
-            if (el) el.textContent = count + (count === 1 ? " selecionado" : " selecionados");
-        }
-
-        function onTerritoryCheckboxChangeCsv() {
-            updateTerritoryCountCsv();
-            atualizarTabelaCrescimento();
-        }
-
-        function toggleTerritoryDropdownCsv() {
-            const dd = document.getElementById("territory-dropdown-csv");
-            const trigger = document.getElementById("territory-trigger-csv");
-            dd.classList.toggle("open");
-            trigger.classList.toggle("open");
-        }
-
-        function selectAllTerritoriesCsv(selectAll) {
-            document.querySelectorAll("#territory-options-csv input[type='checkbox']").forEach(cb => {
-                cb.checked = selectAll;
-            });
-            updateTerritoryCountCsv();
-            atualizarTabelaCrescimento();
-        }
-
-        function populateTerritoryCheckboxesCsv() {
-            const container = document.getElementById("territory-options-csv");
-            if (!container) return;
-            const keys = Object.keys(CSV_COLUMN_NAMES);
-            keys.sort((a, b) => {
-                if (a === "BA") return -1;
-                if (b === "BA") return 1;
-                if (a === "BR") return -1;
-                if (b === "BR") return 1;
-                return CSV_COLUMN_NAMES[a].localeCompare(CSV_COLUMN_NAMES[b]);
-            });
-            container.innerHTML = "";
-            keys.forEach(code => {
-                const label = document.createElement("label");
-                label.className = "multi-select-option";
-                const cb = document.createElement("input");
-                cb.type = "checkbox";
-                cb.value = code;
-                if (code === "BA" || code === "BR") cb.checked = true;
-                cb.addEventListener("change", onTerritoryCheckboxChangeCsv);
-                const flag = document.createElement("img");
-                flag.className = "flag-icon";
-                flag.src = FLAG_BASE_URL + (UF_TO_FLAG[code] || "");
-                flag.alt = STATE_NAMES[code] || code;
-                flag.loading = "lazy";
-                label.appendChild(cb);
-                label.appendChild(flag);
-                label.appendChild(document.createTextNode(" " + (STATE_NAMES[code] || code)));
-                container.appendChild(label);
-            });
-            updateTerritoryCountCsv();
+            return ['BA', 'BR'];
         }
 
         // ---- Carga e renderização da tabela CSV ----
@@ -4200,7 +4110,6 @@ function renderizarMapaCalor() {
             initMappings();
             handleRouting();
             window.addEventListener('hashchange', handleRouting);
-            populateTerritoryCheckboxesCsv();
             atualizarTabelaCrescimento();
             updateKpisAndTooltips();
             processarDadosPerfil();
