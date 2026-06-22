@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
@@ -1488,11 +1488,11 @@
                     </p>
                     <p style="font-size: 13px; color: var(--text-muted);">
                         <strong>Como Ler:</strong> Cada bolha representa um setor. O tamanho da bolha indica a
-                        importância ponderada (econômica, ambiental e gestão). A posição revela a prioridade: quadrante
-                        superior direito = <span style="color: #0a4ea3;">Estratégico</span> (máxima prioridade);
-                        superior esquerdo = <span style="color: #10b981;">Alavancagem</span> (potencial); inferior
-                        direito = <span style="color: #ef4444;">Gargalo</span> (importante mas estável); inferior
-                        esquerdo = <span style="color: #f97316;">Não Crítico</span>. Passe o mouse para ver detalhes de
+                        importância ponderada pelos eixos: econômica, ambiental e gestão. A posição revela a prioridade: quadrante
+                        superior direito = <span style="color: #0a4ea3;">Estratégico</span> (alto volume e alto crescimento. Prioridade máxima para ação e investimento);
+                        superior esquerdo = <span style="color: #10b981;">Alavancagem</span> (baixo volume e alto crescimento. Oportunidade de desenvolvimento e expansão); inferior
+                        direito = <span style="color: #ef4444;">Gargalo</span> (alto volume e baixo crescimento. Atenção a restrições, dependências ou ineficiências); inferior
+                        esquerdo = <span style="color: #f97316;">Não Crítico</span> (baixo volume e baixo crescimento. Manter monitoramento). Passe o mouse para ver detalhes de
                         cada setor.
                     </p>
                 </div>
@@ -1587,6 +1587,22 @@
                 </div>
             </div>
                     <div class="fonte">Fonte: FIEB e SENAI CIMATEC baseado nos dados SIMPAS (SAEB) </div>
+                    <div style="margin-top: 12px; text-align: left;">
+                        <div class="fonte">Conheça mais: </div>
+    <a href="https://raw.githubusercontent.com/NEI-Senai-Cimatec/compras/main/docs/Metodologia%20Prioriza%C3%A7%C3%A3o%20de%20Compras%20P%C3%BAblicas.pdf" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 6px;">
+        📄 Baixar PDF - Metodologia 
+    </a>
+    <div class="fonte"></div>
+    <a href="https://github.com/NEI-Senai-Cimatec/compras/blob/main/docs/analise_compras__ba.xlsx" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 6px;">
+        📄 Baixar base de dados 
+    </a>
+</div>
         </div>
 
         <!-- Footer -->
@@ -4588,16 +4604,16 @@ function renderizarMatrizPriorizacao() {
                     bodyFont: { size: 13 },
                     padding: 14,
                     cornerRadius: 8,
+
                     callbacks: {
                         label: function (context) {
                             const raw = context.raw;
                             return [
-                                ` ${raw.setor}`,
-                                `   CNAE: ${raw.cnae}`,
-                                `   Volume: R$ ${formatarMoeda(raw.volume)}`,
-                                `   Crescimento: ${raw.crescimento >= 0 ? '+' : ''}${raw.crescimento.toFixed(1)}%`,
-                                `   Score: ${raw.score.toFixed(1)}`,
-                                `   Quadrante: ${raw.quadrante}`
+                `CNAE: ${raw.cnae}`,
+                `Total de compras: R$ ${formatarMoeda(raw.volume)}`,
+                `Crescimento (2023-2025): ${raw.crescimento >= 0 ? '+' : ''}${raw.crescimento.toFixed(1)}%`,
+                `Score: ${raw.score.toFixed(1)}`,
+                `Quadrante: ${raw.quadrante}`
                             ];
                         }
                     }
