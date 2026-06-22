@@ -3188,22 +3188,9 @@
                                 let html = `
                                     <strong>${stateData.name} (${sigla})</strong><br/>
                                     Estabelecimentos: ${formatNumber(stateData.est)}<br/>
-                                    Trabalhadores: ${formatNumber(stateData.workers)}<br/>
-                                    Trabalhadores/Empresa: <strong>${stateData.ratio.toFixed(2)}</strong>
+                                    Vínculos Formais: ${formatNumber(stateData.workers)}<br/>
+                                    Empregados/Total empresas: <strong>${stateData.ratio.toFixed(2)}</strong>
                                 `;
-                                if (sigla === "BA") {
-                                    const year = 2025;
-                                    let baEst = 0;
-                                    let baVin = 0;
-                                    Object.values(raisMap).forEach(r => {
-                                        baEst += r.est[year] || 0;
-                                        baVin += r.vin[year] || 0;
-                                    });
-                                    html += `<br/><hr style="margin: 6px 0; border: 0; border-top: 1px solid rgba(255,255,255,0.2);"/>`;
-                                    html += `<strong>Bahia RAIS (${year}):</strong><br/>`;
-                                    html += `Empresas (RAIS): <strong>${formatNumber(baEst)}</strong><br/>`;
-                                    html += `Empregos (RAIS): <strong>${formatNumber(baVin)}</strong>`;
-                                }
                                 tooltip.style("display", "block").html(html);
                             }
                         })
