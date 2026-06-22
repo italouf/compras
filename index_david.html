@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
@@ -539,6 +539,16 @@
             justify-content: center;
         }
 
+        .viz-containera {
+    width: 100%;
+    height: 380px; /* pode ser sobrescrito por inline style */
+    position: relative;
+    background: #ffffff;
+    display: flex;
+    align-items: stretch; /* importante para ocupar toda a altura */
+    justify-content: center;
+}
+
         .map-legend {
             display: flex;
             justify-content: space-between;
@@ -695,7 +705,7 @@
 
         .kpi-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 20px;
             margin-bottom: 32px;
         }
@@ -1160,7 +1170,7 @@
                             <strong>704.598</strong> estabelecimentos no referido período.
                         </p>
                         <p>Esse total de estabelecimentos representa um aumento de <strong>94.7%</strong> em relação a
-                            dois anos atrás.</p>
+                            cinco anos atrás.</p>
                         <p>Mas como esse crescimento se compara ao crescimento no Brasil e em outros territórios
                             relacionados?</p>
                     </div>
@@ -1199,8 +1209,8 @@
                 <!-- Left Filters -->
                 <div class="card text-panel">
                     <h2 style="font-size: 18px;">Crescimento por Atividade (2 anos)</h2>
-                    <p style="font-size: 13px;">Selecione a métrica e a granularidade para visualizar
-                        o crescimento entre atividades econômicas.</p>
+                    <p style="font-size: 13px;">Selecione a métrica, granularidade e os territórios para comparar o
+                        crescimento entre atividades econômicas.</p>
                     <div class="filter-group">
                         <div class="filter-control">
                             <label>Métrica</label>
@@ -1214,6 +1224,25 @@
                             <div class="toggle-pills" id="toggle-granularidade-csv">
                                 <button class="pill active" data-value="secao">Seção</button>
                                 <button class="pill" data-value="grupo">Grupo</button>
+                            </div>
+                        </div>
+                        <div class="filter-control">
+                            <label>Territórios para comparar</label>
+                            <div class="multi-select-wrapper" id="territory-wrapper-csv">
+                                <button type="button" class="multi-select-trigger" id="territory-trigger-csv"
+                                    onclick="toggleTerritoryDropdownCsv()">
+                                    <span class="selected-count" id="territory-selected-count-csv">2 selecionados</span>
+                                    <span class="arrow">▼</span>
+                                </button>
+                                <div class="multi-select-dropdown" id="territory-dropdown-csv">
+                                    <div class="multi-select-actions">
+                                        <button type="button" onclick="selectAllTerritoriesCsv(true)"
+                                            class="multi-select-action">Selecionar todos</button>
+                                        <button type="button" onclick="selectAllTerritoriesCsv(false)"
+                                            class="multi-select-action">Limpar</button>
+                                    </div>
+                                    <div class="multi-select-options" id="territory-options-csv"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1265,29 +1294,21 @@
 
                 <div class="grid-3-col">
                     <div class="card bg-white">
-                        <div class="card-title">Atividades econômicas com maior variação de especialização pelo índice
-                            VCR na Bahia (2023-2025)</div>
-                        <div class="viz-container" style="flex: 1;">
-                            <div style="position: relative; height: 450px; width: 100%;">
-                                <canvas id="chartMaisEspecializadas"></canvas>
-                            </div>
+                        <div class="card-title">Atividades Econômicas Mais Especializadas (2023-2025)</div>
+                        <div class="viz-container" style="height:400px;">
+                            <canvas id="chartMaisEspecializadas"></canvas>
                         </div>
                     </div>
                     <div class="card bg-white">
-                        <div class="card-title">Novas especializações por índice VCR na Bahia (2023-2025)</div>
-                        <div class="viz-container" style="flex: 1;">
-                            <div style="position: relative; height: 450px; width: 100%;">
-                                <canvas id="chartNovasEspec"></canvas>
-                            </div>
+                        <div class="card-title">Novas Especializações (2023-2025)</div>
+                        <div class="viz-container" style="height:400px;">
+                            <canvas id="chartNovasEspec"></canvas>
                         </div>
                     </div>
                     <div class="card bg-white">
-                        <div class="card-title">Atividades econômicas mais especializadas pelo índice VCR na Bahia
-                            (2025)</div>
-                        <div class="viz-container" style="flex: 1;">
-                            <div style="position: relative; height: 450px; width: 100%;">
-                                <canvas id="chartVariacao"></canvas>
-                            </div>
+                        <div class="card-title">Maior Variação de Especialização</div>
+                        <div class="viz-container" style="height:400px;">
+                            <canvas id="chartVariacao"></canvas>
                         </div>
                     </div>
                 </div>
@@ -1298,14 +1319,13 @@
         </div>
 
         <!-- Tab 2: Perfil das compras públicas (NOVO) -->
-        <!-- Tab 2: Perfil das compras públicas (sem filtros) -->
-        <div id="tab-perfil" class="tab-content">
+<!-- Tab 2: Perfil das compras públicas (sem filtros) -->
+<div id="tab-perfil" class="tab-content">
 
-            <!-- Título -->
-            <h2
-                style="font-family: 'Poppins', sans-serif; font-size: 24px; font-weight: 700; color: var(--primary); margin-bottom: 20px;">
-                Compra públicas de materiais industriais
-            </h2>
+    <!-- Título -->
+    <h2 style="font-family: 'Poppins', sans-serif; font-size: 24px; font-weight: 700; color: var(--primary); margin-bottom: 20px;">
+        Compra públicas de materiais industriais
+    </h2>
 
             <!-- KPIs -->
             <div class="kpi-grid" id="kpiContainer">
@@ -1333,83 +1353,81 @@
                     <div class="kpi-sub" id="kpiDependenciaPctPerfil">1,4% do total</div>
                 </div>
             </div>
-            <!-- Linha 1: Estrutura (texto) + Top 10 setores -->
-            <div class="grid-2-col">
-                <div class="card text-panel">
-                    <h2>Estrutura das compras p&uacute;blicas na Bahia</h2>
-                    <p>
-                        Em 2025, as compras p&uacute;blicas na Bahia totalizaram <strong>R$ 3,09
-                            bilh&otilde;es</strong>. Os dez maiores setores concentraram <strong>76%</strong> desse
-                        volume, liderados pela fabrica&ccedil;&atilde;o de produtos farmac&ecirc;uticos (R$ 886,1 mi),
-                        fabrica&ccedil;&atilde;o de autom&oacute;veis (R$ 506,3 mi).
-                    </p>
-                    <p><strong>Onde est&aacute; crescendo e caindo a compra p&uacute;blica?</strong></p>
+    <!-- Linha 1: Estrutura (texto) + Top 10 setores -->
+    <div class="grid-2-col">
+        <div class="card text-panel">
+            <h2>Estrutura das compras p&uacute;blicas na Bahia</h2>
+            <p>
+                Em 2025, as compras p&uacute;blicas na Bahia totalizaram <strong>R$ 3,09
+                    bilh&otilde;es</strong>. Os dez maiores setores concentraram <strong>76%</strong> desse
+                volume, liderados pela fabrica&ccedil;&atilde;o de produtos farmac&ecirc;uticos (R$ 886,1 mi),
+                fabrica&ccedil;&atilde;o de autom&oacute;veis (R$ 506,3 mi).
+            </p>
+            <p><strong>Onde est&aacute; crescendo e caindo a compra p&uacute;blica?</strong></p>
+        </div>
+        <div class="card">
+            <div class="card-title">Top 10 setores por valor de compras (2025)</div>
+            <div class="viz-container" style="height:450px;">
+                <canvas id="graficoTopSetoresPerfil"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Linha 2: Dinâmica + Ranking de Variação (2 gráficos) -->
+    <div class="grid-2-col">
+        <div class="card text-panel">
+            <h2>Din&acirc;mica</h2>
+            <p>
+                Entre 2023-2025, as compras p&uacute;blicas na Bahia cresceram <strong>37%</strong>. Setores em
+                crescimento: <span id="setoresCrescimento">X(%), Y(%), Z(%)</span>. Em decrescimento: <span
+                    id="setoresQueda">A(%), B(%), C(%)</span>.
+            </p>
+            <p><strong>Essa demanda est&aacute; sendo atendida por fornecedores locais ou est&aacute; vazando
+                    para importa&ccedil;&atilde;o e outros estados?</strong></p>
+        </div>
+        <div class="card">
+            <div class="card-title">Ranking de Varia&ccedil;&atilde;o das Compras P&uacute;blicas</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div>
+                    <div class="card-subtitle">Maiores Crescimentos 2023 &ndash; 2025 (%)</div>
+                    <div class="viz-container" style="height:300px;">
+                        <canvas id="graficoCrescimentoPerfil"></canvas>
+                    </div>
                 </div>
-                <div class="card">
-                    <div class="card-title">Top 10 setores por valor de compras (2025)</div>
-                    <div class="viz-container" style="height:450px;">
-                        <canvas id="graficoTopSetoresPerfil"></canvas>
+                <div>
+                    <div class="card-subtitle">Maiores Quedas 2023 &ndash; 2025 (%)</div>
+                    <div class="viz-container" style="height:300px;">
+                        <canvas id="graficoQuedaPerfil"></canvas>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Linha 2: Dinâmica + Ranking de Variação (2 gráficos) -->
-            <div class="grid-2-col">
-                <div class="card text-panel">
-                    <h2>Din&acirc;mica</h2>
-                    <p>
-                        Entre 2023-2025, as compras p&uacute;blicas na Bahia cresceram <strong>37%</strong>. Setores em
-                        crescimento: <span id="setoresCrescimento">X(%), Y(%), Z(%)</span>. Em decrescimento: <span
-                            id="setoresQueda">A(%), B(%), C(%)</span>.
-                    </p>
-                    <p><strong>Essa demanda est&aacute; sendo atendida por fornecedores locais ou est&aacute; vazando
-                            para importa&ccedil;&atilde;o e outros estados?</strong></p>
-                </div>
-                <div class="card">
-                    <div class="card-title">Ranking de Varia&ccedil;&atilde;o das Compras P&uacute;blicas</div>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-                        <div>
-                            <div class="card-subtitle">Maiores Crescimentos 2023 &ndash; 2025 (%)</div>
-                            <div class="viz-container" style="height:300px;">
-                                <canvas id="graficoCrescimentoPerfil"></canvas>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="card-subtitle">Maiores Quedas 2023 &ndash; 2025 (%)</div>
-                            <div class="viz-container" style="height:300px;">
-                                <canvas id="graficoQuedaPerfil"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <!-- Linha 3: Fornecedores + Mapa + Gráfico local x externo -->
+    <div class="grid-layout">
+        <div class="card text-panel">
+            <h2>Fornecedores</h2>
+            <p>
+                Em 2025, <strong>59,8%</strong> das compras p&uacute;blicas baianas foram atendidas por
+                fornecedores externos da Bahia (liderados por S&atilde;o Paulo, 43,3%). Apenas <strong>38,7%</strong> (R$
+                1,20 bi) vieram de fornecedores locais da Bahia: produtos farmac&ecirc;uticos e m&aacute;quinas e
+                equi    pamentos lideraram.
+            </p>
+        </div>
+          <div class="card">
+        <div class="card-title">Origem dos fornecedores por UF (2025)</div>
+        <div class="viz-container viz-container-map" id="mapaCalorPerfil"></div>
+                <div class="map-legend">
+            <span style="font-weight:600;">Volume de compras (R$)</span>
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <span id="map-legend-min">R$ 0</span>
+                <div class="legend-gradient"></div>
+                <span id="map-legend-max">R$ 1,2 bi</span>
             </div>
-
-            <!-- Linha 3: Fornecedores + Mapa + Gráfico local x externo -->
-            <div class="grid-layout">
-                <div class="card text-panel">
-                    <h2>Fornecedores</h2>
-                    <p>
-                        Em 2025, <strong>59,8%</strong> das compras p&uacute;blicas baianas foram atendidas por
-                        fornecedores externos da Bahia (liderados por S&atilde;o Paulo, 43,3%). Apenas
-                        <strong>38,7%</strong> (R$
-                        1,20 bi) vieram de fornecedores locais da Bahia: produtos farmac&ecirc;uticos e m&aacute;quinas
-                        e
-                        equi pamentos lideraram.
-                    </p>
-                </div>
-                <div class="card">
-                    <div class="card-title">Origem dos fornecedores por UF (2025)</div>
-                    <div class="viz-container viz-container-map" id="mapaCalorPerfil"></div>
-                    <div class="map-legend">
-                        <span style="font-weight:600;">Volume de compras (R$)</span>
-                        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                            <span id="map-legend-min">R$ 0</span>
-                            <div class="legend-gradient"></div>
-                            <span id="map-legend-max">R$ 1,2 bi</span>
-                        </div>
-                    </div>
-                </div>
-                <!--div class="card">
+        </div>
+    </div>
+        <!--div class="card">
             <div class="card-title">Origem dos fornecedores por UF (2025)</div>
             <div class="viz-container viz-container-map" id="mapaCalorPerfil"></div>
             <div class="map-legend">
@@ -1418,46 +1436,45 @@
                 <span>Alto</span>
             </div>
         </div-->
-                <div class="card">
-                    <div class="card-title">Compras locais (BA) x Externas por atividade (2025 | Em milhões de reais R$)
-                    </div>
-                    <div class="viz-container" style="height:350px;">
-                        <canvas id="graficoLocalExternoPerfil"></canvas>
-                    </div>
-                </div>
+        <div class="card">
+            <div class="card-title">Compras locais (BA) x Externas por atividade (2025 | Em milhões de reais R$)</div>
+            <div class="viz-container" style="height:350px;">
+                <canvas id="graficoLocalExternoPerfil"></canvas>
             </div>
-
-            <!-- Linha 4: Síntese + Tabela (ocupando 2 colunas) -->
-            <div class="grid-layout-2col">
-                <div class="card text-panel">
-                    <h2>S&iacute;ntese</h2>
-                </div>
-                <div class="card">
-                    <div class="table-container">
-                        <table id="tabelaSetoresPerfil">
-                            <thead>
-                                <tr>
-                                    <th>CNAE</th>
-                                    <th>Setor</th>
-                                    <th>2023</th>
-                                    <th>2025</th>
-                                    <th>Varia&ccedil;&atilde;o (%)</th>
-                                    <th>Dep. Ext. 2025</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbodySetoresPerfil"></tbody>
-                        </table>
-                    </div>
-                    <div class="pagination">
-                        <span id="pageInfoPerfil">1-10 de 0</span>
-                        <button class="pagination-btn" id="prevPagePerfil" disabled>Anterior</button>
-                        <button class="pagination-btn" id="nextPagePerfil">Pr&oacute;ximo</button>
-                    </div>
-                    <div class="fonte">Fonte: SENAI CIMATEC baseada no SIMPAS (SAEB)</div>
-                </div>
-            </div>
-
         </div>
+    </div>
+
+    <!-- Linha 4: Síntese + Tabela (ocupando 2 colunas) -->
+    <div class="grid-layout-2col">
+        <div class="card text-panel">
+            <h2>S&iacute;ntese</h2>
+        </div>
+        <div class="card">
+            <div class="table-container">
+                <table id="tabelaSetoresPerfil">
+                    <thead>
+                        <tr>
+                            <th>CNAE</th>
+                            <th>Setor</th>
+                            <th>2023</th>
+                            <th>2025</th>
+                            <th>Varia&ccedil;&atilde;o (%)</th>
+                            <th>Dep. Ext. 2025</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodySetoresPerfil"></tbody>
+                </table>
+            </div>
+            <div class="pagination">
+                <span id="pageInfoPerfil">1-10 de 0</span>
+                <button class="pagination-btn" id="prevPagePerfil" disabled>Anterior</button>
+                <button class="pagination-btn" id="nextPagePerfil">Pr&oacute;ximo</button>
+            </div>
+            <div class="fonte">Fonte: SENAI CIMATEC baseada no SIMPAS (SAEB)</div>
+        </div>
+    </div>
+
+</div>
         <!-- Tab 3: Priorização setorial -->
         <div id="tab-priorizacao" class="tab-content active">
             <div class="card">
@@ -1471,16 +1488,11 @@
                     </p>
                     <p style="font-size: 13px; color: var(--text-muted);">
                         <strong>Como Ler:</strong> Cada bolha representa um setor. O tamanho da bolha indica a
-                        importância ponderada pelos eixos: econômica, ambiental e gestão. A posição revela a prioridade:
-                        quadrante
-                        superior direito = <span style="color: #0a4ea3;">Estratégico</span> (alto volume e alto
-                        crescimento. Prioridade máxima para ação e investimento);
-                        superior esquerdo = <span style="color: #10b981;">Alavancagem</span> (baixo volume e alto
-                        crescimento. Oportunidade de desenvolvimento e expansão); inferior
-                        direito = <span style="color: #ef4444;">Gargalo</span> (alto volume e baixo crescimento. Atenção
-                        a restrições, dependências ou ineficiências); inferior
-                        esquerdo = <span style="color: #f97316;">Não Crítico</span> (baixo volume e baixo crescimento.
-                        Manter monitoramento). Passe o mouse para ver detalhes de
+                        importância ponderada pelos eixos: econômica, ambiental e gestão. A posição revela a prioridade: quadrante
+                        superior direito = <span style="color: #0a4ea3;">Estratégico</span> (alto volume e alto crescimento. Prioridade máxima para ação e investimento);
+                        superior esquerdo = <span style="color: #10b981;">Alavancagem</span> (baixo volume e alto crescimento. Oportunidade de desenvolvimento e expansão); inferior
+                        direito = <span style="color: #ef4444;">Gargalo</span> (alto volume e baixo crescimento. Atenção a restrições, dependências ou ineficiências); inferior
+                        esquerdo = <span style="color: #f97316;">Não Crítico</span> (baixo volume e baixo crescimento. Manter monitoramento). Passe o mouse para ver detalhes de
                         cada setor.
                     </p>
                 </div>
@@ -1555,21 +1567,15 @@
                                 </tr>
                             </thead-->
                             <thead>
-                                <tr>
-                                    <th data-col="cnae" style="cursor:pointer;">CNAE <span
-                                            class="sort-indicator">⇅</span></th>
-                                    <th data-col="setor" style="cursor:pointer;">Setor <span
-                                            class="sort-indicator">⇅</span></th>
-                                    <th data-col="score" style="cursor:pointer;">Score <span
-                                            class="sort-indicator">⇅</span></th>
-                                    <th data-col="volume" style="cursor:pointer;">Volume (R$ 2025) <span
-                                            class="sort-indicator">⇅</span></th>
-                                    <th data-col="crescimento" style="cursor:pointer;">Crescimento (%) <span
-                                            class="sort-indicator">⇅</span></th>
-                                    <th data-col="quadrante" style="cursor:pointer;">Quadrante <span
-                                            class="sort-indicator">⇅</span></th>
-                                </tr>
-                            </thead>
+    <tr>
+        <th data-col="cnae" style="cursor:pointer;">CNAE <span class="sort-indicator">⇅</span></th>
+        <th data-col="setor" style="cursor:pointer;">Setor <span class="sort-indicator">⇅</span></th>
+        <th data-col="score" style="cursor:pointer;">Score <span class="sort-indicator">⇅</span></th>
+        <th data-col="volume" style="cursor:pointer;">Volume (R$ 2025) <span class="sort-indicator">⇅</span></th>
+        <th data-col="crescimento" style="cursor:pointer;">Crescimento (%) <span class="sort-indicator">⇅</span></th>
+        <th data-col="quadrante" style="cursor:pointer;">Quadrante <span class="sort-indicator">⇅</span></th>
+    </tr>
+</thead>
                             <tbody id="tbodyPriorizacao"></tbody>
                         </table>
                     </div>
@@ -1580,28 +1586,31 @@
                     </div>
                 </div>
             </div>
-            <div class="fonte">Fonte: FIEB e SENAI CIMATEC baseado nos dados SIMPAS (SAEB) </div>
-            <div style="margin-top: 12px; text-align: left;">
-                <div class="fonte">Conheça mais: </div>
-                <a href="https://raw.githubusercontent.com/NEI-Senai-Cimatec/compras/main/docs/Metodologia%20Prioriza%C3%A7%C3%A3o%20de%20Compras%20P%C3%BAblicas.pdf"
-                    target="_blank" rel="noopener noreferrer"
-                    style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 6px;">
-                    📄 Baixar PDF - Metodologia
-                </a>
-                <div class="fonte"></div>
-                <a href="https://github.com/NEI-Senai-Cimatec/compras/blob/main/docs/analise_compras__ba.xlsx"
-                    target="_blank" rel="noopener noreferrer"
-                    style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 6px;">
-                    📄 Baixar base de dados
-                </a>
-                </a>
-                <div class="fonte"></div>
-                <a href="https://github.com/NEI-Senai-Cimatec/compras/blob/main/docs/Metodologia_Priorizacao_Setores.xlsx"
-                    target="_blank" rel="noopener noreferrer"
-                    style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 6px;">
-                    📄 Baixar Matriz Priorizacao Setores
-                </a>
-            </div>
+                    <div class="fonte">Fonte: FIEB e SENAI CIMATEC baseado nos dados SIMPAS (SAEB) </div>
+                    <div style="margin-top: 12px; text-align: left;">
+                        <div class="fonte">Conheça mais: </div>
+    <a href="https://raw.githubusercontent.com/NEI-Senai-Cimatec/compras/main/docs/Metodologia%20Prioriza%C3%A7%C3%A3o%20de%20Compras%20P%C3%BAblicas.pdf" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 6px;">
+        📄 Baixar PDF - Metodologia 
+    </a>
+    <div class="fonte"></div>
+    <a href="https://github.com/NEI-Senai-Cimatec/compras/blob/main/docs/analise_compras__ba.xlsx" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 6px;">
+        📄 Baixar base de dados 
+    </a>
+    </a>
+    <div class="fonte"></div>
+    <a href="https://github.com/NEI-Senai-Cimatec/compras/blob/main/docs/Metodologia_Priorizacao_Setores.xlsx" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 6px;">
+        📄 Baixar Matriz Priorizacao Setores 
+    </a>
+</div>
         </div>
 
         <!-- Footer -->
@@ -1771,139 +1780,139 @@
                 "crescimento_geral": 37.01
             },
             "setores": [
-                { "cnae": "212", "descricao": "Fabricação de produtos farmacêuticos", "v2023": 588022974.29, "v2025": 886075138.93, "var_pct": 50.69, "dep_2025": 79.42 },
-                { "cnae": "291", "descricao": "Fabricação de automóveis, camionetas e utilitários", "v2023": 216467924.62, "v2025": 506315817.43, "var_pct": 133.9, "dep_2025": 51.5 },
-                { "cnae": "325", "descricao": "Fabricação de instrumentos e materiais para uso médico e odontológico e de artigos ópticos", "v2023": 383497948.13, "v2025": 367246925.52, "var_pct": -4.24, "dep_2025": 60.42 },
-                { "cnae": "262", "descricao": "Fabricação de equipamentos de informática e periféricos", "v2023": 124715686.60, "v2025": 166216466.69, "var_pct": 33.28, "dep_2025": 14.31 },
-                { "cnae": "283", "descricao": "Fabricação de tratores e de máquinas e equipamentos para a agricultura e pecuária", "v2023": 85267587.48, "v2025": 121693315.29, "var_pct": 42.72, "dep_2025": 72.36 },
-                { "cnae": "304", "descricao": "Fabricação de aeronaves", "v2023": 1360007.14, "v2025": 108571822.64, "var_pct": 7883.18, "dep_2025": 99.93 },
-                { "cnae": "292", "descricao": "Fabricação de caminhões e ônibus", "v2023": 6010933.94, "v2025": 100210843.00, "var_pct": 1567.14, "dep_2025": 76.13 },
-                { "cnae": "141", "descricao": "Confecção de artigos do vestuário e acessórios", "v2023": 81292870.46, "v2025": 98803490.39, "var_pct": 21.54, "dep_2025": 18.19 },
-                { "cnae": "211", "descricao": "Fabricação de produtos farmoquímicos", "v2023": 62672494.97, "v2025": 77553396.23, "var_pct": 23.74, "dep_2025": 60.76 },
-                { "cnae": "275", "descricao": "Fabricação de eletrodomésticos", "v2023": 58572616.44, "v2025": 59741332.12, "var_pct": 2.0, "dep_2025": 67.07 },
-                { "cnae": "310", "descricao": "Fabricação de móveis", "v2023": 139849065.71, "v2025": 56658471.74, "var_pct": -59.49, "dep_2025": 60.28 },
-                { "cnae": "329", "descricao": "Fabricação de produtos diversos", "v2023": 24266861.55, "v2025": 47127334.79, "var_pct": 94.2, "dep_2025": 82.84 },
-                { "cnae": "106", "descricao": "Moagem, fabricação de produtos amiláceos e de alimentos para animais", "v2023": 14576644.11, "v2025": 44621709.80, "var_pct": 206.12, "dep_2025": 1.29 },
-                { "cnae": "255", "descricao": "Fabricação de equipamento bélico pesado, armas de fogo e munições", "v2023": 27905760.43, "v2025": 43604058.71, "var_pct": 56.25, "dep_2025": 99.91 },
-                { "cnae": "265", "descricao": "Fabricação de aparelhos e instrumentos de medida, teste e controle; cronômetros e relógios", "v2023": 133107738.00, "v2025": 42369184.63, "var_pct": -68.17, "dep_2025": 86.0 },
-                { "cnae": "222", "descricao": "Fabricação de produtos de material plástico", "v2023": 15084515.44, "v2025": 31694552.65, "var_pct": 110.11, "dep_2025": 2.1 },
-                { "cnae": "282", "descricao": "Fabricação de máquinas e equipamentos de uso geral", "v2023": 34907441.04, "v2025": 30452440.37, "var_pct": -12.76, "dep_2025": 81.05 },
-                { "cnae": "174", "descricao": "Fabricação de produtos diversos de papel, cartolina, papel-cartão e papelão ondulado", "v2023": 24478971.08, "v2025": 20660760.16, "var_pct": -15.6, "dep_2025": 1.7 },
-                { "cnae": "323", "descricao": "Fabricação de artefatos para pesca e esporte", "v2023": 9463141.42, "v2025": 20558125.99, "var_pct": 117.24, "dep_2025": 36.68 },
-                { "cnae": "273", "descricao": "Fabricação de equipamentos para distribuição e controle de energia elétrica", "v2023": 6276947.70, "v2025": 18239438.42, "var_pct": 190.58, "dep_2025": 64.93 },
-                { "cnae": "109", "descricao": "Fabricação de outros produtos alimentícios", "v2023": 12584787.05, "v2025": 17578312.59, "var_pct": 39.68, "dep_2025": 48.06 },
-                { "cnae": "620", "descricao": "Atividades dos serviços de tecnologia da informação", "v2023": 4107244.92, "v2025": 16400947.99, "var_pct": 299.32, "dep_2025": 10.48 },
-                { "cnae": "581", "descricao": "Edição de livros, jornais, revistas e outras atividades de edição", "v2023": 8731445.53, "v2025": 15966652.69, "var_pct": 82.86, "dep_2025": 59.43 },
-                { "cnae": "266", "descricao": "Fabricação de aparelhos eletromédicos e eletroterapêuticos e equipamentos de irradiação", "v2023": 6425784.18, "v2025": 13459898.36, "var_pct": 109.47, "dep_2025": 98.06 },
-                { "cnae": "206", "descricao": "Fabricação de sabões, detergentes, produtos de limpeza, cosméticos, produtos de perfumaria e de higiene pessoal", "v2023": 17918244.81, "v2025": 12163365.51, "var_pct": -32.12, "dep_2025": 1.79 },
-                { "cnae": "259", "descricao": "Fabricação de produtos de metal não especificados anteriormente", "v2023": 6829179.11, "v2025": 12127014.13, "var_pct": 77.58, "dep_2025": 48.06 },
-                { "cnae": "135", "descricao": "Fabricação de artefatos têxteis, exceto vestuário", "v2023": 6257390.67, "v2025": 11890405.28, "var_pct": 90.02, "dep_2025": 76.3 },
-                { "cnae": "232", "descricao": "Fabricação de cimento", "v2023": 13141254.56, "v2025": 10912412.69, "var_pct": -16.96, "dep_2025": 70.58 },
-                { "cnae": "172", "descricao": "Fabricação de papel, cartolina e papel-cartão", "v2023": 9200395.67, "v2025": 9123023.95, "var_pct": -0.84, "dep_2025": 54.9 },
-                { "cnae": "252", "descricao": "Fabricação de tanques, reservatórios metálicos e caldeiras", "v2023": 1426061.80, "v2025": 8698702.09, "var_pct": 509.98, "dep_2025": 0.0 },
-                { "cnae": "112", "descricao": "Fabricação de bebidas não-alcoólicas", "v2023": 7012133.84, "v2025": 8187866.47, "var_pct": 16.77, "dep_2025": 2.07 },
-                { "cnae": "294", "descricao": "Fabricação de peças e acessórios para veículos automotores", "v2023": 2632719.33, "v2025": 8100466.34, "var_pct": 207.68, "dep_2025": 18.76 },
-                { "cnae": "209", "descricao": "Fabricação de produtos e preparados químicos diversos", "v2023": 10888953.54, "v2025": 7770695.41, "var_pct": -28.64, "dep_2025": 47.88 },
-                { "cnae": "322", "descricao": "Fabricação de instrumentos musicais", "v2023": 210877.35, "v2025": 7648286.76, "var_pct": 3526.89, "dep_2025": 94.85 },
-                { "cnae": "261", "descricao": "Fabricação de componentes eletrônicos", "v2023": 7464623.25, "v2025": 7573527.37, "var_pct": 1.46, "dep_2025": 35.45 },
-                { "cnae": "263", "descricao": "Fabricação de equipamentos de comunicação", "v2023": 3035152.62, "v2025": 7058865.41, "var_pct": 132.57, "dep_2025": 89.09 },
-                { "cnae": "221", "descricao": "Fabricação de produtos de borracha", "v2023": 5232134.62, "v2025": 5892364.50, "var_pct": 12.62, "dep_2025": 31.88 },
-                { "cnae": "301", "descricao": "Construção de embarcações", "v2023": 2993100.00, "v2025": 5013861.35, "var_pct": 67.51, "dep_2025": 98.52 },
-                { "cnae": "181", "descricao": "Atividade de impressão", "v2023": 6203969.05, "v2025": 5055711.34, "var_pct": -18.51, "dep_2025": 7.25 },
-                { "cnae": "192", "descricao": "Fabricação de produtos derivados do petróleo", "v2023": 5984806.63, "v2025": 4020034.71, "var_pct": -32.83, "dep_2025": 49.99 },
-                { "cnae": "234", "descricao": "Fabricação de produtos cerâmicos", "v2023": 3067914.57, "v2025": 3819976.66, "var_pct": 24.51, "dep_2025": 1.14 },
-                { "cnae": "271", "descricao": "Fabricação de geradores, transformadores e motores elétricos", "v2023": 3841107.71, "v2025": 3766643.89, "var_pct": -1.94, "dep_2025": 95.93 },
-                { "cnae": "264", "descricao": "Fabricação de aparelhos de recepção, reprodução, gravação e amplificação de áudio e vídeo", "v2023": 9995329.78, "v2025": 3599622.88, "var_pct": -63.99, "dep_2025": 68.09 },
-                { "cnae": "254", "descricao": "Fabricação de artigos de cutelaria, de serralheria e ferramentas", "v2023": 1809459.23, "v2025": 2829777.24, "var_pct": 56.39, "dep_2025": 46.33 },
-                { "cnae": "281", "descricao": "Fabricação de motores, bombas, compressores e equipamentos de transmissão", "v2023": 3032615.14, "v2025": 2547808.01, "var_pct": -15.99, "dep_2025": 76.34 },
-                { "cnae": "267", "descricao": "Fabricação de equipamentos e instrumentos ópticos, fotográficos e cinematográficos", "v2023": 8080290.17, "v2025": 2344963.44, "var_pct": -70.98, "dep_2025": 54.08 },
-                { "cnae": "101", "descricao": "Abate e fabricação de produtos de carne", "v2023": 2285301.92, "v2025": 2314737.20, "var_pct": 1.29, "dep_2025": 0.0 },
-                { "cnae": "105", "descricao": "Laticínios", "v2023": 1879564.12, "v2025": 2251589.43, "var_pct": 19.79, "dep_2025": 0.41 },
-                { "cnae": "173", "descricao": "Fabricação de embalagens de papel, cartolina, papel-cartão e papelão ondulado", "v2023": 2334637.33, "v2025": 2104914.69, "var_pct": -9.84, "dep_2025": 45.10 },
-                { "cnae": "251", "descricao": "Fabricação de estruturas metálicas e obras de caldeiraria pesada", "v2023": 882877.79, "v2025": 1961109.48, "var_pct": 122.13, "dep_2025": 1.15 },
-                { "cnae": "201", "descricao": "Fabricação de produtos químicos inorgânicos", "v2023": 1527313.04, "v2025": 1678492.27, "var_pct": 9.9, "dep_2025": 0.0 },
-                { "cnae": "103", "descricao": "Fabricação de conservas de frutas, legumes e outros vegetais", "v2023": 1561919.04, "v2025": 1555329.24, "var_pct": -0.42, "dep_2025": 0.0 },
-                { "cnae": "205", "descricao": "Fabricação de defensivos agrícolas e desinfestantes domissanitários", "v2023": 2831471.17, "v2025": 1463796.43, "var_pct": -48.3, "dep_2025": 1.15 },
-                { "cnae": "274", "descricao": "Fabricação de lâmpadas e outros equipamentos de iluminação", "v2023": 1566851.63, "v2025": 1394296.23, "var_pct": -11.01, "dep_2025": 28.09 },
-                { "cnae": "279", "descricao": "Fabricação de equipamentos e aparelhos elétricos não especificados anteriormente", "v2023": 748604.27, "v2025": 1342163.46, "var_pct": 79.29, "dep_2025": 0.33 },
-                { "cnae": "207", "descricao": "Fabricação de tintas, vernizes, esmaltes, lacas e produtos afins", "v2023": 2960504.28, "v2025": 1209169.70, "var_pct": -59.16, "dep_2025": 0.7 },
-                { "cnae": "153", "descricao": "Fabricação de calçados", "v2023": 1916459.47, "v2025": 1083679.45, "var_pct": -43.45, "dep_2025": 79.80 },
-                { "cnae": "162", "descricao": "Fabricação de produtos de madeira, cortiça e material trançado, exceto móveis", "v2023": 1295271.89, "v2025": 1021084.09, "var_pct": -21.17, "dep_2025": 0.0 },
-                { "cnae": "324", "descricao": "Fabricação de brinquedos e jogos recreativos", "v2023": 489924.97, "v2025": 1004909.22, "var_pct": 105.11, "dep_2025": 84.20 },
-                { "cnae": "272", "descricao": "Fabricação de pilhas, baterias e acumuladores elétricos", "v2023": 985103.86, "v2025": 999605.98, "var_pct": 1.47, "dep_2025": 11.95 },
-                { "cnae": "231", "descricao": "Fabricação de vidro e de produtos do vidro", "v2023": 1646075.80, "v2025": 943828.49, "var_pct": -42.66, "dep_2025": 1.06 },
-                { "cnae": "284", "descricao": "Fabricação de máquinas-ferramenta", "v2023": 156391.03, "v2025": 934026.79, "var_pct": 497.24, "dep_2025": 94.53 },
-                { "cnae": "293", "descricao": "Fabricação de cabines, carrocerias e reboques para veículos automotores", "v2023": 100100.00, "v2025": 894170.00, "var_pct": 793.28, "dep_2025": 96.42 },
-                { "cnae": "233", "descricao": "Fabricação de artefatos de concreto, cimento, fibrocimento, gesso e materiais semelhantes", "v2023": 1425150.82, "v2025": 811765.46, "var_pct": -43.04, "dep_2025": 0.0 },
-                { "cnae": "286", "descricao": "Fabricação de máquinas e equipamentos de uso industrial específico", "v2023": 13292213.06, "v2025": 808445.90, "var_pct": -93.92, "dep_2025": 98.71 },
-                { "cnae": "152", "descricao": "Fabricação de artigos para viagem e de artefatos diversos de couro", "v2023": 337704.95, "v2025": 718210.54, "var_pct": 112.67, "dep_2025": 74.94 },
-                { "cnae": "107", "descricao": "Fabricação e refino de açúcar", "v2023": 817296.53, "v2025": 596417.70, "var_pct": -27.03, "dep_2025": 0.0 },
-                { "cnae": "309", "descricao": "Fabricação de equipamentos de transporte não especificados anteriormente", "v2023": 5677139.32, "v2025": 544031.25, "var_pct": -90.42, "dep_2025": 87.22 },
-                { "cnae": "132", "descricao": "Tecelagem, exceto malha", "v2023": 868416.16, "v2025": 529450.57, "var_pct": -39.03, "dep_2025": 0.0 },
-                { "cnae": "014", "descricao": "Produção de sementes e mudas certificadas", "v2023": 393982.36, "v2025": 409363.06, "var_pct": 3.9, "dep_2025": 0.0 },
-                { "cnae": "285", "descricao": "Fabricação de máquinas e equipamentos de uso na extração mineral e na construção", "v2023": 136192.20, "v2025": 375875.27, "var_pct": 175.99, "dep_2025": 7.55 },
-                { "cnae": "244", "descricao": "Metalurgia dos metais não-ferrosos", "v2023": 146632.17, "v2025": 244771.35, "var_pct": 66.93, "dep_2025": 20.10 },
-                { "cnae": "161", "descricao": "Desdobramento de madeira", "v2023": 359334.66, "v2025": 243922.46, "var_pct": -32.12, "dep_2025": 9.07 },
-                { "cnae": "089", "descricao": "Extração de outros minerais não-metálicos", "v2023": 0.00, "v2025": 242000.00, "var_pct": 0, "dep_2025": 100.0 },
-                { "cnae": "242", "descricao": "Siderurgia", "v2023": 406029.96, "v2025": 238602.53, "var_pct": -41.24, "dep_2025": 0.0 },
-                { "cnae": "239", "descricao": "Aparelhamento de pedras e fabricação de outros produtos de minerais não-metálicos", "v2023": 156901.16, "v2025": 169689.18, "var_pct": 8.15, "dep_2025": 0.0 },
-                { "cnae": "104", "descricao": "Fabricação de óleos e gorduras vegetais e animais", "v2023": 102037.78, "v2025": 97408.30, "var_pct": -4.54, "dep_2025": 0.0 },
-                { "cnae": "183", "descricao": "Reprodução de materiais gravados em qualquer suporte", "v2023": 0.00, "v2025": 58016.65, "var_pct": 0, "dep_2025": 0.0 },
-                { "cnae": "015", "descricao": "Pecuária", "v2023": 0.00, "v2025": 49500.00, "var_pct": 0, "dep_2025": 0.0 },
-                { "cnae": "142", "descricao": "Fabricação de artigos de malharia e tricotagem", "v2023": 671419.35, "v2025": 47212.26, "var_pct": -92.97, "dep_2025": 69.37 },
-                { "cnae": "131", "descricao": "Preparação e fiação de fibras têxteis", "v2023": 211572.48, "v2025": 23622.54, "var_pct": -88.83, "dep_2025": 0.0 },
-                { "cnae": "268", "descricao": "Fabricação de mídias virgens, magnéticas e ópticas", "v2023": 0.00, "v2025": 1093.66, "var_pct": 0, "dep_2025": 0.0 },
-                { "cnae": "111", "descricao": "Fabricação de bebidas alcoólicas", "v2023": 851.92, "v2025": 421.20, "var_pct": -50.56, "dep_2025": 0.0 }
-            ],
+    {"cnae":"212","descricao":"Fabricação de produtos farmacêuticos","v2023":588022974.29,"v2025":886075138.93,"var_pct":50.69,"dep_2025":79.42},
+    {"cnae":"291","descricao":"Fabricação de automóveis, camionetas e utilitários","v2023":216467924.62,"v2025":506315817.43,"var_pct":133.9,"dep_2025":51.5},
+    {"cnae":"325","descricao":"Fabricação de instrumentos e materiais para uso médico e odontológico e de artigos ópticos","v2023":383497948.13,"v2025":367246925.52,"var_pct":-4.24,"dep_2025":60.42},
+    {"cnae":"262","descricao":"Fabricação de equipamentos de informática e periféricos","v2023":124715686.60,"v2025":166216466.69,"var_pct":33.28,"dep_2025":14.31},
+    {"cnae":"283","descricao":"Fabricação de tratores e de máquinas e equipamentos para a agricultura e pecuária","v2023":85267587.48,"v2025":121693315.29,"var_pct":42.72,"dep_2025":72.36},
+    {"cnae":"304","descricao":"Fabricação de aeronaves","v2023":1360007.14,"v2025":108571822.64,"var_pct":7883.18,"dep_2025":99.93},
+    {"cnae":"292","descricao":"Fabricação de caminhões e ônibus","v2023":6010933.94,"v2025":100210843.00,"var_pct":1567.14,"dep_2025":76.13},
+    {"cnae":"141","descricao":"Confecção de artigos do vestuário e acessórios","v2023":81292870.46,"v2025":98803490.39,"var_pct":21.54,"dep_2025":18.19},
+    {"cnae":"211","descricao":"Fabricação de produtos farmoquímicos","v2023":62672494.97,"v2025":77553396.23,"var_pct":23.74,"dep_2025":60.76},
+    {"cnae":"275","descricao":"Fabricação de eletrodomésticos","v2023":58572616.44,"v2025":59741332.12,"var_pct":2.0,"dep_2025":67.07},
+    {"cnae":"310","descricao":"Fabricação de móveis","v2023":139849065.71,"v2025":56658471.74,"var_pct":-59.49,"dep_2025":60.28},
+    {"cnae":"329","descricao":"Fabricação de produtos diversos","v2023":24266861.55,"v2025":47127334.79,"var_pct":94.2,"dep_2025":82.84},
+    {"cnae":"106","descricao":"Moagem, fabricação de produtos amiláceos e de alimentos para animais","v2023":14576644.11,"v2025":44621709.80,"var_pct":206.12,"dep_2025":1.29},
+    {"cnae":"255","descricao":"Fabricação de equipamento bélico pesado, armas de fogo e munições","v2023":27905760.43,"v2025":43604058.71,"var_pct":56.25,"dep_2025":99.91},
+    {"cnae":"265","descricao":"Fabricação de aparelhos e instrumentos de medida, teste e controle; cronômetros e relógios","v2023":133107738.00,"v2025":42369184.63,"var_pct":-68.17,"dep_2025":86.0},
+    {"cnae":"222","descricao":"Fabricação de produtos de material plástico","v2023":15084515.44,"v2025":31694552.65,"var_pct":110.11,"dep_2025":2.1},
+    {"cnae":"282","descricao":"Fabricação de máquinas e equipamentos de uso geral","v2023":34907441.04,"v2025":30452440.37,"var_pct":-12.76,"dep_2025":81.05},
+    {"cnae":"174","descricao":"Fabricação de produtos diversos de papel, cartolina, papel-cartão e papelão ondulado","v2023":24478971.08,"v2025":20660760.16,"var_pct":-15.6,"dep_2025":1.7},
+    {"cnae":"323","descricao":"Fabricação de artefatos para pesca e esporte","v2023":9463141.42,"v2025":20558125.99,"var_pct":117.24,"dep_2025":36.68},
+    {"cnae":"273","descricao":"Fabricação de equipamentos para distribuição e controle de energia elétrica","v2023":6276947.70,"v2025":18239438.42,"var_pct":190.58,"dep_2025":64.93},
+    {"cnae":"109","descricao":"Fabricação de outros produtos alimentícios","v2023":12584787.05,"v2025":17578312.59,"var_pct":39.68,"dep_2025":48.06},
+    {"cnae":"620","descricao":"Atividades dos serviços de tecnologia da informação","v2023":4107244.92,"v2025":16400947.99,"var_pct":299.32,"dep_2025":10.48},
+    {"cnae":"581","descricao":"Edição de livros, jornais, revistas e outras atividades de edição","v2023":8731445.53,"v2025":15966652.69,"var_pct":82.86,"dep_2025":59.43},
+    {"cnae":"266","descricao":"Fabricação de aparelhos eletromédicos e eletroterapêuticos e equipamentos de irradiação","v2023":6425784.18,"v2025":13459898.36,"var_pct":109.47,"dep_2025":98.06},
+    {"cnae":"206","descricao":"Fabricação de sabões, detergentes, produtos de limpeza, cosméticos, produtos de perfumaria e de higiene pessoal","v2023":17918244.81,"v2025":12163365.51,"var_pct":-32.12,"dep_2025":1.79},
+    {"cnae":"259","descricao":"Fabricação de produtos de metal não especificados anteriormente","v2023":6829179.11,"v2025":12127014.13,"var_pct":77.58,"dep_2025":48.06},
+    {"cnae":"135","descricao":"Fabricação de artefatos têxteis, exceto vestuário","v2023":6257390.67,"v2025":11890405.28,"var_pct":90.02,"dep_2025":76.3},
+    {"cnae":"232","descricao":"Fabricação de cimento","v2023":13141254.56,"v2025":10912412.69,"var_pct":-16.96,"dep_2025":70.58},
+    {"cnae":"172","descricao":"Fabricação de papel, cartolina e papel-cartão","v2023":9200395.67,"v2025":9123023.95,"var_pct":-0.84,"dep_2025":54.9},
+    {"cnae":"252","descricao":"Fabricação de tanques, reservatórios metálicos e caldeiras","v2023":1426061.80,"v2025":8698702.09,"var_pct":509.98,"dep_2025":0.0},
+    {"cnae":"112","descricao":"Fabricação de bebidas não-alcoólicas","v2023":7012133.84,"v2025":8187866.47,"var_pct":16.77,"dep_2025":2.07},
+    {"cnae":"294","descricao":"Fabricação de peças e acessórios para veículos automotores","v2023":2632719.33,"v2025":8100466.34,"var_pct":207.68,"dep_2025":18.76},
+    {"cnae":"209","descricao":"Fabricação de produtos e preparados químicos diversos","v2023":10888953.54,"v2025":7770695.41,"var_pct":-28.64,"dep_2025":47.88},
+    {"cnae":"322","descricao":"Fabricação de instrumentos musicais","v2023":210877.35,"v2025":7648286.76,"var_pct":3526.89,"dep_2025":94.85},
+    {"cnae":"261","descricao":"Fabricação de componentes eletrônicos","v2023":7464623.25,"v2025":7573527.37,"var_pct":1.46,"dep_2025":35.45},
+    {"cnae":"263","descricao":"Fabricação de equipamentos de comunicação","v2023":3035152.62,"v2025":7058865.41,"var_pct":132.57,"dep_2025":89.09},
+    {"cnae":"221","descricao":"Fabricação de produtos de borracha","v2023":5232134.62,"v2025":5892364.50,"var_pct":12.62,"dep_2025":31.88},
+    {"cnae":"301","descricao":"Construção de embarcações","v2023":2993100.00,"v2025":5013861.35,"var_pct":67.51,"dep_2025":98.52},
+    {"cnae":"181","descricao":"Atividade de impressão","v2023":6203969.05,"v2025":5055711.34,"var_pct":-18.51,"dep_2025":7.25},
+    {"cnae":"192","descricao":"Fabricação de produtos derivados do petróleo","v2023":5984806.63,"v2025":4020034.71,"var_pct":-32.83,"dep_2025":49.99},
+    {"cnae":"234","descricao":"Fabricação de produtos cerâmicos","v2023":3067914.57,"v2025":3819976.66,"var_pct":24.51,"dep_2025":1.14},
+    {"cnae":"271","descricao":"Fabricação de geradores, transformadores e motores elétricos","v2023":3841107.71,"v2025":3766643.89,"var_pct":-1.94,"dep_2025":95.93},
+    {"cnae":"264","descricao":"Fabricação de aparelhos de recepção, reprodução, gravação e amplificação de áudio e vídeo","v2023":9995329.78,"v2025":3599622.88,"var_pct":-63.99,"dep_2025":68.09},
+    {"cnae":"254","descricao":"Fabricação de artigos de cutelaria, de serralheria e ferramentas","v2023":1809459.23,"v2025":2829777.24,"var_pct":56.39,"dep_2025":46.33},
+    {"cnae":"281","descricao":"Fabricação de motores, bombas, compressores e equipamentos de transmissão","v2023":3032615.14,"v2025":2547808.01,"var_pct":-15.99,"dep_2025":76.34},
+    {"cnae":"267","descricao":"Fabricação de equipamentos e instrumentos ópticos, fotográficos e cinematográficos","v2023":8080290.17,"v2025":2344963.44,"var_pct":-70.98,"dep_2025":54.08},
+    {"cnae":"101","descricao":"Abate e fabricação de produtos de carne","v2023":2285301.92,"v2025":2314737.20,"var_pct":1.29,"dep_2025":0.0},
+    {"cnae":"105","descricao":"Laticínios","v2023":1879564.12,"v2025":2251589.43,"var_pct":19.79,"dep_2025":0.41},
+    {"cnae":"173","descricao":"Fabricação de embalagens de papel, cartolina, papel-cartão e papelão ondulado","v2023":2334637.33,"v2025":2104914.69,"var_pct":-9.84,"dep_2025":45.10},
+    {"cnae":"251","descricao":"Fabricação de estruturas metálicas e obras de caldeiraria pesada","v2023":882877.79,"v2025":1961109.48,"var_pct":122.13,"dep_2025":1.15},
+    {"cnae":"201","descricao":"Fabricação de produtos químicos inorgânicos","v2023":1527313.04,"v2025":1678492.27,"var_pct":9.9,"dep_2025":0.0},
+    {"cnae":"103","descricao":"Fabricação de conservas de frutas, legumes e outros vegetais","v2023":1561919.04,"v2025":1555329.24,"var_pct":-0.42,"dep_2025":0.0},
+    {"cnae":"205","descricao":"Fabricação de defensivos agrícolas e desinfestantes domissanitários","v2023":2831471.17,"v2025":1463796.43,"var_pct":-48.3,"dep_2025":1.15},
+    {"cnae":"274","descricao":"Fabricação de lâmpadas e outros equipamentos de iluminação","v2023":1566851.63,"v2025":1394296.23,"var_pct":-11.01,"dep_2025":28.09},
+    {"cnae":"279","descricao":"Fabricação de equipamentos e aparelhos elétricos não especificados anteriormente","v2023":748604.27,"v2025":1342163.46,"var_pct":79.29,"dep_2025":0.33},
+    {"cnae":"207","descricao":"Fabricação de tintas, vernizes, esmaltes, lacas e produtos afins","v2023":2960504.28,"v2025":1209169.70,"var_pct":-59.16,"dep_2025":0.7},
+    {"cnae":"153","descricao":"Fabricação de calçados","v2023":1916459.47,"v2025":1083679.45,"var_pct":-43.45,"dep_2025":79.80},
+    {"cnae":"162","descricao":"Fabricação de produtos de madeira, cortiça e material trançado, exceto móveis","v2023":1295271.89,"v2025":1021084.09,"var_pct":-21.17,"dep_2025":0.0},
+    {"cnae":"324","descricao":"Fabricação de brinquedos e jogos recreativos","v2023":489924.97,"v2025":1004909.22,"var_pct":105.11,"dep_2025":84.20},
+    {"cnae":"272","descricao":"Fabricação de pilhas, baterias e acumuladores elétricos","v2023":985103.86,"v2025":999605.98,"var_pct":1.47,"dep_2025":11.95},
+    {"cnae":"231","descricao":"Fabricação de vidro e de produtos do vidro","v2023":1646075.80,"v2025":943828.49,"var_pct":-42.66,"dep_2025":1.06},
+    {"cnae":"284","descricao":"Fabricação de máquinas-ferramenta","v2023":156391.03,"v2025":934026.79,"var_pct":497.24,"dep_2025":94.53},
+    {"cnae":"293","descricao":"Fabricação de cabines, carrocerias e reboques para veículos automotores","v2023":100100.00,"v2025":894170.00,"var_pct":793.28,"dep_2025":96.42},
+    {"cnae":"233","descricao":"Fabricação de artefatos de concreto, cimento, fibrocimento, gesso e materiais semelhantes","v2023":1425150.82,"v2025":811765.46,"var_pct":-43.04,"dep_2025":0.0},
+    {"cnae":"286","descricao":"Fabricação de máquinas e equipamentos de uso industrial específico","v2023":13292213.06,"v2025":808445.90,"var_pct":-93.92,"dep_2025":98.71},
+    {"cnae":"152","descricao":"Fabricação de artigos para viagem e de artefatos diversos de couro","v2023":337704.95,"v2025":718210.54,"var_pct":112.67,"dep_2025":74.94},
+    {"cnae":"107","descricao":"Fabricação e refino de açúcar","v2023":817296.53,"v2025":596417.70,"var_pct":-27.03,"dep_2025":0.0},
+    {"cnae":"309","descricao":"Fabricação de equipamentos de transporte não especificados anteriormente","v2023":5677139.32,"v2025":544031.25,"var_pct":-90.42,"dep_2025":87.22},
+    {"cnae":"132","descricao":"Tecelagem, exceto malha","v2023":868416.16,"v2025":529450.57,"var_pct":-39.03,"dep_2025":0.0},
+    {"cnae":"014","descricao":"Produção de sementes e mudas certificadas","v2023":393982.36,"v2025":409363.06,"var_pct":3.9,"dep_2025":0.0},
+    {"cnae":"285","descricao":"Fabricação de máquinas e equipamentos de uso na extração mineral e na construção","v2023":136192.20,"v2025":375875.27,"var_pct":175.99,"dep_2025":7.55},
+    {"cnae":"244","descricao":"Metalurgia dos metais não-ferrosos","v2023":146632.17,"v2025":244771.35,"var_pct":66.93,"dep_2025":20.10},
+    {"cnae":"161","descricao":"Desdobramento de madeira","v2023":359334.66,"v2025":243922.46,"var_pct":-32.12,"dep_2025":9.07},
+    {"cnae":"089","descricao":"Extração de outros minerais não-metálicos","v2023":0.00,"v2025":242000.00,"var_pct":0,"dep_2025":100.0},
+    {"cnae":"242","descricao":"Siderurgia","v2023":406029.96,"v2025":238602.53,"var_pct":-41.24,"dep_2025":0.0},
+    {"cnae":"239","descricao":"Aparelhamento de pedras e fabricação de outros produtos de minerais não-metálicos","v2023":156901.16,"v2025":169689.18,"var_pct":8.15,"dep_2025":0.0},
+    {"cnae":"104","descricao":"Fabricação de óleos e gorduras vegetais e animais","v2023":102037.78,"v2025":97408.30,"var_pct":-4.54,"dep_2025":0.0},
+    {"cnae":"183","descricao":"Reprodução de materiais gravados em qualquer suporte","v2023":0.00,"v2025":58016.65,"var_pct":0,"dep_2025":0.0},
+    {"cnae":"015","descricao":"Pecuária","v2023":0.00,"v2025":49500.00,"var_pct":0,"dep_2025":0.0},
+    {"cnae":"142","descricao":"Fabricação de artigos de malharia e tricotagem","v2023":671419.35,"v2025":47212.26,"var_pct":-92.97,"dep_2025":69.37},
+    {"cnae":"131","descricao":"Preparação e fiação de fibras têxteis","v2023":211572.48,"v2025":23622.54,"var_pct":-88.83,"dep_2025":0.0},
+    {"cnae":"268","descricao":"Fabricação de mídias virgens, magnéticas e ópticas","v2023":0.00,"v2025":1093.66,"var_pct":0,"dep_2025":0.0},
+    {"cnae":"111","descricao":"Fabricação de bebidas alcoólicas","v2023":851.92,"v2025":421.20,"var_pct":-50.56,"dep_2025":0.0}
+],
             "ufs": [
-                { "uf": "BA", "total_2023": 626660612.62, "total_2025": 1196032299.00 },
-                { "uf": "SP", "total_2023": 638605043.93, "total_2025": 800815938.08 },
-                { "uf": "MG", "total_2023": 194965104.53, "total_2025": 223493124.53 },
-                { "uf": "RS", "total_2023": 41663895.24, "total_2025": 126757470.48 },
-                { "uf": "SC", "total_2023": 107301715.77, "total_2025": 113453109.81 },
-                { "uf": "GO", "total_2023": 80160409.90, "total_2025": 106603372.23 },
-                { "uf": "ES", "total_2023": 81419954.05, "total_2025": 88977106.40 },
-                { "uf": "DF", "total_2023": 108626438.34, "total_2025": 85294768.20 },
-                { "uf": "PR", "total_2023": 111526180.35, "total_2025": 85058852.22 },
-                { "uf": "RJ", "total_2023": 57659182.87, "total_2025": 67848614.15 },
-                { "uf": "CE", "total_2023": 30672922.23, "total_2025": 46421504.86 },
-                { "uf": "EXTERIOR", "total_2023": 44150300.49, "total_2025": 44778758.77 },
-                { "uf": "PE", "total_2023": 50061419.80, "total_2025": 29118214.54 },
-                { "uf": "MS", "total_2023": 135793.03, "total_2025": 25039756.90 },
-                { "uf": "RN", "total_2023": 961705.72, "total_2025": 13960041.95 },
-                { "uf": "NÃO CADASTRADO", "total_2023": 30161683.02, "total_2025": 13229490.30 },
-                { "uf": "AL", "total_2023": 2888588.38, "total_2025": 8521651.47 },
-                { "uf": "AM", "total_2023": 5959266.46, "total_2025": 4913353.76 },
-                { "uf": "SE", "total_2023": 28147009.53, "total_2025": 4431582.61 },
-                { "uf": "MT", "total_2023": 1000122.80, "total_2025": 3427262.00 },
-                { "uf": "PB", "total_2023": 13228009.84, "total_2025": 2245258.39 },
-                { "uf": "RO", "total_2023": 6938.88, "total_2025": 970470.08 },
-                { "uf": "TO", "total_2023": 895388.02, "total_2025": 687447.55 },
-                { "uf": "MA", "total_2023": 0.00, "total_2025": 180600.67 },
-                { "uf": "PI", "total_2023": 0.00, "total_2025": 69660.00 },
-                { "uf": "RR", "total_2023": 0.00, "total_2025": 2675.00 },
-                { "uf": "PA", "total_2023": 0.00, "total_2025": 170.64 },
-                { "uf": "AP", "total_2023": 92940.00, "total_2025": 0.00 }
-            ]
+    {"uf": "BA", "total_2023": 626660612.62, "total_2025": 1196032299.00},
+    {"uf": "SP", "total_2023": 638605043.93, "total_2025": 800815938.08},
+    {"uf": "MG", "total_2023": 194965104.53, "total_2025": 223493124.53},
+    {"uf": "RS", "total_2023": 41663895.24, "total_2025": 126757470.48},
+    {"uf": "SC", "total_2023": 107301715.77, "total_2025": 113453109.81},
+    {"uf": "GO", "total_2023": 80160409.90, "total_2025": 106603372.23},
+    {"uf": "ES", "total_2023": 81419954.05, "total_2025": 88977106.40},
+    {"uf": "DF", "total_2023": 108626438.34, "total_2025": 85294768.20},
+    {"uf": "PR", "total_2023": 111526180.35, "total_2025": 85058852.22},
+    {"uf": "RJ", "total_2023": 57659182.87, "total_2025": 67848614.15},
+    {"uf": "CE", "total_2023": 30672922.23, "total_2025": 46421504.86},
+    {"uf": "EXTERIOR", "total_2023": 44150300.49, "total_2025": 44778758.77},
+    {"uf": "PE", "total_2023": 50061419.80, "total_2025": 29118214.54},
+    {"uf": "MS", "total_2023": 135793.03, "total_2025": 25039756.90},
+    {"uf": "RN", "total_2023": 961705.72, "total_2025": 13960041.95},
+    {"uf": "NÃO CADASTRADO", "total_2023": 30161683.02, "total_2025": 13229490.30},
+    {"uf": "AL", "total_2023": 2888588.38, "total_2025": 8521651.47},
+    {"uf": "AM", "total_2023": 5959266.46, "total_2025": 4913353.76},
+    {"uf": "SE", "total_2023": 28147009.53, "total_2025": 4431582.61},
+    {"uf": "MT", "total_2023": 1000122.80, "total_2025": 3427262.00},
+    {"uf": "PB", "total_2023": 13228009.84, "total_2025": 2245258.39},
+    {"uf": "RO", "total_2023": 6938.88, "total_2025": 970470.08},
+    {"uf": "TO", "total_2023": 895388.02, "total_2025": 687447.55},
+    {"uf": "MA", "total_2023": 0.00, "total_2025": 180600.67},
+    {"uf": "PI", "total_2023": 0.00, "total_2025": 69660.00},
+    {"uf": "RR", "total_2023": 0.00, "total_2025": 2675.00},
+    {"uf": "PA", "total_2023": 0.00, "total_2025": 170.64},
+    {"uf": "AP", "total_2023": 92940.00, "total_2025": 0.00}
+]
         };
+        
 
-
-        const dadosLocalExterno = {
-            "setores": [
-                "Produtos farmacêuticos",
-                "Veículos automotores",
-                "Outros equipamentos",
-                "Máquinas e equipamentos",
-                "Equipamentos elétricos",
-                "Produtos alimentícios",
-                "Borracha e plástico",
-                "Metalmecânica",
-                "Produtos químicos",
-                "Material de construção"
-            ],
-            "local": [182.35, 276.11, 156.51, 39.81, 29.44, 67.00, 35.04, 18.45, 20.32, 7.97],
-            "externo": [703.72, 339.41, 86.12, 114.45, 56.04, 9.20, 2.54, 7.16, 3.96, 7.74]
-        };
+  const dadosLocalExterno = {
+    "setores": [
+        "Produtos farmacêuticos",
+        "Veículos automotores",
+        "Outros equipamentos",
+        "Máquinas e equipamentos",
+        "Equipamentos elétricos",
+        "Produtos alimentícios",
+        "Borracha e plástico",
+        "Metalmecânica",
+        "Produtos químicos",
+        "Material de construção"
+    ],
+    "local": [182.35, 276.11, 156.51, 39.81, 29.44, 67.00, 35.04, 18.45, 20.32, 7.97],
+    "externo": [703.72, 339.41, 86.12, 114.45, 56.04, 9.20, 2.54, 7.16, 3.96, 7.74]
+};
     </script>
 
     <!-- UI Logic and Visualizations -->
@@ -1916,7 +1925,6 @@
         let colunaAtiva = -1;
         let direcaoOrdenacao = 'desc';
         const chartInstances = {};
-        let chartVCR1 = null, chartVCR2 = null, chartVCR3 = null;
         let dadosVCR = { maisEspecializadas: [], novasEspec: [], variacao: [] };
         let setorVCRAtivo = 'Todos';
         let setoresProcessados = [];
@@ -1936,19 +1944,9 @@
         const macroSectorColors = {
             "Agricultura": "#10b981",
             "Indústria": "#f97316",
-            "Serviços": "#0a4ea3",
-            "Comércio": "#ef4444"
+            "Serviços": "#0ea5e9",
+            "Comércio": "#ec4899"
         };
-
-        function obterCorPorSetor(setor) {
-            const mapa = {
-                "serviços": "#0a4ea3",
-                "agricultura": "#10b981",
-                "comércio": "#ef4444",
-                "indústria": "#f97316"
-            };
-            return mapa[(setor || '').trim().toLowerCase()] || '#94a3b8';
-        }
 
         // COMENTÁRIO: Mapeamento de código UF → nome completo do estado/território
         const STATE_NAMES = {
@@ -3146,16 +3144,10 @@
                 setTimeout(() => {
                     drawAllVisualizations();
                     updateKpisAndTooltips();
-                    if (dadosVCR && dadosVCR.maisEspecializadas.length > 0) {
-                        renderizarGraficosVCR(setorVCRAtivo || 'Todos');
-                    }
                 }, 100);
             }
             if (tabName === 'perfil') {
                 setTimeout(renderizarPerfil, 150);
-            }
-            if (tabName === 'priorizacao') {
-                setTimeout(renderizarMatrizPriorizacao, 150);
             }
         }
 
@@ -3437,7 +3429,17 @@
             buildTreemapFilterButtons();
         }
 
-        // (Dropdown de territórios removido — comparação fixa Bahia vs Brasil)
+        // COMENTÁRIO: Fecha o dropdown ao clicar fora
+        document.addEventListener("click", function (e) {
+            const wrapperCsv = document.getElementById("territory-wrapper-csv");
+            const ddCsv = document.getElementById("territory-dropdown-csv");
+            if (wrapperCsv && ddCsv && ddCsv.classList.contains("open")) {
+                if (!wrapperCsv.contains(e.target)) {
+                    ddCsv.classList.remove("open");
+                    document.getElementById("territory-trigger-csv").classList.remove("open");
+                }
+            }
+        });
 
         // ----------------------------------------------------
         // 4. SPACE OF ACTIVITIES (NETWORK GRAPH)
@@ -3477,17 +3479,13 @@
                     ? cfg.data
                     : cfg.data.filter(d => d['Grande Sector'] === setor);
 
-                if (cfg.id === 'chartMaisEspecializadas') {
-                    console.log(`[VCR] ${cfg.id}: ${filtered.length} linhas, amostra:`, filtered[0]);
-                }
-
                 const sorted = [...filtered]
                     .sort((a, b) => parseFloat(b[cfg.key]) - parseFloat(a[cfg.key]))
                     .slice(0, 10);
 
                 const labels = sorted.map(d => d['Class']);
                 const values = sorted.map(d => parseFloat(d[cfg.key]) || 0);
-                const colors = sorted.map(d => obterCorPorSetor(d['Grande Sector']));
+                const colors = sorted.map(d => macroSectorColors[d['Grande Sector']] || '#94a3b8');
 
                 const canvas = document.getElementById(cfg.id);
                 if (!canvas) {
@@ -3496,21 +3494,16 @@
                 }
                 const ctx = canvas.getContext('2d');
 
-                let instanciaVCR;
-                if (cfg.id === 'chartMaisEspecializadas') instanciaVCR = chartVCR1;
-                else if (cfg.id === 'chartNovasEspec') instanciaVCR = chartVCR2;
-                else instanciaVCR = chartVCR3;
-                if (instanciaVCR) instanciaVCR.destroy();
+                if (chartInstances[cfg.id]) chartInstances[cfg.id].destroy();
 
-                const novoChart = new Chart(ctx, {
+                chartInstances[cfg.id] = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels,
                         datasets: [{
                             data: values,
                             backgroundColor: colors,
-                            borderRadius: 4,
-                            maxBarThickness: 30
+                            borderRadius: 4
                         }]
                     },
                     options: {
@@ -3551,10 +3544,6 @@
                         }
                     }
                 });
-
-                if (cfg.id === 'chartMaisEspecializadas') chartVCR1 = novoChart;
-                else if (cfg.id === 'chartNovasEspec') chartVCR2 = novoChart;
-                else chartVCR3 = novoChart;
             });
         }
 
@@ -3574,9 +3563,70 @@
             return base + arquivos[metrica + '_' + granularidade];
         }
 
-        // ---- Territórios fixos: Bahia vs Brasil ----
+        // ---- Multi-select de territórios (CSV) ----
         function getSelectedTerritoriesCsv() {
-            return ['BA', 'BR'];
+            const checked = [];
+            document.querySelectorAll("#territory-options-csv input:checked").forEach(cb => checked.push(cb.value));
+            return checked;
+        }
+
+        function updateTerritoryCountCsv() {
+            const count = getSelectedTerritoriesCsv().length;
+            const el = document.getElementById("territory-selected-count-csv");
+            if (el) el.textContent = count + (count === 1 ? " selecionado" : " selecionados");
+        }
+
+        function onTerritoryCheckboxChangeCsv() {
+            updateTerritoryCountCsv();
+            atualizarTabelaCrescimento();
+        }
+
+        function toggleTerritoryDropdownCsv() {
+            const dd = document.getElementById("territory-dropdown-csv");
+            const trigger = document.getElementById("territory-trigger-csv");
+            dd.classList.toggle("open");
+            trigger.classList.toggle("open");
+        }
+
+        function selectAllTerritoriesCsv(selectAll) {
+            document.querySelectorAll("#territory-options-csv input[type='checkbox']").forEach(cb => {
+                cb.checked = selectAll;
+            });
+            updateTerritoryCountCsv();
+            atualizarTabelaCrescimento();
+        }
+
+        function populateTerritoryCheckboxesCsv() {
+            const container = document.getElementById("territory-options-csv");
+            if (!container) return;
+            const keys = Object.keys(CSV_COLUMN_NAMES);
+            keys.sort((a, b) => {
+                if (a === "BA") return -1;
+                if (b === "BA") return 1;
+                if (a === "BR") return -1;
+                if (b === "BR") return 1;
+                return CSV_COLUMN_NAMES[a].localeCompare(CSV_COLUMN_NAMES[b]);
+            });
+            container.innerHTML = "";
+            keys.forEach(code => {
+                const label = document.createElement("label");
+                label.className = "multi-select-option";
+                const cb = document.createElement("input");
+                cb.type = "checkbox";
+                cb.value = code;
+                if (code === "BA" || code === "BR") cb.checked = true;
+                cb.addEventListener("change", onTerritoryCheckboxChangeCsv);
+                const flag = document.createElement("img");
+                flag.className = "flag-icon";
+                flag.src = FLAG_BASE_URL + (UF_TO_FLAG[code] || "");
+                flag.alt = STATE_NAMES[code] || code;
+                flag.loading = "lazy";
+                label.appendChild(cb);
+                label.appendChild(flag);
+                label.appendChild(document.createTextNode(" " + (STATE_NAMES[code] || code)));
+                container.appendChild(label);
+            });
+            updateTerritoryCountCsv();
         }
 
         // ---- Carga e renderização da tabela CSV ----
@@ -3761,7 +3811,6 @@
 
         function popularFiltroSetorPerfil() {
             const select = document.getElementById('filtroSetorPerfil');
-            if (!select) return;
             while (select.options.length > 1) select.remove(1);
             const setoresUnicos = [...new Set(setoresProcessados.map(s => s.cnae))].sort();
             setoresUnicos.forEach(cnae => {
@@ -3774,9 +3823,7 @@
         }
 
         function getSetoresFiltradosPerfil() {
-            const select = document.getElementById('filtroSetorPerfil');
-            if (!select) return [...setoresProcessados];
-            const setorFiltro = select.value;
+            const setorFiltro = document.getElementById('filtroSetorPerfil').value;
             let setores = [...setoresProcessados];
             if (setorFiltro !== 'todos') setores = setores.filter(s => s.cnae === setorFiltro);
             return setores;
@@ -3789,7 +3836,7 @@
 
             //document.getElementById('kpiTotalPerfil').textContent = 'R$ 3,09 bi';
             //document.getElementById('kpiCrescimentoPerfil').textContent = '+37,0%';
-            //  document.getElementById('kpiLocalPerfil').textContent = 'R$ 1,19 bi';
+          //  document.getElementById('kpiLocalPerfil').textContent = 'R$ 1,19 bi';
             //document.getElementById('kpiLocalPctPerfil').textContent = '30,4% do total';
             //document.getElementById('kpiDependenciaPerfil').textContent = 'R$ 2,47 bi';
             //document.getElementById('kpiDependenciaPctPerfil').textContent = '69,4% do total';
@@ -3840,279 +3887,279 @@
             renderizarLocalExterno();
         }
 
-        function renderizarTopSetores(setores) {
-            const ctx = document.getElementById('graficoTopSetoresPerfil').getContext('2d');
-            if (!ctx) return;
-            const top = setores.sort((a, b) => b.v2025 - a.v2025).slice(0, 10);
-            if (top.length === 0) return;
+function renderizarTopSetores(setores) {
+    const ctx = document.getElementById('graficoTopSetoresPerfil').getContext('2d');
+    if (!ctx) return;
+    const top = setores.sort((a, b) => b.v2025 - a.v2025).slice(0, 10);
+    if (top.length === 0) return;
 
-            // Limita o tamanho do label para 40 caracteres (aumentei para evitar cortes desnecessários)
-            const labels = top.map(s => s.descricao.length > 40 ? s.descricao.substring(0, 37) + '...' : s.descricao);
+    // Limita o tamanho do label para 40 caracteres (aumentei para evitar cortes desnecessários)
+    const labels = top.map(s => s.descricao.length > 40 ? s.descricao.substring(0, 37) + '...' : s.descricao);
 
-            chartsPerfil.topSetores = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: top.map(s => s.v2025 / 1000000),
-                        backgroundColor: '#0a4ea3',
-                        borderRadius: 6,
-                        barPercentage: 0.7,
-                        categoryPercentage: 0.9
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function (context) {
-                                    const s = top[context.dataIndex];
-                                    return `R$ ${formatarMoeda(s.v2025)} (dep. ext. ${s.dep_2025.toFixed(1)}%)`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: { display: false },
-                            title: {
-                                display: true,
-                                text: 'Valor (R$ milhões)',
-                                font: { size: 12, weight: '600' },
-                                color: '#1e293b'
-                            },
-                            ticks: {
-                                callback: function (value) {
-                                    return value.toFixed(0);
-                                },
-                                font: { size: 11 },
-                                color: '#64748b',
-                                maxTicksLimit: 8
-                            }
-                        },
-                        y: {
-                            grid: { display: false },
-                            ticks: {
-                                font: { size: 11 },   // fonte um pouco menor para caber mais texto
-                                color: '#1e293b',
-                                autoSkip: false,
-                                padding: 8,
-                                maxWidth: 380        // limita a largura máxima de cada label para não extrapolar
-                            },
-                            afterFit: function (scale) {
-                                // Aumento de 20% em relação a 240 → 290
-                                scale.width = 340;//390
-                            }
-                        }
-                    },
-                    layout: {
-                        padding: {
-                            left: 25,   // aumento a margem esquerda para dar mais respiro
-                            right: 20,
-                            top: 10,
-                            bottom: 10
-                        }
-                    },
-                    onClick: function (event, elements) {
-                        if (elements.length > 0) {
-                            const idx = elements[0].index;
-                            abrirModalPerfil(top[idx]);
+    chartsPerfil.topSetores = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: top.map(s => s.v2025 / 1000000),
+                backgroundColor: '#0a4ea3',
+                borderRadius: 6,
+                barPercentage: 0.7,
+                categoryPercentage: 0.9
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const s = top[context.dataIndex];
+                            return `R$ ${formatarMoeda(s.v2025)} (dep. ext. ${s.dep_2025.toFixed(1)}%)`;
                         }
                     }
                 }
-            });
-        }
-
-
-
-
-        function renderizarCrescimentoQueda(setores) {
-            // Crescimento
-            const cresc = setores.filter(s => s.var_pct > 0 && s.v2025 > 100000).sort((a, b) => b.var_pct - a.var_pct).slice(0, 10);
-            const ctxCresc = document.getElementById('graficoCrescimentoPerfil').getContext('2d');
-            if (cresc.length > 0 && ctxCresc) {
-                const labelsCresc = cresc.map(s => s.descricao.length > 35 ? s.descricao.substring(0, 32) + '...' : s.descricao);
-                chartsPerfil.crescimento = new Chart(ctxCresc, {
-                    type: 'bar',
-                    data: {
-                        labels: labelsCresc,
-                        datasets: [{
-                            data: cresc.map(s => s.var_pct),
-                            backgroundColor: '#0e6372'
-                        }]
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Valor (R$ milhões)',
+                        font: { size: 12, weight: '600' },
+                        color: '#1e293b'
                     },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                callbacks: {
-                                    label: function (context) {
-                                        const s = cresc[context.dataIndex];
-                                        return `${s.var_pct.toFixed(1)}% (R$ ${formatarMoeda(s.v2025)})`;
-                                    }
-                                }
-                            }
+                    ticks: {
+                        callback: function(value) {
+                            return value.toFixed(0);
                         },
-                        scales: {
-                            x: {
-                                grid: { display: false }
-                            },
-                            y: {
-                                grid: { display: false },
-                                ticks: {
-                                    font: { size: 9 },
-                                    autoSkip: false,
-                                    padding: 6
-                                },
-                                afterFit: function (scale) {
-                                    scale.width = 180;
-                                }
-                            }
-                        },
-                        layout: {
-                            padding: {
-                                left: 15,
-                                right: 10,
-                                top: 5,
-                                bottom: 5
+                        font: { size: 11 },
+                        color: '#64748b',
+                        maxTicksLimit: 8
+                    }
+                },
+                y: {
+                    grid: { display: false },
+                    ticks: {
+                        font: { size: 11 },   // fonte um pouco menor para caber mais texto
+                        color: '#1e293b',
+                        autoSkip: false,
+                        padding: 8,
+                        maxWidth: 380        // limita a largura máxima de cada label para não extrapolar
+                    },
+                    afterFit: function(scale) {
+                        // Aumento de 20% em relação a 240 → 290
+                        scale.width = 340;//390
+                    }
+                }
+            },
+            layout: {
+                padding: {
+                    left: 25,   // aumento a margem esquerda para dar mais respiro
+                    right: 20,
+                    top: 10,
+                    bottom: 10
+                }
+            },
+            onClick: function(event, elements) {
+                if (elements.length > 0) {
+                    const idx = elements[0].index;
+                    abrirModalPerfil(top[idx]);
+                }
+            }
+        }
+    });
+}
+
+
+
+
+function renderizarCrescimentoQueda(setores) {
+    // Crescimento
+    const cresc = setores.filter(s => s.var_pct > 0 && s.v2025 > 100000).sort((a, b) => b.var_pct - a.var_pct).slice(0, 10);
+    const ctxCresc = document.getElementById('graficoCrescimentoPerfil').getContext('2d');
+    if (cresc.length > 0 && ctxCresc) {
+        const labelsCresc = cresc.map(s => s.descricao.length > 35 ? s.descricao.substring(0, 32) + '...' : s.descricao);
+        chartsPerfil.crescimento = new Chart(ctxCresc, {
+            type: 'bar',
+            data: {
+                labels: labelsCresc,
+                datasets: [{
+                    data: cresc.map(s => s.var_pct),
+                    backgroundColor: '#0e6372'
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const s = cresc[context.dataIndex];
+                                return `${s.var_pct.toFixed(1)}% (R$ ${formatarMoeda(s.v2025)})`;
                             }
                         }
                     }
-                });
-            }
-
-            // Queda
-            const qued = setores.filter(s => s.var_pct < 0 && Math.abs(s.var_pct) > 1 && s.v2025 > 100000).sort((a, b) => a.var_pct - b.var_pct).slice(0, 10);
-            const ctxQued = document.getElementById('graficoQuedaPerfil').getContext('2d');
-            if (qued.length > 0 && ctxQued) {
-                const labelsQued = qued.map(s => s.descricao.length > 35 ? s.descricao.substring(0, 32) + '...' : s.descricao);
-                chartsPerfil.queda = new Chart(ctxQued, {
-                    type: 'bar',
-                    data: {
-                        labels: labelsQued,
-                        datasets: [{
-                            data: qued.map(s => s.var_pct),
-                            backgroundColor: '#ef4b4c'
-                        }]
+                },
+                scales: {
+                    x: {
+                        grid: { display: false }
                     },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                callbacks: {
-                                    label: function (context) {
-                                        const s = qued[context.dataIndex];
-                                        return `${s.var_pct.toFixed(1)}% (R$ ${formatarMoeda(s.v2025)})`;
-                                    }
-                                }
-                            }
+                    y: {
+                        grid: { display: false },
+                        ticks: {
+                            font: { size: 9 },
+                            autoSkip: false,
+                            padding: 6
                         },
-                        scales: {
-                            x: {
-                                grid: { display: false }
-                            },
-                            y: {
-                                grid: { display: false },
-                                ticks: {
-                                    font: { size: 9 },
-                                    autoSkip: false,
-                                    padding: 6
-                                },
-                                afterFit: function (scale) {
-                                    scale.width = 180;
-                                }
-                            }
-                        },
-                        layout: {
-                            padding: {
-                                left: 15,
-                                right: 10,
-                                top: 5,
-                                bottom: 5
+                        afterFit: function(scale) {
+                            scale.width = 180;
+                        }
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 15,
+                        right: 10,
+                        top: 5,
+                        bottom: 5
+                    }
+                }
+            }
+        });
+    }
+
+    // Queda
+    const qued = setores.filter(s => s.var_pct < 0 && Math.abs(s.var_pct) > 1 && s.v2025 > 100000).sort((a, b) => a.var_pct - b.var_pct).slice(0, 10);
+    const ctxQued = document.getElementById('graficoQuedaPerfil').getContext('2d');
+    if (qued.length > 0 && ctxQued) {
+        const labelsQued = qued.map(s => s.descricao.length > 35 ? s.descricao.substring(0, 32) + '...' : s.descricao);
+        chartsPerfil.queda = new Chart(ctxQued, {
+            type: 'bar',
+            data: {
+                labels: labelsQued,
+                datasets: [{
+                    data: qued.map(s => s.var_pct),
+                    backgroundColor: '#ef4b4c'
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const s = qued[context.dataIndex];
+                                return `${s.var_pct.toFixed(1)}% (R$ ${formatarMoeda(s.v2025)})`;
                             }
                         }
                     }
-                });
+                },
+                scales: {
+                    x: {
+                        grid: { display: false }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: {
+                            font: { size: 9 },
+                            autoSkip: false,
+                            padding: 6
+                        },
+                        afterFit: function(scale) {
+                            scale.width = 180;
+                        }
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 15,
+                        right: 10,
+                        top: 5,
+                        bottom: 5
+                    }
+                }
             }
-        }
-        function renderizarMapaCalor() {
-            const container = d3.select("#mapaCalorPerfil");
-            container.selectAll("*").remove();
-            const width = container.node().clientWidth || 500;
-            const height = 320;
+        });
+    }
+}
+function renderizarMapaCalor() {
+    const container = d3.select("#mapaCalorPerfil");
+    container.selectAll("*").remove();
+    const width = container.node().clientWidth || 500;
+    const height = 320;
 
-            const svg = container.append("svg")
-                .attr("width", width).attr("height", height)
-                .attr("viewBox", `0 0 ${width} ${height}`)
-                .attr("preserveAspectRatio", "xMidYMid meet");
+    const svg = container.append("svg")
+        .attr("width", width).attr("height", height)
+        .attr("viewBox", `0 0 ${width} ${height}`)
+        .attr("preserveAspectRatio", "xMidYMid meet");
 
-            const projection = d3.geoMercator().center([-55, -15]).scale(width * 1.1).translate([width / 2, height / 2]);
-            const pathGenerator = d3.geoPath().projection(projection);
+    const projection = d3.geoMercator().center([-55, -15]).scale(width * 1.1).translate([width / 2, height / 2]);
+    const pathGenerator = d3.geoPath().projection(projection);
 
-            const ufMap = {};
-            ufsProcessados.forEach(u => { ufMap[u.uf] = u.total_2025 || 0; });
-            const maxValor = Math.max(...Object.values(ufMap).filter(v => v > 0), 1);
-            const colorScale = d3.scaleSequential(d3.interpolateBlues).domain([0, maxValor]);
+    const ufMap = {};
+    ufsProcessados.forEach(u => { ufMap[u.uf] = u.total_2025 || 0; });
+    const maxValor = Math.max(...Object.values(ufMap).filter(v => v > 0), 1);
+    const colorScale = d3.scaleSequential(d3.interpolateBlues).domain([0, maxValor]);
 
-            // Atualizar legenda com valores mínimos e máximos
-            document.getElementById('map-legend-min').textContent = 'R$ 0';
-            document.getElementById('map-legend-max').textContent = `R$ ${formatarMoeda(maxValor)}`;
+    // Atualizar legenda com valores mínimos e máximos
+    document.getElementById('map-legend-min').textContent = 'R$ 0';
+    document.getElementById('map-legend-max').textContent = `R$ ${formatarMoeda(maxValor)}`;
 
-            fetch('https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson')
-                .then(res => res.json())
-                .then(geojson => {
-                    svg.append("g").selectAll("path").data(geojson.features).enter().append("path")
-                        .attr("d", pathGenerator)
-                        .attr("fill", d => {
-                            const sigla = d.properties.sigla;
-                            const val = ufMap[sigla] || 0;
-                            return val > 0 ? colorScale(val) : "#e2e8f0";
-                        })
-                        .attr("stroke", "#ffffff").attr("stroke-width", "1px").style("cursor", "pointer")
-                        .on("mouseover", function (event, d) {
-                            const sigla = d.properties.sigla;
-                            const val = ufMap[sigla] || 0;
-                            tooltip.style("display", "block").html(`<strong>${sigla}</strong><br/>Compras: <strong>R$ ${formatarMoeda(val)}</strong>`);
-                        })
-                        .on("mousemove", function (event) {
-                            tooltip.style("left", (event.pageX + 10) + "px").style("top", (event.pageY - 15) + "px");
-                        })
-                        .on("mouseleave", function () {
-                            tooltip.style("display", "none");
-                        })
-                        .on("click", function (event, d) {
-                            const sigla = d.properties.sigla;
-                            const ufData = ufsProcessados.find(u => u.uf === sigla);
-                            if (ufData) {
-                                const setoresUF = setoresProcessados.filter(s => s.v2025 > 1000000).sort((a, b) => b.v2025 - a.v2025).slice(0, 5);
-                                const modal = document.getElementById('modalDetalhesPerfil');
-                                document.getElementById('modalTitlePerfil').textContent = `Detalhes - ${sigla}`;
-                                document.getElementById('modalSubtitlePerfil').textContent = `Total de compras: R$ ${formatarMoeda(ufData.total_2025)} (${ufData.part_2025.toFixed(1)}% do total)`;
-                                let html = '<h4 style="margin:15px 0 10px 0; color:var(--primary);">Principais setores adquiridos:</h4>';
-                                setoresUF.forEach((s, i) => {
-                                    html += `<div class="modal-item"><span class="nome">${i + 1}. ${s.descricao}</span><span class="valor">R$ ${formatarMoeda(s.v2025)}</span></div>`;
-                                });
-                                document.getElementById('modalBodyPerfil').innerHTML = html;
-                                modal.classList.add('active');
-                            }
-                        });
+    fetch('https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson')
+        .then(res => res.json())
+        .then(geojson => {
+            svg.append("g").selectAll("path").data(geojson.features).enter().append("path")
+                .attr("d", pathGenerator)
+                .attr("fill", d => {
+                    const sigla = d.properties.sigla;
+                    const val = ufMap[sigla] || 0;
+                    return val > 0 ? colorScale(val) : "#e2e8f0";
                 })
-                .catch(err => {
-                    container.append("div")
-                        .attr("style", "color: var(--text-muted); font-size:13px; text-align:center; width:100%;")
-                        .text("Não foi possível carregar o mapa. Requer conexão com a internet.");
+                .attr("stroke", "#ffffff").attr("stroke-width", "1px").style("cursor", "pointer")
+                .on("mouseover", function(event, d) {
+                    const sigla = d.properties.sigla;
+                    const val = ufMap[sigla] || 0;
+                    tooltip.style("display", "block").html(`<strong>${sigla}</strong><br/>Compras: <strong>R$ ${formatarMoeda(val)}</strong>`);
+                })
+                .on("mousemove", function(event) {
+                    tooltip.style("left", (event.pageX + 10) + "px").style("top", (event.pageY - 15) + "px");
+                })
+                .on("mouseleave", function() {
+                    tooltip.style("display", "none");
+                })
+                .on("click", function(event, d) {
+                    const sigla = d.properties.sigla;
+                    const ufData = ufsProcessados.find(u => u.uf === sigla);
+                    if (ufData) {
+                        const setoresUF = setoresProcessados.filter(s => s.v2025 > 1000000).sort((a, b) => b.v2025 - a.v2025).slice(0, 5);
+                        const modal = document.getElementById('modalDetalhesPerfil');
+                        document.getElementById('modalTitlePerfil').textContent = `Detalhes - ${sigla}`;
+                        document.getElementById('modalSubtitlePerfil').textContent = `Total de compras: R$ ${formatarMoeda(ufData.total_2025)} (${ufData.part_2025.toFixed(1)}% do total)`;
+                        let html = '<h4 style="margin:15px 0 10px 0; color:var(--primary);">Principais setores adquiridos:</h4>';
+                        setoresUF.forEach((s, i) => {
+                            html += `<div class="modal-item"><span class="nome">${i + 1}. ${s.descricao}</span><span class="valor">R$ ${formatarMoeda(s.v2025)}</span></div>`;
+                        });
+                        document.getElementById('modalBodyPerfil').innerHTML = html;
+                        modal.classList.add('active');
+                    }
                 });
-        }
+        })
+        .catch(err => {
+            container.append("div")
+                .attr("style", "color: var(--text-muted); font-size:13px; text-align:center; width:100%;")
+                .text("Não foi possível carregar o mapa. Requer conexão com a internet.");
+        });
+}
         function renderizarLocalExterno() {
             const ctx = document.getElementById('graficoLocalExternoPerfil').getContext('2d');
             if (!ctx) return;
@@ -4153,6 +4200,7 @@
             initMappings();
             handleRouting();
             window.addEventListener('hashchange', handleRouting);
+            populateTerritoryCheckboxesCsv();
             atualizarTabelaCrescimento();
             updateKpisAndTooltips();
             processarDadosPerfil();
@@ -4184,487 +4232,487 @@
 
 
 
-        // ==============
-        // ==============================================
-        // SCRIPTS DA PRIORIZAÇÃO (CORRIGIDO)
-        // ============================================================
+// ==============
+// ==============================================
+// SCRIPTS DA PRIORIZAÇÃO (CORRIGIDO)
+// ============================================================
 
 
 
 
 
-        // @
+// @
 
 
-        // ============================================================
-        // SCRIPTS DA PRIORIZAÇÃO (CORRIGIDO - SCROLL + ORDENAÇÃO + OUTLIERS)
-        // ============================================================
-        let currentPagePriorizacao = 1;
-        const pageSizePriorizacao = 10; // (não usado, mas mantido para compatibilidade)
-        let priorizacaoChart = null;
+// ============================================================
+// SCRIPTS DA PRIORIZAÇÃO (CORRIGIDO - SCROLL + ORDENAÇÃO + OUTLIERS)
+// ============================================================
+let currentPagePriorizacao = 1;
+const pageSizePriorizacao = 10; // (não usado, mas mantido para compatibilidade)
+let priorizacaoChart = null;
 
-        // Variáveis globais para os filtros
-        let filtroOutliers = false;
-        let filtroQuadrante = 'Todos';
+// Variáveis globais para os filtros
+let filtroOutliers = false;
+let filtroQuadrante = 'Todos';
 
-        // Estado da ordenação
-        let ordemColunaPriorizacao = null;
-        let ordemDirecaoPriorizacao = 'asc';
+// Estado da ordenação
+let ordemColunaPriorizacao = null;
+let ordemDirecaoPriorizacao = 'asc';
 
-        // Dados filtrados (serão atualizados pela matriz)
-        let dadosPriorizacaoFiltrados = [];
+// Dados filtrados (serão atualizados pela matriz)
+let dadosPriorizacaoFiltrados = [];
 
-        // ============================================================
-        // DADOS ATUALIZADOS (não modificar)
-        // ============================================================
-        // (Os dados já estão definidos no escopo global como dadosPriorizacao)
+// ============================================================
+// DADOS ATUALIZADOS (não modificar)
+// ============================================================
+// (Os dados já estão definidos no escopo global como dadosPriorizacao)
 
-        // ============================================================
-        // GRÁFICO DA MATRIZ DE PRIORIZAÇÃO
-        // ============================================================
-        function renderizarMatrizPriorizacao() {
-            const ctx = document.getElementById('graficoPriorizacao').getContext('2d');
-            if (priorizacaoChart) {
-                priorizacaoChart.destroy();
+// ============================================================
+// GRÁFICO DA MATRIZ DE PRIORIZAÇÃO
+// ============================================================
+function renderizarMatrizPriorizacao() {
+    const ctx = document.getElementById('graficoPriorizacao').getContext('2d');
+    if (priorizacaoChart) {
+        priorizacaoChart.destroy();
+    }
+
+    // 1. DADOS ORIGINAIS (nunca filtrados)
+    const dadosOriginais = dadosPriorizacao.filter(d =>
+        d.volume > 0 &&
+        d.crescimento !== undefined &&
+        d.crescimento !== null &&
+        !isNaN(d.crescimento)
+    );
+
+    // 2. CALCULAR MEDIANAS USANDO DADOS ORIGINAIS (centro fixo)
+    const volumesOriginais = dadosOriginais.map(d => d.volume).sort((a, b) => a - b);
+    const crescimentosOriginais = dadosOriginais.map(d => d.crescimento).sort((a, b) => a - b);
+
+    const medianaVolume = volumesOriginais[Math.floor(volumesOriginais.length / 2)] || 1000000;
+    const medianaCrescimento = crescimentosOriginais[Math.floor(crescimentosOriginais.length / 2)] || 0;
+
+    // 3. CLASSIFICAR TODOS OS SETORES COM BASE NAS MEDIANAS ORIGINAIS
+    function getQuadrante(volume, crescimento) {
+        const volumeAlto = volume >= medianaVolume;
+        const crescimentoAlto = crescimento >= medianaCrescimento;
+
+        if (crescimentoAlto && volumeAlto) return 'Estratégico';
+        if (crescimentoAlto && !volumeAlto) return 'Alavancagem';
+        if (!crescimentoAlto && volumeAlto) return 'Gargalo';
+        return 'Não Crítico';
+    }
+
+    const dadosClassificados = dadosOriginais.map(d => ({
+        ...d,
+        quadrante: getQuadrante(d.volume, d.crescimento)
+    }));
+
+    // 4. APLICAR FILTRO DE OUTLIERS (menos agressivo: IQR * 2.5)
+    let dadosFiltrados = dadosClassificados;
+    if (filtroOutliers) {
+        const volumes = dadosClassificados.map(d => d.volume).sort((a, b) => a - b);
+        const crescimentos = dadosClassificados.map(d => d.crescimento).sort((a, b) => a - b);
+
+        const q1Volume = volumes[Math.floor(volumes.length * 0.25)];
+        const q3Volume = volumes[Math.floor(volumes.length * 0.75)];
+        const iqrVolume = q3Volume - q1Volume;
+
+        const q1Cresc = crescimentos[Math.floor(crescimentos.length * 0.25)];
+        const q3Cresc = crescimentos[Math.floor(crescimentos.length * 0.75)];
+        const iqrCresc = q3Cresc - q1Cresc;
+
+        // Multiplicador 2.5 (menos restritivo que 1.5)
+        const mult = 2.5;
+        const limiteInferiorVolume = q1Volume - mult * iqrVolume;
+        const limiteSuperiorVolume = q3Volume + mult * iqrVolume;
+        const limiteInferiorCresc = q1Cresc - mult * iqrCresc;
+        const limiteSuperiorCresc = q3Cresc + mult * iqrCresc;
+
+        dadosFiltrados = dadosClassificados.filter(d =>
+            d.volume >= limiteInferiorVolume &&
+            d.volume <= limiteSuperiorVolume &&
+            d.crescimento >= limiteInferiorCresc &&
+            d.crescimento <= limiteSuperiorCresc
+        );
+    }
+
+    // 5. APLICAR FILTRO POR QUADRANTE
+    let dadosExibir = dadosFiltrados;
+    if (filtroQuadrante !== 'Todos') {
+        dadosExibir = dadosFiltrados.filter(d => d.quadrante === filtroQuadrante);
+    }
+
+    // ARMAZENAR DADOS FILTRADOS PARA A TABELA
+    dadosPriorizacaoFiltrados = dadosExibir;
+
+    // ATUALIZAR TABELA (sem paginação)
+    renderizarTabelaPriorizacao();
+
+    // 6. CORES DOS QUADRANTES
+    const cores = {
+        'Estratégico': '#0a4ea3',
+        'Alavancagem': '#10b981',
+        'Gargalo': '#ef4444',
+        'Não Crítico': '#f59e0b'
+    };
+    const coresFundo = {
+        'Estratégico': 'rgba(10, 78, 163, 0.10)',
+        'Alavancagem': 'rgba(16, 185, 129, 0.10)',
+        'Gargalo': 'rgba(239, 68, 68, 0.10)',
+        'Não Crítico': 'rgba(245, 158, 11, 0.10)'
+    };
+    const descricaoQuadrantes = {
+        'Estratégico': 'Alto volume e alto crescimento. Prioridade máxima para ação e investimento.',
+        'Alavancagem': 'Baixo volume e alto crescimento. Oportunidade de desenvolvimento e expansão.',
+        'Gargalo': 'Alto volume e baixo crescimento. Atenção a restrições, dependências ou ineficiências.',
+        'Não Crítico': 'Baixo volume e baixo crescimento. Manter monitoramento.'
+    };
+
+    function formatarMoeda(valor) {
+        if (valor >= 1e9) return (valor / 1e9).toFixed(2) + ' bi';
+        if (valor >= 1e6) return (valor / 1e6).toFixed(1) + ' mi';
+        if (valor >= 1e3) return (valor / 1e3).toFixed(0) + ' k';
+        return valor.toFixed(0);
+    }
+
+    const minScore = Math.min(...dadosExibir.map(d => d.score));
+    const maxScore = Math.max(...dadosExibir.map(d => d.score));
+    const rangeScore = maxScore - minScore || 1;
+
+    function getRadius(score) {
+        return 6 + ((score - minScore) / rangeScore) * 18;
+    }
+
+    const dataPoints = dadosExibir.map(d => ({
+        x: Math.log10(d.volume > 0 ? d.volume : 1),
+        xOriginal: d.volume,
+        y: d.crescimento,
+        r: getRadius(d.score),
+        volume: d.volume,
+        setor: d.setor,
+        cnae: d.cnae,
+        score: d.score,
+        crescimento: d.crescimento,
+        quadrante: d.quadrante
+    }));
+
+    const quadrantes = ['Estratégico', 'Alavancagem', 'Gargalo', 'Não Crítico'];
+    const datasets = quadrantes.map(q => {
+        const pontos = dataPoints.filter(d => d.quadrante === q);
+        const isActive = (filtroQuadrante === 'Todos' || filtroQuadrante === q);
+        return {
+            label: q,
+            data: pontos,
+            backgroundColor: cores[q],
+            borderColor: '#ffffff',
+            borderWidth: 1.5,
+            pointRadius: pontos.map(d => d.r),
+            pointHoverRadius: pontos.map(d => d.r * 1.6),
+            pointHoverBorderWidth: 3,
+            pointHoverBorderColor: '#0f172a',
+            pointBackgroundColor: pontos.map(() => {
+                const cor = cores[q];
+                return isActive ? cor : cor + '33';
+            })
+        };
+    }).filter(ds => ds.data.length > 0);
+
+    // PLUGIN PARA OS QUADRANTES
+    const pluginQuadrantes = {
+        id: 'quadrantes',
+        beforeDraw: function (chart) {
+            const ctx2 = chart.ctx;
+            const chartArea = chart.chartArea;
+            const xScale = chart.scales.x;
+            const yScale = chart.scales.y;
+
+            const xMediana = xScale.getPixelForValue(Math.log10(medianaVolume > 0 ? medianaVolume : 1));
+            const yMediana = yScale.getPixelForValue(medianaCrescimento);
+
+            if (!xMediana || !yMediana ||
+                xMediana < chartArea.left || xMediana > chartArea.right ||
+                yMediana < chartArea.top || yMediana > chartArea.bottom) {
+                return;
             }
 
-            // 1. DADOS ORIGINAIS (nunca filtrados)
-            const dadosOriginais = dadosPriorizacao.filter(d =>
-                d.volume > 0 &&
-                d.crescimento !== undefined &&
-                d.crescimento !== null &&
-                !isNaN(d.crescimento)
-            );
+            // Fundo dos quadrantes
+            ctx2.fillStyle = coresFundo['Alavancagem'];
+            ctx2.fillRect(chartArea.left, chartArea.top, xMediana - chartArea.left, yMediana - chartArea.top);
 
-            // 2. CALCULAR MEDIANAS USANDO DADOS ORIGINAIS (centro fixo)
-            const volumesOriginais = dadosOriginais.map(d => d.volume).sort((a, b) => a - b);
-            const crescimentosOriginais = dadosOriginais.map(d => d.crescimento).sort((a, b) => a - b);
+            ctx2.fillStyle = coresFundo['Estratégico'];
+            ctx2.fillRect(xMediana, chartArea.top, chartArea.right - xMediana, yMediana - chartArea.top);
 
-            const medianaVolume = volumesOriginais[Math.floor(volumesOriginais.length / 2)] || 1000000;
-            const medianaCrescimento = crescimentosOriginais[Math.floor(crescimentosOriginais.length / 2)] || 0;
+            ctx2.fillStyle = coresFundo['Não Crítico'];
+            ctx2.fillRect(chartArea.left, yMediana, xMediana - chartArea.left, chartArea.bottom - yMediana);
 
-            // 3. CLASSIFICAR TODOS OS SETORES COM BASE NAS MEDIANAS ORIGINAIS
-            function getQuadrante(volume, crescimento) {
-                const volumeAlto = volume >= medianaVolume;
-                const crescimentoAlto = crescimento >= medianaCrescimento;
+            ctx2.fillStyle = coresFundo['Gargalo'];
+            ctx2.fillRect(xMediana, yMediana, chartArea.right - xMediana, chartArea.bottom - yMediana);
 
-                if (crescimentoAlto && volumeAlto) return 'Estratégico';
-                if (crescimentoAlto && !volumeAlto) return 'Alavancagem';
-                if (!crescimentoAlto && volumeAlto) return 'Gargalo';
-                return 'Não Crítico';
-            }
+            // Linhas das medianas
+            ctx2.save();
+            ctx2.setLineDash([8, 5]);
+            ctx2.strokeStyle = 'rgba(51, 65, 85, 0.7)';
+            ctx2.lineWidth = 2;
 
-            const dadosClassificados = dadosOriginais.map(d => ({
-                ...d,
-                quadrante: getQuadrante(d.volume, d.crescimento)
-            }));
+            ctx2.beginPath();
+            ctx2.moveTo(xMediana, chartArea.top);
+            ctx2.lineTo(xMediana, chartArea.bottom);
+            ctx2.stroke();
 
-            // 4. APLICAR FILTRO DE OUTLIERS (menos agressivo: IQR * 2.5)
-            let dadosFiltrados = dadosClassificados;
-            if (filtroOutliers) {
-                const volumes = dadosClassificados.map(d => d.volume).sort((a, b) => a - b);
-                const crescimentos = dadosClassificados.map(d => d.crescimento).sort((a, b) => a - b);
+            ctx2.beginPath();
+            ctx2.moveTo(chartArea.left, yMediana);
+            ctx2.lineTo(chartArea.right, yMediana);
+            ctx2.stroke();
+            ctx2.restore();
 
-                const q1Volume = volumes[Math.floor(volumes.length * 0.25)];
-                const q3Volume = volumes[Math.floor(volumes.length * 0.75)];
-                const iqrVolume = q3Volume - q1Volume;
+            // Nomes dos quadrantes
+            ctx2.save();
+            ctx2.font = 'bold 13px Inter, sans-serif';
+            ctx2.textAlign = 'center';
+            ctx2.textBaseline = 'middle';
 
-                const q1Cresc = crescimentos[Math.floor(crescimentos.length * 0.25)];
-                const q3Cresc = crescimentos[Math.floor(crescimentos.length * 0.75)];
-                const iqrCresc = q3Cresc - q1Cresc;
+            const nomes = [
+                { x: (chartArea.left + xMediana) / 2, y: (chartArea.top + yMediana) / 2, text: 'ALAVANCAGEM', color: '#0a7e4a' },
+                { x: (xMediana + chartArea.right) / 2, y: (chartArea.top + yMediana) / 2, text: 'ESTRATÉGICO', color: '#0a4ea3' },
+                { x: (chartArea.left + xMediana) / 2, y: (yMediana + chartArea.bottom) / 2, text: 'NÃO CRÍTICO', color: '#b45309' },
+                { x: (xMediana + chartArea.right) / 2, y: (yMediana + chartArea.bottom) / 2, text: 'GARGALO', color: '#b91c1c' }
+            ];
 
-                // Multiplicador 2.5 (menos restritivo que 1.5)
-                const mult = 2.5;
-                const limiteInferiorVolume = q1Volume - mult * iqrVolume;
-                const limiteSuperiorVolume = q3Volume + mult * iqrVolume;
-                const limiteInferiorCresc = q1Cresc - mult * iqrCresc;
-                const limiteSuperiorCresc = q3Cresc + mult * iqrCresc;
+            nomes.forEach(l => {
+                ctx2.fillStyle = 'rgba(255,255,255,0.85)';
+                const metrics = ctx2.measureText(l.text);
+                const pad = 16;
+                const w = metrics.width + pad * 2;
+                const h = 34;
+                const rx = l.x - w / 2;
+                const ry = l.y - h / 2;
+                ctx2.beginPath();
+                ctx2.roundRect(rx, ry, w, h, 8);
+                ctx2.fill();
 
-                dadosFiltrados = dadosClassificados.filter(d =>
-                    d.volume >= limiteInferiorVolume &&
-                    d.volume <= limiteSuperiorVolume &&
-                    d.crescimento >= limiteInferiorCresc &&
-                    d.crescimento <= limiteSuperiorCresc
-                );
-            }
+                ctx2.fillStyle = l.color;
+                ctx2.font = 'bold 13px Inter, sans-serif';
+                ctx2.textAlign = 'center';
+                ctx2.textBaseline = 'middle';
+                ctx2.fillText(l.text, l.x, l.y);
+            });
+            ctx2.restore();
 
-            // 5. APLICAR FILTRO POR QUADRANTE
-            let dadosExibir = dadosFiltrados;
-            if (filtroQuadrante !== 'Todos') {
-                dadosExibir = dadosFiltrados.filter(d => d.quadrante === filtroQuadrante);
-            }
+            // Valores das medianas
+            ctx2.save();
 
-            // ARMAZENAR DADOS FILTRADOS PARA A TABELA
-            dadosPriorizacaoFiltrados = dadosExibir;
+            const volumeLabel = `Mediana Volume: R$ ${formatarMoeda(medianaVolume)}`;
+            ctx2.fillStyle = 'rgba(51, 65, 85, 0.9)';
+            ctx2.font = 'bold 10px Inter, sans-serif';
+            ctx2.textAlign = 'center';
+            ctx2.textBaseline = 'top';
 
-            // ATUALIZAR TABELA (sem paginação)
-            renderizarTabelaPriorizacao();
+            const metricsVol = ctx2.measureText(volumeLabel);
+            const padVol = 8;
+            const wVol = metricsVol.width + padVol * 2;
+            const hVol = 22;
+            const rxVol = xMediana - wVol / 2;
+            const ryVol = chartArea.bottom + 4;
 
-            // 6. CORES DOS QUADRANTES
-            const cores = {
-                'Estratégico': '#0a4ea3',
-                'Alavancagem': '#10b981',
-                'Gargalo': '#ef4444',
-                'Não Crítico': '#f59e0b'
-            };
-            const coresFundo = {
-                'Estratégico': 'rgba(10, 78, 163, 0.10)',
-                'Alavancagem': 'rgba(16, 185, 129, 0.10)',
-                'Gargalo': 'rgba(239, 68, 68, 0.10)',
-                'Não Crítico': 'rgba(245, 158, 11, 0.10)'
-            };
-            const descricaoQuadrantes = {
-                'Estratégico': 'Alto volume e alto crescimento. Prioridade máxima para ação e investimento.',
-                'Alavancagem': 'Baixo volume e alto crescimento. Oportunidade de desenvolvimento e expansão.',
-                'Gargalo': 'Alto volume e baixo crescimento. Atenção a restrições, dependências ou ineficiências.',
-                'Não Crítico': 'Baixo volume e baixo crescimento. Manter monitoramento.'
-            };
+            ctx2.fillStyle = 'rgba(255,255,255,0.92)';
+            ctx2.beginPath();
+            ctx2.roundRect(rxVol, ryVol, wVol, hVol, 6);
+            ctx2.fill();
 
-            function formatarMoeda(valor) {
-                if (valor >= 1e9) return (valor / 1e9).toFixed(2) + ' bi';
-                if (valor >= 1e6) return (valor / 1e6).toFixed(1) + ' mi';
-                if (valor >= 1e3) return (valor / 1e3).toFixed(0) + ' k';
-                return valor.toFixed(0);
-            }
+            ctx2.fillStyle = 'rgba(51, 65, 85, 0.95)';
+            ctx2.font = 'bold 10px Inter, sans-serif';
+            ctx2.textAlign = 'center';
+            ctx2.textBaseline = 'middle';
+            ctx2.fillText(volumeLabel, xMediana, ryVol + hVol / 2);
 
-            const minScore = Math.min(...dadosExibir.map(d => d.score));
-            const maxScore = Math.max(...dadosExibir.map(d => d.score));
-            const rangeScore = maxScore - minScore || 1;
+            const growthLabel = `Mediana: ${medianaCrescimento.toFixed(1)}%`;
+            ctx2.save();
 
-            function getRadius(score) {
-                return 6 + ((score - minScore) / rangeScore) * 18;
-            }
+            const xPos = chartArea.left - 10;
+            const yPos = yMediana;
 
-            const dataPoints = dadosExibir.map(d => ({
-                x: Math.log10(d.volume > 0 ? d.volume : 1),
-                xOriginal: d.volume,
-                y: d.crescimento,
-                r: getRadius(d.score),
-                volume: d.volume,
-                setor: d.setor,
-                cnae: d.cnae,
-                score: d.score,
-                crescimento: d.crescimento,
-                quadrante: d.quadrante
-            }));
+            ctx2.translate(xPos, yPos);
+            ctx2.rotate(-Math.PI / 2);
 
-            const quadrantes = ['Estratégico', 'Alavancagem', 'Gargalo', 'Não Crítico'];
-            const datasets = quadrantes.map(q => {
-                const pontos = dataPoints.filter(d => d.quadrante === q);
-                const isActive = (filtroQuadrante === 'Todos' || filtroQuadrante === q);
-                return {
-                    label: q,
-                    data: pontos,
-                    backgroundColor: cores[q],
-                    borderColor: '#ffffff',
-                    borderWidth: 1.5,
-                    pointRadius: pontos.map(d => d.r),
-                    pointHoverRadius: pontos.map(d => d.r * 1.6),
-                    pointHoverBorderWidth: 3,
-                    pointHoverBorderColor: '#0f172a',
-                    pointBackgroundColor: pontos.map(() => {
-                        const cor = cores[q];
-                        return isActive ? cor : cor + '33';
-                    })
-                };
-            }).filter(ds => ds.data.length > 0);
+            const metricsGrowth = ctx2.measureText(growthLabel);
+            const padGrowth = 8;
+            const wGrowth = metricsGrowth.width + padGrowth * 2;
+            const hGrowth = 22;
+            const rxGrowth = -wGrowth / 2;
+            const ryGrowth = -hGrowth / 2;
 
-            // PLUGIN PARA OS QUADRANTES
-            const pluginQuadrantes = {
-                id: 'quadrantes',
-                beforeDraw: function (chart) {
-                    const ctx2 = chart.ctx;
-                    const chartArea = chart.chartArea;
-                    const xScale = chart.scales.x;
-                    const yScale = chart.scales.y;
+            ctx2.fillStyle = 'rgba(255,255,255,0.92)';
+            ctx2.beginPath();
+            ctx2.roundRect(rxGrowth, ryGrowth, wGrowth, hGrowth, 6);
+            ctx2.fill();
 
-                    const xMediana = xScale.getPixelForValue(Math.log10(medianaVolume > 0 ? medianaVolume : 1));
-                    const yMediana = yScale.getPixelForValue(medianaCrescimento);
+            ctx2.fillStyle = 'rgba(51, 65, 85, 0.95)';
+            ctx2.font = 'bold 10px Inter, sans-serif';
+            ctx2.textAlign = 'center';
+            ctx2.textBaseline = 'middle';
+            ctx2.fillText(growthLabel, 0, 0);
 
-                    if (!xMediana || !yMediana ||
-                        xMediana < chartArea.left || xMediana > chartArea.right ||
-                        yMediana < chartArea.top || yMediana > chartArea.bottom) {
-                        return;
-                    }
+            ctx2.restore();
+            ctx2.restore();
 
-                    // Fundo dos quadrantes
-                    ctx2.fillStyle = coresFundo['Alavancagem'];
-                    ctx2.fillRect(chartArea.left, chartArea.top, xMediana - chartArea.left, yMediana - chartArea.top);
+            // Setas
+            ctx2.save();
+            ctx2.fillStyle = 'rgba(51, 65, 85, 0.4)';
+            ctx2.font = '12px Inter, sans-serif';
+            ctx2.textAlign = 'center';
+            ctx2.textBaseline = 'middle';
 
-                    ctx2.fillStyle = coresFundo['Estratégico'];
-                    ctx2.fillRect(xMediana, chartArea.top, chartArea.right - xMediana, yMediana - chartArea.top);
+            ctx2.fillText('⬇', xMediana, chartArea.bottom + 30);
 
-                    ctx2.fillStyle = coresFundo['Não Crítico'];
-                    ctx2.fillRect(chartArea.left, yMediana, xMediana - chartArea.left, chartArea.bottom - yMediana);
+            ctx2.save();
+            ctx2.translate(chartArea.left - 24, yMediana);
+            ctx2.rotate(-Math.PI / 2);
+            ctx2.fillText('⬅', 0, 0);
+            ctx2.restore();
 
-                    ctx2.fillStyle = coresFundo['Gargalo'];
-                    ctx2.fillRect(xMediana, yMediana, chartArea.right - xMediana, chartArea.bottom - yMediana);
+            ctx2.restore();
+        }
+    };
 
-                    // Linhas das medianas
-                    ctx2.save();
-                    ctx2.setLineDash([8, 5]);
-                    ctx2.strokeStyle = 'rgba(51, 65, 85, 0.7)';
-                    ctx2.lineWidth = 2;
-
-                    ctx2.beginPath();
-                    ctx2.moveTo(xMediana, chartArea.top);
-                    ctx2.lineTo(xMediana, chartArea.bottom);
-                    ctx2.stroke();
-
-                    ctx2.beginPath();
-                    ctx2.moveTo(chartArea.left, yMediana);
-                    ctx2.lineTo(chartArea.right, yMediana);
-                    ctx2.stroke();
-                    ctx2.restore();
-
-                    // Nomes dos quadrantes
-                    ctx2.save();
-                    ctx2.font = 'bold 13px Inter, sans-serif';
-                    ctx2.textAlign = 'center';
-                    ctx2.textBaseline = 'middle';
-
-                    const nomes = [
-                        { x: (chartArea.left + xMediana) / 2, y: (chartArea.top + yMediana) / 2, text: 'ALAVANCAGEM', color: '#0a7e4a' },
-                        { x: (xMediana + chartArea.right) / 2, y: (chartArea.top + yMediana) / 2, text: 'ESTRATÉGICO', color: '#0a4ea3' },
-                        { x: (chartArea.left + xMediana) / 2, y: (yMediana + chartArea.bottom) / 2, text: 'NÃO CRÍTICO', color: '#b45309' },
-                        { x: (xMediana + chartArea.right) / 2, y: (yMediana + chartArea.bottom) / 2, text: 'GARGALO', color: '#b91c1c' }
-                    ];
-
-                    nomes.forEach(l => {
-                        ctx2.fillStyle = 'rgba(255,255,255,0.85)';
-                        const metrics = ctx2.measureText(l.text);
-                        const pad = 16;
-                        const w = metrics.width + pad * 2;
-                        const h = 34;
-                        const rx = l.x - w / 2;
-                        const ry = l.y - h / 2;
-                        ctx2.beginPath();
-                        ctx2.roundRect(rx, ry, w, h, 8);
-                        ctx2.fill();
-
-                        ctx2.fillStyle = l.color;
-                        ctx2.font = 'bold 13px Inter, sans-serif';
-                        ctx2.textAlign = 'center';
-                        ctx2.textBaseline = 'middle';
-                        ctx2.fillText(l.text, l.x, l.y);
-                    });
-                    ctx2.restore();
-
-                    // Valores das medianas
-                    ctx2.save();
-
-                    const volumeLabel = `Mediana Volume: R$ ${formatarMoeda(medianaVolume)}`;
-                    ctx2.fillStyle = 'rgba(51, 65, 85, 0.9)';
-                    ctx2.font = 'bold 10px Inter, sans-serif';
-                    ctx2.textAlign = 'center';
-                    ctx2.textBaseline = 'top';
-
-                    const metricsVol = ctx2.measureText(volumeLabel);
-                    const padVol = 8;
-                    const wVol = metricsVol.width + padVol * 2;
-                    const hVol = 22;
-                    const rxVol = xMediana - wVol / 2;
-                    const ryVol = chartArea.bottom + 4;
-
-                    ctx2.fillStyle = 'rgba(255,255,255,0.92)';
-                    ctx2.beginPath();
-                    ctx2.roundRect(rxVol, ryVol, wVol, hVol, 6);
-                    ctx2.fill();
-
-                    ctx2.fillStyle = 'rgba(51, 65, 85, 0.95)';
-                    ctx2.font = 'bold 10px Inter, sans-serif';
-                    ctx2.textAlign = 'center';
-                    ctx2.textBaseline = 'middle';
-                    ctx2.fillText(volumeLabel, xMediana, ryVol + hVol / 2);
-
-                    const growthLabel = `Mediana: ${medianaCrescimento.toFixed(1)}%`;
-                    ctx2.save();
-
-                    const xPos = chartArea.left - 10;
-                    const yPos = yMediana;
-
-                    ctx2.translate(xPos, yPos);
-                    ctx2.rotate(-Math.PI / 2);
-
-                    const metricsGrowth = ctx2.measureText(growthLabel);
-                    const padGrowth = 8;
-                    const wGrowth = metricsGrowth.width + padGrowth * 2;
-                    const hGrowth = 22;
-                    const rxGrowth = -wGrowth / 2;
-                    const ryGrowth = -hGrowth / 2;
-
-                    ctx2.fillStyle = 'rgba(255,255,255,0.92)';
-                    ctx2.beginPath();
-                    ctx2.roundRect(rxGrowth, ryGrowth, wGrowth, hGrowth, 6);
-                    ctx2.fill();
-
-                    ctx2.fillStyle = 'rgba(51, 65, 85, 0.95)';
-                    ctx2.font = 'bold 10px Inter, sans-serif';
-                    ctx2.textAlign = 'center';
-                    ctx2.textBaseline = 'middle';
-                    ctx2.fillText(growthLabel, 0, 0);
-
-                    ctx2.restore();
-                    ctx2.restore();
-
-                    // Setas
-                    ctx2.save();
-                    ctx2.fillStyle = 'rgba(51, 65, 85, 0.4)';
-                    ctx2.font = '12px Inter, sans-serif';
-                    ctx2.textAlign = 'center';
-                    ctx2.textBaseline = 'middle';
-
-                    ctx2.fillText('⬇', xMediana, chartArea.bottom + 30);
-
-                    ctx2.save();
-                    ctx2.translate(chartArea.left - 24, yMediana);
-                    ctx2.rotate(-Math.PI / 2);
-                    ctx2.fillText('⬅', 0, 0);
-                    ctx2.restore();
-
-                    ctx2.restore();
-                }
-            };
-
-            // CRIAR O GRÁFICO
-            priorizacaoChart = new Chart(ctx, {
-                type: 'scatter',
-                data: { datasets: datasets },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                usePointStyle: true,
-                                pointStyle: 'circle',
-                                padding: 16,
-                                font: { size: 11, weight: '600' },
-                                color: '#1e293b',
-                                generateLabels: function (chart) {
-                                    const data = chart.data;
-                                    return data.datasets.map((dataset, i) => {
-                                        const label = dataset.label || '';
-                                        const descricao = descricaoQuadrantes[label] || '';
-                                        const isActive = filtroQuadrante === 'Todos' || filtroQuadrante === label;
-                                        return {
-                                            text: `${label} – ${descricao}`,
-                                            fillStyle: dataset.backgroundColor,
-                                            strokeStyle: dataset.borderColor,
-                                            pointStyle: 'circle',
-                                            datasetIndex: i,
-                                            fontColor: isActive ? '#1e293b' : '#94a3b8'
-                                        };
-                                    });
-                                }
-                            }
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(15, 23, 42, 0.92)',
-                            titleFont: { size: 14, weight: '700' },
-                            bodyFont: { size: 13 },
-                            padding: 14,
-                            cornerRadius: 8,
-
-                            callbacks: {
-                                label: function (context) {
-                                    const raw = context.raw;
-                                    return [
-                                        `CNAE: ${raw.cnae}`,
-                                        `Total de compras: R$ ${formatarMoeda(raw.volume)}`,
-                                        `Crescimento (2023-2025): ${raw.crescimento >= 0 ? '+' : ''}${raw.crescimento.toFixed(1)}%`,
-                                        `Score: ${raw.score.toFixed(1)}`,
-                                        `Quadrante: ${raw.quadrante}`
-                                    ];
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            type: 'linear',
-                            position: 'bottom',
-                            title: {
-                                display: true,
-                                text: 'Volume de compras (escala log) - R$',
-                                font: { size: 14, weight: '600' },
-                                color: '#1e293b'
-                            },
-                            ticks: {
-                                callback: function (value) {
-                                    const val = Math.pow(10, value);
-                                    return formatarMoeda(val);
-                                },
-                                font: { size: 11 },
-                                color: '#64748b'
-                            },
-                            grid: {
-                                color: 'rgba(0,0,0,0.06)',
-                                drawBorder: false
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Crescimento 2023–2025 (%)',
-                                font: { size: 14, weight: '600' },
-                                color: '#1e293b'
-                            },
-                            ticks: {
-                                font: { size: 11 },
-                                color: '#64748b',
-                                callback: function (value) {
-                                    return (value >= 0 ? '+' : '') + value.toFixed(0) + '%';
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(0,0,0,0.06)',
-                                drawBorder: false
-                            }
+    // CRIAR O GRÁFICO
+    priorizacaoChart = new Chart(ctx, {
+        type: 'scatter',
+        data: { datasets: datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        padding: 16,
+                        font: { size: 11, weight: '600' },
+                        color: '#1e293b',
+                        generateLabels: function (chart) {
+                            const data = chart.data;
+                            return data.datasets.map((dataset, i) => {
+                                const label = dataset.label || '';
+                                const descricao = descricaoQuadrantes[label] || '';
+                                const isActive = filtroQuadrante === 'Todos' || filtroQuadrante === label;
+                                return {
+                                    text: `${label} – ${descricao}`,
+                                    fillStyle: dataset.backgroundColor,
+                                    strokeStyle: dataset.borderColor,
+                                    pointStyle: 'circle',
+                                    datasetIndex: i,
+                                    fontColor: isActive ? '#1e293b' : '#94a3b8'
+                                };
+                            });
                         }
                     }
                 },
-                plugins: [pluginQuadrantes]
-            });
-        }
+                tooltip: {
+                    backgroundColor: 'rgba(15, 23, 42, 0.92)',
+                    titleFont: { size: 14, weight: '700' },
+                    bodyFont: { size: 13 },
+                    padding: 14,
+                    cornerRadius: 8,
 
-        // ============================================================
-        // RENDERIZAR TABELA (SEM PAGINAÇÃO, COM SCROLL E ORDENAÇÃO)
-        // ============================================================
-        function renderizarTabelaPriorizacao() {
-            // Usar dados filtrados
-            let dados = dadosPriorizacaoFiltrados;
-
-            // Aplicar ordenação, se houver
-            if (ordemColunaPriorizacao) {
-                const coluna = ordemColunaPriorizacao;
-                const dir = ordemDirecaoPriorizacao;
-                dados = [...dados].sort((a, b) => {
-                    let valA = a[coluna];
-                    let valB = b[coluna];
-                    if (typeof valA === 'string') valA = valA.toLowerCase();
-                    if (typeof valB === 'string') valB = valB.toLowerCase();
-                    if (valA < valB) return dir === 'asc' ? -1 : 1;
-                    if (valA > valB) return dir === 'asc' ? 1 : -1;
-                    return 0;
-                });
+                    callbacks: {
+                        label: function (context) {
+                            const raw = context.raw;
+                            return [
+                `CNAE: ${raw.cnae}`,
+                `Total de compras: R$ ${formatarMoeda(raw.volume)}`,
+                `Crescimento (2023-2025): ${raw.crescimento >= 0 ? '+' : ''}${raw.crescimento.toFixed(1)}%`,
+                `Score: ${raw.score.toFixed(1)}`,
+                `Quadrante: ${raw.quadrante}`
+                            ];
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    type: 'linear',
+                    position: 'bottom',
+                    title: {
+                        display: true,
+                        text: 'Volume de compras (escala log) - R$',
+                        font: { size: 14, weight: '600' },
+                        color: '#1e293b'
+                    },
+                    ticks: {
+                        callback: function (value) {
+                            const val = Math.pow(10, value);
+                            return formatarMoeda(val);
+                        },
+                        font: { size: 11 },
+                        color: '#64748b'
+                    },
+                    grid: {
+                        color: 'rgba(0,0,0,0.06)',
+                        drawBorder: false
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Crescimento 2023–2025 (%)',
+                        font: { size: 14, weight: '600' },
+                        color: '#1e293b'
+                    },
+                    ticks: {
+                        font: { size: 11 },
+                        color: '#64748b',
+                        callback: function (value) {
+                            return (value >= 0 ? '+' : '') + value.toFixed(0) + '%';
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(0,0,0,0.06)',
+                        drawBorder: false
+                    }
+                }
             }
+        },
+        plugins: [pluginQuadrantes]
+    });
+}
 
-            const tbody = document.getElementById('tbodyPriorizacao');
-            tbody.innerHTML = '';
+// ============================================================
+// RENDERIZAR TABELA (SEM PAGINAÇÃO, COM SCROLL E ORDENAÇÃO)
+// ============================================================
+function renderizarTabelaPriorizacao() {
+    // Usar dados filtrados
+    let dados = dadosPriorizacaoFiltrados;
 
-            const coresQuadrante = {
-                'Estratégico': '#0a4ea3',
-                'Alavancagem': '#10b981',
-                'Gargalo': '#ef4444',
-                'Não Crítico': '#f97316'
-            };
+    // Aplicar ordenação, se houver
+    if (ordemColunaPriorizacao) {
+        const coluna = ordemColunaPriorizacao;
+        const dir = ordemDirecaoPriorizacao;
+        dados = [...dados].sort((a, b) => {
+            let valA = a[coluna];
+            let valB = b[coluna];
+            if (typeof valA === 'string') valA = valA.toLowerCase();
+            if (typeof valB === 'string') valB = valB.toLowerCase();
+            if (valA < valB) return dir === 'asc' ? -1 : 1;
+            if (valA > valB) return dir === 'asc' ? 1 : -1;
+            return 0;
+        });
+    }
 
-            dados.forEach(d => {
-                const tr = document.createElement('tr');
-                const cor = coresQuadrante[d.quadrante] || '#64748b';
-                tr.innerHTML = `
+    const tbody = document.getElementById('tbodyPriorizacao');
+    tbody.innerHTML = '';
+
+    const coresQuadrante = {
+        'Estratégico': '#0a4ea3',
+        'Alavancagem': '#10b981',
+        'Gargalo': '#ef4444',
+        'Não Crítico': '#f97316'
+    };
+
+    dados.forEach(d => {
+        const tr = document.createElement('tr');
+        const cor = coresQuadrante[d.quadrante] || '#64748b';
+        tr.innerHTML = `
             <td><strong>${d.cnae}</strong></td>
             <td>${d.setor}</td>
             <td>${d.score.toFixed(1)}</td>
@@ -4672,11 +4720,11 @@
             <td class="${d.crescimento >= 0 ? 'growth-up' : 'growth-down'}">${d.crescimento >= 0 ? '+' : ''}${d.crescimento.toFixed(1)}%</td>
             <td><span style="display:inline-block; width:12px; height:12px; border-radius:3px; background:${cor}; margin-right:6px;"></span> ${d.quadrante}</td>
         `;
-                tr.addEventListener('click', function () {
-                    const modal = document.getElementById('modalDetalhesPerfil');
-                    document.getElementById('modalTitlePerfil').textContent = d.setor;
-                    document.getElementById('modalSubtitlePerfil').textContent = `CNAE: ${d.cnae}`;
-                    document.getElementById('modalBodyPerfil').innerHTML = `
+        tr.addEventListener('click', function () {
+            const modal = document.getElementById('modalDetalhesPerfil');
+            document.getElementById('modalTitlePerfil').textContent = d.setor;
+            document.getElementById('modalSubtitlePerfil').textContent = `CNAE: ${d.cnae}`;
+            document.getElementById('modalBodyPerfil').innerHTML = `
                 <div style="margin:15px 0;">
                     <div class="modal-item"><span class="nome">Score</span><span class="valor">${d.score.toFixed(1)}</span></div>
                     <div class="modal-item"><span class="nome">Volume de compras 2025</span><span class="valor">R$ ${d.volume.toLocaleString('pt-BR')}</span></div>
@@ -4684,89 +4732,89 @@
                     <div class="modal-item"><span class="nome">Quadrante</span><span class="valor" style="color:${coresQuadrante[d.quadrante]}">${d.quadrante}</span></div>
                 </div>
             `;
-                    modal.classList.add('active');
-                });
-                tbody.appendChild(tr);
-            });
+            modal.classList.add('active');
+        });
+        tbody.appendChild(tr);
+    });
 
-            // Atualizar contador de registros
-            document.getElementById('pageInfoPriorizacao').textContent = `${dados.length} registros`;
-        }
+    // Atualizar contador de registros
+    document.getElementById('pageInfoPriorizacao').textContent = `${dados.length} registros`;
+}
 
-        // ============================================================
-        // FUNÇÕES DOS FILTROS
-        // ============================================================
-        function toggleOutliers() {
-            filtroOutliers = !filtroOutliers;
-            const btn = document.getElementById('btnOutliers');
-            if (btn) {
-                btn.textContent = filtroOutliers ? '🔴 Remover Outliers (Ativo)' : '🟢 Remover Outliers (Inativo)';
-                btn.style.background = filtroOutliers ? '#ef4444' : '#10b981';
-                btn.style.color = '#ffffff';
+// ============================================================
+// FUNÇÕES DOS FILTROS
+// ============================================================
+function toggleOutliers() {
+    filtroOutliers = !filtroOutliers;
+    const btn = document.getElementById('btnOutliers');
+    if (btn) {
+        btn.textContent = filtroOutliers ? '🔴 Remover Outliers (Ativo)' : '🟢 Remover Outliers (Inativo)';
+        btn.style.background = filtroOutliers ? '#ef4444' : '#10b981';
+        btn.style.color = '#ffffff';
+    }
+    renderizarMatrizPriorizacao(); // atualiza gráfico e tabela
+}
+
+function filtrarQuadrante(quadrante) {
+    filtroQuadrante = quadrante;
+    document.querySelectorAll('.btn-quadrante').forEach(btn => {
+        const isActive = btn.dataset.quadrante === quadrante || (quadrante === 'Todos' && btn.dataset.quadrante === 'Todos');
+        btn.style.background = isActive ? '#0a4ea3' : '#e2e8f0';
+        btn.style.color = isActive ? '#ffffff' : '#64748b';
+        btn.style.borderColor = isActive ? '#0a4ea3' : '#e2e8f0';
+    });
+    renderizarMatrizPriorizacao(); // atualiza gráfico e tabela
+}
+
+// ============================================================
+// ORDENAÇÃO DA TABELA (EVENTOS)
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Os eventos de ordenação são configurados após o carregamento do DOM
+    document.querySelectorAll('#tabelaPriorizacao thead th[data-col]').forEach(th => {
+        th.addEventListener('click', function() {
+            const col = this.dataset.col;
+            // Alterna direção se a mesma coluna for clicada
+            if (ordemColunaPriorizacao === col) {
+                ordemDirecaoPriorizacao = ordemDirecaoPriorizacao === 'asc' ? 'desc' : 'asc';
+            } else {
+                ordemColunaPriorizacao = col;
+                ordemDirecaoPriorizacao = 'asc';
             }
-            renderizarMatrizPriorizacao(); // atualiza gráfico e tabela
-        }
-
-        function filtrarQuadrante(quadrante) {
-            filtroQuadrante = quadrante;
-            document.querySelectorAll('.btn-quadrante').forEach(btn => {
-                const isActive = btn.dataset.quadrante === quadrante || (quadrante === 'Todos' && btn.dataset.quadrante === 'Todos');
-                btn.style.background = isActive ? '#0a4ea3' : '#e2e8f0';
-                btn.style.color = isActive ? '#ffffff' : '#64748b';
-                btn.style.borderColor = isActive ? '#0a4ea3' : '#e2e8f0';
+            // Atualiza indicadores visuais
+            document.querySelectorAll('#tabelaPriorizacao thead th .sort-indicator').forEach(el => {
+                el.textContent = '⇅';
             });
-            renderizarMatrizPriorizacao(); // atualiza gráfico e tabela
-        }
-
-        // ============================================================
-        // ORDENAÇÃO DA TABELA (EVENTOS)
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', function () {
-            // Os eventos de ordenação são configurados após o carregamento do DOM
-            document.querySelectorAll('#tabelaPriorizacao thead th[data-col]').forEach(th => {
-                th.addEventListener('click', function () {
-                    const col = this.dataset.col;
-                    // Alterna direção se a mesma coluna for clicada
-                    if (ordemColunaPriorizacao === col) {
-                        ordemDirecaoPriorizacao = ordemDirecaoPriorizacao === 'asc' ? 'desc' : 'asc';
-                    } else {
-                        ordemColunaPriorizacao = col;
-                        ordemDirecaoPriorizacao = 'asc';
-                    }
-                    // Atualiza indicadores visuais
-                    document.querySelectorAll('#tabelaPriorizacao thead th .sort-indicator').forEach(el => {
-                        el.textContent = '⇅';
-                    });
-                    const indicator = this.querySelector('.sort-indicator');
-                    if (indicator) {
-                        indicator.textContent = ordemDirecaoPriorizacao === 'asc' ? '▲' : '▼';
-                    }
-                    // Renderiza a tabela com a nova ordenação
-                    renderizarTabelaPriorizacao();
-                });
-            });
-        });
-
-        // ============================================================
-        // MODAL - FECHAR
-        // ============================================================
-        document.getElementById('modalClosePerfil').addEventListener('click', function () {
-            document.getElementById('modalDetalhesPerfil').classList.remove('active');
-        });
-        document.getElementById('modalDetalhesPerfil').addEventListener('click', function (e) {
-            if (e.target === this) {
-                this.classList.remove('active');
+            const indicator = this.querySelector('.sort-indicator');
+            if (indicator) {
+                indicator.textContent = ordemDirecaoPriorizacao === 'asc' ? '▲' : '▼';
             }
+            // Renderiza a tabela com a nova ordenação
+            renderizarTabelaPriorizacao();
         });
+    });
+});
 
-        // ============================================================
-        // INICIALIZAÇÃO DA PRIORIZAÇÃO
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', function () {
-            // Inicializa dados filtrados com todos os dados (sem filtros)
-            dadosPriorizacaoFiltrados = dadosPriorizacao.filter(d => d.volume > 0 && d.crescimento !== undefined);
-            renderizarMatrizPriorizacao(); // também chama renderizarTabelaPriorizacao internamente
-        });
+// ============================================================
+// MODAL - FECHAR
+// ============================================================
+document.getElementById('modalClosePerfil').addEventListener('click', function () {
+    document.getElementById('modalDetalhesPerfil').classList.remove('active');
+});
+document.getElementById('modalDetalhesPerfil').addEventListener('click', function (e) {
+    if (e.target === this) {
+        this.classList.remove('active');
+    }
+});
+
+// ============================================================
+// INICIALIZAÇÃO DA PRIORIZAÇÃO
+// ============================================================
+document.addEventListener('DOMContentLoaded', function () {
+    // Inicializa dados filtrados com todos os dados (sem filtros)
+    dadosPriorizacaoFiltrados = dadosPriorizacao.filter(d => d.volume > 0 && d.crescimento !== undefined);
+    renderizarMatrizPriorizacao(); // também chama renderizarTabelaPriorizacao internamente
+});        
 
 
     </script>
