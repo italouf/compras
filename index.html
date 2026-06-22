@@ -1584,9 +1584,9 @@
                         <button class="pagination-btn" id="prevPagePriorizacao" disabled>Anterior</button>
                         <button class="pagination-btn" id="nextPagePriorizacao">Próximo</button>
                     </div>
-                    <div class="fonte">Fonte: SENAI CIMATEC</div>
                 </div>
             </div>
+                    <div class="fonte">Fonte: FIEB e SENAI CIMATEC baseado nos dados SIMPAS (SAEB) </div>
         </div>
 
         <!-- Footer -->
@@ -4206,11 +4206,23 @@ function renderizarMapaCalor() {
 
 
 
-// ============================================================
+// ==============
+// ==============================================
 // SCRIPTS DA PRIORIZAÇÃO (CORRIGIDO)
 // ============================================================
+
+
+
+
+
+// @
+
+
+// ============================================================
+// SCRIPTS DA PRIORIZAÇÃO (CORRIGIDO - SCROLL + ORDENAÇÃO + OUTLIERS)
+// ============================================================
 let currentPagePriorizacao = 1;
-const pageSizePriorizacao = 10;
+const pageSizePriorizacao = 10; // (não usado, mas mantido para compatibilidade)
 let priorizacaoChart = null;
 
 // Variáveis globais para os filtros
@@ -4225,11 +4237,9 @@ let ordemDirecaoPriorizacao = 'asc';
 let dadosPriorizacaoFiltrados = [];
 
 // ============================================================
-// DADOS ATUALIZADOS (com base na tabela Síntese2 e Score_Priorizacao)
+// DADOS ATUALIZADOS (não modificar)
 // ============================================================
-// (Os dados já estão definidos no escopo global, mas vamos garantir que estão corretos)
-// Se necessário, você pode redefinir dadosPriorizacao aqui com os valores mais recentes.
-// Use os dados que você já tem, mas vou verificar a consistência.
+// (Os dados já estão definidos no escopo global como dadosPriorizacao)
 
 // ============================================================
 // GRÁFICO DA MATRIZ DE PRIORIZAÇÃO
@@ -4240,7 +4250,7 @@ function renderizarMatrizPriorizacao() {
         priorizacaoChart.destroy();
     }
 
-    // 1. DADOS ORIGINAIS (filtra valores válidos)
+    // 1. DADOS ORIGINAIS (nunca filtrados)
     const dadosOriginais = dadosPriorizacao.filter(d =>
         d.volume > 0 &&
         d.crescimento !== undefined &&
@@ -4248,41 +4258,14 @@ function renderizarMatrizPriorizacao() {
         !isNaN(d.crescimento)
     );
 
-    // 2. APLICAR FILTRO DE OUTLIERS
-    let dadosFiltrados = [...dadosOriginais];
-    if (filtroOutliers) {
-        const volumes = dadosFiltrados.map(d => d.volume).sort((a, b) => a - b);
-        const crescimentos = dadosFiltrados.map(d => d.crescimento).sort((a, b) => a - b);
+    // 2. CALCULAR MEDIANAS USANDO DADOS ORIGINAIS (centro fixo)
+    const volumesOriginais = dadosOriginais.map(d => d.volume).sort((a, b) => a - b);
+    const crescimentosOriginais = dadosOriginais.map(d => d.crescimento).sort((a, b) => a - b);
 
-        const q1Volume = volumes[Math.floor(volumes.length * 0.25)];
-        const q3Volume = volumes[Math.floor(volumes.length * 0.75)];
-        const iqrVolume = q3Volume - q1Volume;
+    const medianaVolume = volumesOriginais[Math.floor(volumesOriginais.length / 2)] || 1000000;
+    const medianaCrescimento = crescimentosOriginais[Math.floor(crescimentosOriginais.length / 2)] || 0;
 
-        const q1Cresc = crescimentos[Math.floor(crescimentos.length * 0.25)];
-        const q3Cresc = crescimentos[Math.floor(crescimentos.length * 0.75)];
-        const iqrCresc = q3Cresc - q1Cresc;
-
-        const limiteInferiorVolume = q1Volume - 1.5 * iqrVolume;
-        const limiteSuperiorVolume = q3Volume + 1.5 * iqrVolume;
-        const limiteInferiorCresc = q1Cresc - 1.5 * iqrCresc;
-        const limiteSuperiorCresc = q3Cresc + 1.5 * iqrCresc;
-
-        dadosFiltrados = dadosFiltrados.filter(d =>
-            d.volume >= limiteInferiorVolume &&
-            d.volume <= limiteSuperiorVolume &&
-            d.crescimento >= limiteInferiorCresc &&
-            d.crescimento <= limiteSuperiorCresc
-        );
-    }
-
-    // 3. CALCULAR MEDIANAS
-    const volumes = dadosFiltrados.map(d => d.volume).sort((a, b) => a - b);
-    const crescimentos = dadosFiltrados.map(d => d.crescimento).sort((a, b) => a - b);
-
-    const medianaVolume = volumes[Math.floor(volumes.length / 2)] || 1000000;
-    const medianaCrescimento = crescimentos[Math.floor(crescimentos.length / 2)] || 0;
-
-    // 4. CLASSIFICAR SETORES
+    // 3. CLASSIFICAR TODOS OS SETORES COM BASE NAS MEDIANAS ORIGINAIS
     function getQuadrante(volume, crescimento) {
         const volumeAlto = volume >= medianaVolume;
         const crescimentoAlto = crescimento >= medianaCrescimento;
@@ -4293,21 +4276,50 @@ function renderizarMatrizPriorizacao() {
         return 'Não Crítico';
     }
 
-    const dadosClassificados = dadosFiltrados.map(d => ({
+    const dadosClassificados = dadosOriginais.map(d => ({
         ...d,
         quadrante: getQuadrante(d.volume, d.crescimento)
     }));
 
+    // 4. APLICAR FILTRO DE OUTLIERS (menos agressivo: IQR * 2.5)
+    let dadosFiltrados = dadosClassificados;
+    if (filtroOutliers) {
+        const volumes = dadosClassificados.map(d => d.volume).sort((a, b) => a - b);
+        const crescimentos = dadosClassificados.map(d => d.crescimento).sort((a, b) => a - b);
+
+        const q1Volume = volumes[Math.floor(volumes.length * 0.25)];
+        const q3Volume = volumes[Math.floor(volumes.length * 0.75)];
+        const iqrVolume = q3Volume - q1Volume;
+
+        const q1Cresc = crescimentos[Math.floor(crescimentos.length * 0.25)];
+        const q3Cresc = crescimentos[Math.floor(crescimentos.length * 0.75)];
+        const iqrCresc = q3Cresc - q1Cresc;
+
+        // Multiplicador 2.5 (menos restritivo que 1.5)
+        const mult = 2.5;
+        const limiteInferiorVolume = q1Volume - mult * iqrVolume;
+        const limiteSuperiorVolume = q3Volume + mult * iqrVolume;
+        const limiteInferiorCresc = q1Cresc - mult * iqrCresc;
+        const limiteSuperiorCresc = q3Cresc + mult * iqrCresc;
+
+        dadosFiltrados = dadosClassificados.filter(d =>
+            d.volume >= limiteInferiorVolume &&
+            d.volume <= limiteSuperiorVolume &&
+            d.crescimento >= limiteInferiorCresc &&
+            d.crescimento <= limiteSuperiorCresc
+        );
+    }
+
     // 5. APLICAR FILTRO POR QUADRANTE
-    let dadosExibir = dadosClassificados;
+    let dadosExibir = dadosFiltrados;
     if (filtroQuadrante !== 'Todos') {
-        dadosExibir = dadosClassificados.filter(d => d.quadrante === filtroQuadrante);
+        dadosExibir = dadosFiltrados.filter(d => d.quadrante === filtroQuadrante);
     }
 
     // ARMAZENAR DADOS FILTRADOS PARA A TABELA
     dadosPriorizacaoFiltrados = dadosExibir;
 
-    // ATUALIZAR TABELA COM OS DADOS FILTRADOS (e com a ordenação atual)
+    // ATUALIZAR TABELA (sem paginação)
     renderizarTabelaPriorizacao();
 
     // 6. CORES DOS QUADRANTES
@@ -4640,7 +4652,7 @@ function renderizarMatrizPriorizacao() {
 }
 
 // ============================================================
-// RENDERIZAR TABELA (COM ORDENAÇÃO E FILTROS)
+// RENDERIZAR TABELA (SEM PAGINAÇÃO, COM SCROLL E ORDENAÇÃO)
 // ============================================================
 function renderizarTabelaPriorizacao() {
     // Usar dados filtrados
@@ -4661,26 +4673,17 @@ function renderizarTabelaPriorizacao() {
         });
     }
 
-    const totalRows = dados.length;
-    const start = (currentPagePriorizacao - 1) * pageSizePriorizacao;
-    const end = Math.min(start + pageSizePriorizacao, totalRows);
-    const pageData = dados.slice(start, end);
-
-    document.getElementById('pageInfoPriorizacao').textContent = `${start + 1}-${end} de ${totalRows}`;
-    document.getElementById('prevPagePriorizacao').disabled = currentPagePriorizacao === 1;
-    document.getElementById('nextPagePriorizacao').disabled = end >= totalRows;
-
     const tbody = document.getElementById('tbodyPriorizacao');
     tbody.innerHTML = '';
 
     const coresQuadrante = {
         'Estratégico': '#0a4ea3',
         'Alavancagem': '#10b981',
-        'Gargalo': '#f97316',
-        'Não Crítico': '#ef4444'
+        'Gargalo': '#ef4444',
+        'Não Crítico': '#f97316'
     };
 
-    pageData.forEach(d => {
+    dados.forEach(d => {
         const tr = document.createElement('tr');
         const cor = coresQuadrante[d.quadrante] || '#64748b';
         tr.innerHTML = `
@@ -4707,6 +4710,9 @@ function renderizarTabelaPriorizacao() {
         });
         tbody.appendChild(tr);
     });
+
+    // Atualizar contador de registros
+    document.getElementById('pageInfoPriorizacao').textContent = `${dados.length} registros`;
 }
 
 // ============================================================
@@ -4737,45 +4743,30 @@ function filtrarQuadrante(quadrante) {
 // ============================================================
 // ORDENAÇÃO DA TABELA (EVENTOS)
 // ============================================================
-document.querySelectorAll('#tabelaPriorizacao thead th[data-col]').forEach(th => {
-    th.addEventListener('click', function() {
-        const col = this.dataset.col;
-        // Alterna direção se a mesma coluna for clicada
-        if (ordemColunaPriorizacao === col) {
-            ordemDirecaoPriorizacao = ordemDirecaoPriorizacao === 'asc' ? 'desc' : 'asc';
-        } else {
-            ordemColunaPriorizacao = col;
-            ordemDirecaoPriorizacao = 'asc';
-        }
-        // Atualiza indicadores visuais
-        document.querySelectorAll('#tabelaPriorizacao thead th .sort-indicator').forEach(el => {
-            el.textContent = '⇅';
+document.addEventListener('DOMContentLoaded', function() {
+    // Os eventos de ordenação são configurados após o carregamento do DOM
+    document.querySelectorAll('#tabelaPriorizacao thead th[data-col]').forEach(th => {
+        th.addEventListener('click', function() {
+            const col = this.dataset.col;
+            // Alterna direção se a mesma coluna for clicada
+            if (ordemColunaPriorizacao === col) {
+                ordemDirecaoPriorizacao = ordemDirecaoPriorizacao === 'asc' ? 'desc' : 'asc';
+            } else {
+                ordemColunaPriorizacao = col;
+                ordemDirecaoPriorizacao = 'asc';
+            }
+            // Atualiza indicadores visuais
+            document.querySelectorAll('#tabelaPriorizacao thead th .sort-indicator').forEach(el => {
+                el.textContent = '⇅';
+            });
+            const indicator = this.querySelector('.sort-indicator');
+            if (indicator) {
+                indicator.textContent = ordemDirecaoPriorizacao === 'asc' ? '▲' : '▼';
+            }
+            // Renderiza a tabela com a nova ordenação
+            renderizarTabelaPriorizacao();
         });
-        const indicator = this.querySelector('.sort-indicator');
-        if (indicator) {
-            indicator.textContent = ordemDirecaoPriorizacao === 'asc' ? '▲' : '▼';
-        }
-        // Volta para a primeira página e renderiza a tabela
-        currentPagePriorizacao = 1;
-        renderizarTabelaPriorizacao(); // apenas a tabela, não o gráfico
     });
-});
-
-// ============================================================
-// PAGINAÇÃO DA TABELA
-// ============================================================
-document.getElementById('prevPagePriorizacao').addEventListener('click', function () {
-    if (currentPagePriorizacao > 1) {
-        currentPagePriorizacao--;
-        renderizarTabelaPriorizacao();
-    }
-});
-document.getElementById('nextPagePriorizacao').addEventListener('click', function () {
-    const total = dadosPriorizacaoFiltrados.length;
-    if (currentPagePriorizacao * pageSizePriorizacao < total) {
-        currentPagePriorizacao++;
-        renderizarTabelaPriorizacao();
-    }
 });
 
 // ============================================================
@@ -4797,150 +4788,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Inicializa dados filtrados com todos os dados (sem filtros)
     dadosPriorizacaoFiltrados = dadosPriorizacao.filter(d => d.volume > 0 && d.crescimento !== undefined);
     renderizarMatrizPriorizacao(); // também chama renderizarTabelaPriorizacao internamente
-});
+});        
 
-
-
-
-
-
-
-
-
-
-
-function renderizarTabelaPriorizacao() {
-    // Usar dados filtrados
-    let dados = dadosPriorizacaoFiltrados;
-
-    // Aplicar ordenação, se houver
-    if (ordemColunaPriorizacao) {
-        const coluna = ordemColunaPriorizacao;
-        const dir = ordemDirecaoPriorizacao;
-        dados = [...dados].sort((a, b) => {
-            let valA = a[coluna];
-            let valB = b[coluna];
-            if (typeof valA === 'string') valA = valA.toLowerCase();
-            if (typeof valB === 'string') valB = valB.toLowerCase();
-            if (valA < valB) return dir === 'asc' ? -1 : 1;
-            if (valA > valB) return dir === 'asc' ? 1 : -1;
-            return 0;
-        });
-    }
-
-    const totalRows = dados.length;
-    const start = (currentPagePriorizacao - 1) * pageSizePriorizacao;
-    const end = Math.min(start + pageSizePriorizacao, totalRows);
-    const pageData = dados.slice(start, end);
-
-    document.getElementById('pageInfoPriorizacao').textContent = `${start + 1}-${end} de ${totalRows}`;
-    document.getElementById('prevPagePriorizacao').disabled = currentPagePriorizacao === 1;
-    document.getElementById('nextPagePriorizacao').disabled = end >= totalRows;
-
-    const tbody = document.getElementById('tbodyPriorizacao');
-    tbody.innerHTML = '';
-
-    const coresQuadrante = {
-        'Estratégico': '#0a4ea3',
-        'Alavancagem': '#10b981',
-        'Gargalo': '#ef4444',
-        'Não Crítico': '#f97316'
-    };
-
-    pageData.forEach(d => {
-        const tr = document.createElement('tr');
-        const cor = coresQuadrante[d.quadrante] || '#64748b';
-        tr.innerHTML = `
-            <td><strong>${d.cnae}</strong></td>
-            <td>${d.setor}</td>
-            <td>${d.score.toFixed(1)}</td>
-            <td>R$ ${d.volume >= 1e9 ? (d.volume / 1e9).toFixed(2).replace('.', ',') + ' bi' : (d.volume / 1e6).toFixed(1).replace('.', ',') + ' mi'}</td>
-            <td class="${d.crescimento >= 0 ? 'growth-up' : 'growth-down'}">${d.crescimento >= 0 ? '+' : ''}${d.crescimento.toFixed(1)}%</td>
-            <td><span style="display:inline-block; width:12px; height:12px; border-radius:3px; background:${cor}; margin-right:6px;"></span> ${d.quadrante}</td>
-        `;
-        tr.addEventListener('click', function () {
-            const modal = document.getElementById('modalDetalhesPerfil');
-            document.getElementById('modalTitlePerfil').textContent = d.setor;
-            document.getElementById('modalSubtitlePerfil').textContent = `CNAE: ${d.cnae}`;
-            document.getElementById('modalBodyPerfil').innerHTML = `
-                <div style="margin:15px 0;">
-                    <div class="modal-item"><span class="nome">Score</span><span class="valor">${d.score.toFixed(1)}</span></div>
-                    <div class="modal-item"><span class="nome">Volume de compras 2025</span><span class="valor">R$ ${d.volume.toLocaleString('pt-BR')}</span></div>
-                    <div class="modal-item"><span class="nome">Crescimento 2023-2025</span><span class="valor" style="color:${d.crescimento >= 0 ? '#0e6372' : '#ef4b4c'}">${d.crescimento >= 0 ? '+' : ''}${d.crescimento.toFixed(1)}%</span></div>
-                    <div class="modal-item"><span class="nome">Quadrante</span><span class="valor" style="color:${coresQuadrante[d.quadrante]}">${d.quadrante}</span></div>
-                </div>
-            `;
-            modal.classList.add('active');
-        });
-        tbody.appendChild(tr);
-    });
-
-    // ============================================================
-// ORDENAÇÃO DA TABELA DE PRIORIZAÇÃO
-// ============================================================
-document.querySelectorAll('#tabelaPriorizacao thead th[data-col]').forEach(th => {
-    th.addEventListener('click', function() {
-        const col = this.dataset.col;
-        if (ordemColunaPriorizacao === col) {
-            ordemDirecaoPriorizacao = ordemDirecaoPriorizacao === 'asc' ? 'desc' : 'asc';
-        } else {
-            ordemColunaPriorizacao = col;
-            ordemDirecaoPriorizacao = 'asc';
-        }
-        // Atualizar indicadores
-        document.querySelectorAll('#tabelaPriorizacao thead th .sort-indicator').forEach(el => {
-            el.textContent = '⇅';
-        });
-        const indicator = this.querySelector('.sort-indicator');
-        if (indicator) {
-            indicator.textContent = ordemDirecaoPriorizacao === 'asc' ? '▲' : '▼';
-        }
-        currentPagePriorizacao = 1;
-        renderizarTabelaPriorizacao();
-    });
-});
-}
-        function renderizarPriorizacao() {
-            renderizarMatrizPriorizacao();
-            renderizarTabelaPriorizacao();
-        }
-
-        // ============================================================
-        // EVENTOS DA PRIORIZAÇÃO
-        // ============================================================
-        document.getElementById('prevPagePriorizacao').addEventListener('click', function () {
-            if (currentPagePriorizacao > 1) {
-                currentPagePriorizacao--;
-                renderizarTabelaPriorizacao();
-            }
-        });
-        document.getElementById('nextPagePriorizacao').addEventListener('click', function () {
-            const total = dadosPriorizacao.length;
-            if (currentPagePriorizacao * pageSizePriorizacao < total) {
-                currentPagePriorizacao++;
-                renderizarTabelaPriorizacao();
-            }
-        });
-
-        // Fechar modal
-        document.getElementById('modalClosePerfil').addEventListener('click', function () {
-            document.getElementById('modalDetalhesPerfil').classList.remove('active');
-        });
-        document.getElementById('modalDetalhesPerfil').addEventListener('click', function (e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-            }
-        });
-
-        // ============================================================
-        // INICIALIZAÇÃO
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', function () {
-            // Se a aba priorização estiver ativa, renderizar
-            if (document.getElementById('tab-priorizacao').classList.contains('active')) {
-                setTimeout(renderizarPriorizacao, 200);
-            }
-        });
 
     </script>
 
